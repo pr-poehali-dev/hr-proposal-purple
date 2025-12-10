@@ -93,10 +93,6 @@ const Index = () => {
                 <div className="text-sm text-gray-600">специалист</div>
               </div>
               <div className="bg-white rounded-xl px-6 py-4 shadow-lg border border-purple-200">
-                <div className="text-3xl font-bold text-violet-600">900 000 ₽</div>
-                <div className="text-sm text-gray-600">итоговая стоимость</div>
-              </div>
-              <div className="bg-white rounded-xl px-6 py-4 shadow-lg border border-purple-200">
                 <div className="text-3xl font-bold text-purple-700">72</div>
                 <div className="text-sm text-gray-600">часа до старта</div>
               </div>
