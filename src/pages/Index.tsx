@@ -24,10 +24,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-lavender-50">
       <nav className="fixed left-0 top-0 h-screen w-20 bg-white/80 backdrop-blur-lg border-r border-purple-200 shadow-lg z-50 hidden lg:flex flex-col items-center py-8 gap-6">
         <div className="mb-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold text-xl">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white font-bold text-xl">
             1D
           </div>
         </div>
@@ -58,7 +58,7 @@ const Index = () => {
           
           <div className="relative z-10 max-w-5xl text-center">
             <div className="mb-8 flex justify-center">
-              <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-2xl">
+              <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white shadow-2xl">
                 <div className="text-center">
                   <div className="text-4xl font-bold">1 DAY</div>
                   <div className="text-xl font-light">HR</div>
@@ -70,7 +70,7 @@ const Index = () => {
               Коммерческое предложение
             </Badge>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-700 via-pink-600 to-purple-700 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-700 via-violet-600 to-purple-700 bg-clip-text text-transparent leading-tight">
               Гарантированный подбор
               <br />команды из 21 специалиста
             </h1>
@@ -93,7 +93,7 @@ const Index = () => {
                 <div className="text-sm text-gray-600">специалист</div>
               </div>
               <div className="bg-white rounded-xl px-6 py-4 shadow-lg border border-purple-200">
-                <div className="text-3xl font-bold text-pink-600">900 000 ₽</div>
+                <div className="text-3xl font-bold text-violet-600">900 000 ₽</div>
                 <div className="text-sm text-gray-600">итоговая стоимость</div>
               </div>
               <div className="bg-white rounded-xl px-6 py-4 shadow-lg border border-purple-200">
@@ -161,7 +161,7 @@ const Index = () => {
               </Card>
             </div>
 
-            <Card className="p-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-2xl">
+            <Card className="p-8 bg-gradient-to-br from-purple-600 to-violet-500 text-white shadow-2xl">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
                   <Icon name="Lightbulb" size={24} />
@@ -177,7 +177,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="technology" className="min-h-screen py-20 px-4 bg-gradient-to-br from-purple-100 to-pink-50">
+        <section id="technology" className="min-h-screen py-20 px-4 bg-gradient-to-br from-purple-50 to-violet-50">
           <div className="max-w-5xl mx-auto">
             <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-300 px-4 py-2">
               Глава 2
@@ -194,7 +194,7 @@ const Index = () => {
 
               <div className="space-y-8">
                 <div className="flex gap-6 items-start group">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
                     1
                   </div>
                   <div className="flex-1">
@@ -208,7 +208,7 @@ const Index = () => {
                 <Separator />
 
                 <div className="flex gap-6 items-start group">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
                     2
                   </div>
                   <div className="flex-1">
@@ -222,7 +222,7 @@ const Index = () => {
                 <Separator />
 
                 <div className="flex gap-6 items-start group">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform">
                     3
                   </div>
                   <div className="flex-1">
@@ -317,7 +317,7 @@ const Index = () => {
                     <tr className="hover:bg-purple-50 transition-colors">
                       <td className="py-4 px-4 font-medium text-gray-900">Электрогазосварщик ТТ</td>
                       <td className="py-4 px-4 text-center">
-                        <Badge variant="outline" className="bg-pink-100 text-pink-700">2</Badge>
+                        <Badge variant="outline" className="bg-violet-100 text-violet-700">2</Badge>
                       </td>
                       <td className="py-4 px-4 text-gray-600 text-sm">Сварка трубопроводов высокого давления, контроль швов</td>
                     </tr>
@@ -386,8 +386,8 @@ const Index = () => {
 
             <Card className="p-8 mb-8 shadow-xl">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center">
-                  <Icon name="MapPin" size={24} className="text-pink-600" />
+                <div className="w-12 h-12 rounded-lg bg-violet-100 flex items-center justify-center">
+                  <Icon name="MapPin" size={24} className="text-violet-600" />
                 </div>
                 <h3 className="text-3xl font-bold text-gray-900">Русское месторождение</h3>
               </div>
@@ -395,21 +395,21 @@ const Index = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b-2 border-pink-200">
+                    <tr className="border-b-2 border-violet-200">
                       <th className="text-left py-3 px-4 text-gray-700 font-semibold">Должность</th>
                       <th className="text-center py-3 px-4 text-gray-700 font-semibold">Кол-во</th>
                       <th className="text-left py-3 px-4 text-gray-700 font-semibold">Фокус AI-проверки</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    <tr className="hover:bg-pink-50 transition-colors">
+                    <tr className="hover:bg-violet-50 transition-colors">
                       <td className="py-4 px-4 font-medium text-gray-900">Электрогазосварщик (без НАКС)</td>
                       <td className="py-4 px-4 text-center">
                         <Badge variant="outline" className="bg-blue-100 text-blue-700">1</Badge>
                       </td>
                       <td className="py-4 px-4 text-gray-600 text-sm">Работа по неответственным конструкциям, безопасность труда</td>
                     </tr>
-                    <tr className="hover:bg-pink-50 transition-colors">
+                    <tr className="hover:bg-violet-50 transition-colors">
                       <td className="py-4 px-4 font-medium text-gray-900">Отделочники</td>
                       <td className="py-4 px-4 text-center">
                         <Badge variant="outline" className="bg-blue-100 text-blue-700">2</Badge>
@@ -497,7 +497,7 @@ const Index = () => {
                     <tr className="hover:bg-gray-50">
                       <td className="py-3 px-4">Электрогазосварщик ТТ</td>
                       <td className="text-center py-3 px-4">2</td>
-                      <td className="py-3 px-4"><Badge className="bg-pink-600">Ключевые с сертификатами</Badge></td>
+                      <td className="py-3 px-4"><Badge className="bg-violet-600">Ключевые с сертификатами</Badge></td>
                       <td className="text-right py-3 px-4 font-semibold">60 000 ₽</td>
                       <td className="text-right py-3 px-4 font-semibold">120 000 ₽</td>
                     </tr>
@@ -539,8 +539,8 @@ const Index = () => {
                       <td className="text-right py-3 px-4 font-semibold">35 000 ₽</td>
                       <td className="text-right py-3 px-4 font-semibold">140 000 ₽</td>
                     </tr>
-                    <tr className="bg-pink-50">
-                      <td colSpan={5} className="py-3 px-4 font-bold text-pink-700">РУССКОЕ МЕСТОРОЖДЕНИЕ</td>
+                    <tr className="bg-violet-50">
+                      <td colSpan={5} className="py-3 px-4 font-bold text-violet-700">РУССКОЕ МЕСТОРОЖДЕНИЕ</td>
                     </tr>
                     <tr className="hover:bg-gray-50">
                       <td className="py-3 px-4">Электрогазосварщик (без НАКС)</td>
@@ -564,7 +564,7 @@ const Index = () => {
                       <td colSpan={4} className="py-4 px-4 text-right font-bold text-lg text-green-700">Пакетная скидка (10%):</td>
                       <td className="text-right py-4 px-4 font-bold text-lg text-green-700">- 100 000 ₽</td>
                     </tr>
-                    <tr className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                    <tr className="bg-gradient-to-r from-purple-600 to-violet-600 text-white">
                       <td colSpan={4} className="py-5 px-4 text-right font-bold text-2xl">ИТОГО К ОПЛАТЕ:</td>
                       <td className="text-right py-5 px-4 font-bold text-3xl">900 000 ₽</td>
                     </tr>
@@ -672,18 +672,18 @@ const Index = () => {
                 </p>
               </Card>
 
-              <Card className="p-8 hover:shadow-2xl transition-all border-t-4 border-t-pink-500 group">
-                <div className="w-16 h-16 rounded-xl bg-pink-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Icon name="Timer" size={32} className="text-pink-600" />
+              <Card className="p-8 hover:shadow-2xl transition-all border-t-4 border-t-violet-500 group">
+                <div className="w-16 h-16 rounded-xl bg-violet-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Icon name="Timer" size={32} className="text-violet-600" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-gray-900">Экономия внутренних ресурсов</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Ваши инженеры и мастера не тратят время на поиск, а занимаются строительством. <strong className="text-pink-700">Фокус на главном.</strong>
+                  Ваши инженеры и мастера не тратят время на поиск, а занимаются строительством. <strong className="text-violet-700">Фокус на главном.</strong>
                 </p>
               </Card>
             </div>
 
-            <Card className="p-10 bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 text-white shadow-2xl">
+            <Card className="p-10 bg-gradient-to-br from-purple-600 via-violet-600 to-purple-700 text-white shadow-2xl">
               <div className="text-center">
                 <h3 className="text-3xl font-bold mb-6">Следующие шаги к сотрудничеству</h3>
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -738,7 +738,7 @@ const Index = () => {
 
             <Card className="p-10 shadow-2xl mb-8 bg-white">
               <div className="flex items-center justify-center gap-4 mb-10">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-xl">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white shadow-xl">
                   <div className="text-center">
                     <div className="text-2xl font-bold">1 DAY</div>
                     <div className="text-sm font-light">HR</div>
@@ -758,8 +758,8 @@ const Index = () => {
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Телефон</div>
-                      <a href="tel:+79999999999" className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">
-                        +7 (999) 999-99-99
+                      <a href="tel:+79955556231" className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">
+                        +7 (995) 555-62-31
                       </a>
                     </div>
                   </div>
@@ -770,8 +770,8 @@ const Index = () => {
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Email</div>
-                      <a href="mailto:info@1-day-hr.ru" className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">
-                        info@1-day-hr.ru
+                      <a href="mailto:1dayhunter24@gmail.com" className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">
+                        1dayhunter24@gmail.com
                       </a>
                     </div>
                   </div>
@@ -792,12 +792,12 @@ const Index = () => {
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                      <Icon name="MapPin" size={20} className="text-purple-600" />
+                      <Icon name="FileText" size={20} className="text-purple-600" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600 mb-1">Адрес</div>
+                      <div className="text-sm text-gray-600 mb-1">ИП</div>
                       <p className="text-lg font-semibold text-gray-900">
-                        г. Москва, ул. Примерная, д. 1
+                        Зленко Денис Игоревич
                       </p>
                     </div>
                   </div>
@@ -807,21 +807,21 @@ const Index = () => {
                       <Icon name="Building" size={20} className="text-purple-600" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600 mb-1">ИНН / КПП</div>
+                      <div className="text-sm text-gray-600 mb-1">ОГРН</div>
                       <p className="text-lg font-semibold text-gray-900">
-                        1234567890 / 123456789
+                        325350000020848
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                      <Icon name="Clock" size={20} className="text-purple-600" />
+                      <Icon name="Hash" size={20} className="text-purple-600" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600 mb-1">Режим работы</div>
+                      <div className="text-sm text-gray-600 mb-1">ИНН</div>
                       <p className="text-lg font-semibold text-gray-900">
-                        Пн-Пт: 9:00 - 18:00
+                        352828469363
                       </p>
                     </div>
                   </div>
@@ -829,7 +829,7 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="p-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-2xl text-center">
+            <Card className="p-8 bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-2xl text-center">
               <h3 className="text-2xl font-bold mb-4">Готовы начать сотрудничество?</h3>
               <p className="text-lg mb-6 text-purple-100">
                 Свяжитесь с нами любым удобным способом, и мы приступим к подбору вашей команды
