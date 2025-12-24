@@ -252,12 +252,25 @@ const InteractiveChart = () => {
               })()}
               
               <defs>
-                {data.map((item, idx) => (
-                  <linearGradient key={idx} id={`gradient-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor={item.color.split(' ')[0].replace('from-', '')} />
-                    <stop offset="100%" stopColor={item.color.split(' ')[2].replace('to-', '')} />
-                  </linearGradient>
-                ))}
+                {data.map((item, idx) => {
+                  // Карта цветов для SVG
+                  const colorMap: { [key: string]: [string, string] } = {
+                    'from-blue-500 to-cyan-500': ['#3b82f6', '#06b6d4'],
+                    'from-purple-500 to-violet-500': ['#a855f7', '#8b5cf6'],
+                    'from-indigo-500 to-blue-500': ['#6366f1', '#3b82f6'],
+                    'from-orange-500 to-red-500': ['#f97316', '#ef4444'],
+                    'from-violet-500 to-purple-500': ['#8b5cf6', '#a855f7'],
+                    'from-emerald-500 to-green-500': ['#10b981', '#22c55e'],
+                  };
+                  const [startColor, endColor] = colorMap[item.color] || ['#3b82f6', '#06b6d4'];
+                  
+                  return (
+                    <linearGradient key={idx} id={`gradient-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor={startColor} />
+                      <stop offset="100%" stopColor={endColor} />
+                    </linearGradient>
+                  );
+                })}
               </defs>
             </svg>
           </div>
