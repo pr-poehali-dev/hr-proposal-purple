@@ -671,7 +671,20 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 5: Months 7-14 - Permitting */}
+        {/* Revolutionary Solutions Section */}
+        <section id="revolutionary" className="min-h-screen py-20 px-4 bg-gradient-to-br from-orange-50 to-red-50">
+          <div className="max-w-6xl mx-auto">
+            <Badge className="mb-6 bg-orange-100 text-orange-700 border-orange-300 px-4 py-2">
+              Инновации
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-900">
+              Революционные решения проекта
+            </h2>
+            <RevolutionarySolutions />
+          </div>
+        </section>
+
+        {/* Phase 5: Months 7-8 - Permitting */}
         <section id="phase5" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-emerald-100 text-emerald-700 border-emerald-300 px-4 py-2">
@@ -799,7 +812,7 @@ const Roadmap = () => {
                 <div className="flex flex-wrap justify-center gap-4">
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
                     <div className="text-sm opacity-90">Срок выполнения</div>
-                    <div className="text-2xl font-bold">14 месяцев</div>
+                    <div className="text-2xl font-bold">8 месяцев</div>
                   </div>
                   <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
                     <div className="text-sm opacity-90">Стоимость</div>
@@ -808,6 +821,32 @@ const Roadmap = () => {
                 </div>
               </div>
             </Card>
+          </div>
+        </section>
+
+        {/* Gantt Chart Section */}
+        <section id="gantt" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-50 to-gray-50">
+          <div className="max-w-7xl mx-auto">
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
+              План-график
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-900">
+              Детальный план-график работ
+            </h2>
+            <GanttChart />
+          </div>
+        </section>
+
+        {/* Interactive Charts Section */}
+        <section id="charts" className="min-h-screen py-20 px-4 bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-7xl mx-auto">
+            <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-300 px-4 py-2">
+              Аналитика
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-900">
+              Визуализация данных проекта
+            </h2>
+            <InteractiveChart />
           </div>
         </section>
 
