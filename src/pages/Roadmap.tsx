@@ -32,11 +32,7 @@ const Roadmap = () => {
       {/* Ссылка на главную страницу */}
       <div className="fixed top-4 right-4 z-50">
         <Button
-          onClick={() => {
-            const currentDomain = window.location.hostname.replace('roadmap.', '');
-            const protocol = window.location.protocol;
-            window.open(`${protocol}//${currentDomain}`, '_blank');
-          }}
+          onClick={() => window.location.href = '/'}
           className="bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white shadow-xl"
         >
           <Icon name="Users" size={16} className="mr-2" />

@@ -28,11 +28,7 @@ const Index = () => {
       {/* Ссылка на дорожную карту */}
       <div className="fixed top-4 right-4 z-50">
         <Button
-          onClick={() => {
-            const currentDomain = window.location.hostname;
-            const protocol = window.location.protocol;
-            window.open(`${protocol}//roadmap.${currentDomain.replace('www.', '')}`, '_blank');
-          }}
+          onClick={() => window.location.href = '/roadmap'}
           className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-xl"
         >
           <Icon name="Map" size={16} className="mr-2" />
