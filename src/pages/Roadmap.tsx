@@ -4,16 +4,22 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+import GanttChart from '@/components/GanttChart';
+import InteractiveChart from '@/components/InteractiveChart';
+import RevolutionarySolutions from '@/components/RevolutionarySolutions';
 
 const Roadmap = () => {
   const [activePhase, setActivePhase] = useState<string>('phase1');
 
   const phases = [
-    { id: 'phase1', label: 'Месяц 1', icon: 'Calendar' },
-    { id: 'phase2', label: 'Месяц 2', icon: 'Calendar' },
-    { id: 'phase3', label: 'Месяцы 3-4', icon: 'Calendar' },
-    { id: 'phase4', label: 'Месяцы 5-6', icon: 'Calendar' },
-    { id: 'phase5', label: 'Месяцы 7-14', icon: 'Calendar' },
+    { id: 'phase1', label: 'Месяц 1 (Январь)', icon: 'Calendar' },
+    { id: 'phase2', label: 'Месяц 2 (Февраль)', icon: 'Calendar' },
+    { id: 'phase3', label: 'Месяцы 3-4 (Март-Апрель)', icon: 'Calendar' },
+    { id: 'revolutionary', label: 'Революционные решения', icon: 'Lightbulb' },
+    { id: 'phase4', label: 'Месяцы 5-6 (Май-Июнь)', icon: 'Calendar' },
+    { id: 'phase5', label: 'Месяцы 7-8 (Июль-Август)', icon: 'Calendar' },
+    { id: 'gantt', label: 'План-график', icon: 'BarChart3' },
+    { id: 'charts', label: 'Диаграммы', icon: 'PieChart' },
   ];
 
   const scrollToPhase = (id: string) => {
@@ -23,6 +29,21 @@ const Roadmap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50">
+      {/* Ссылка на главную страницу */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          onClick={() => {
+            const currentDomain = window.location.hostname.replace('roadmap.', '');
+            const protocol = window.location.protocol;
+            window.open(`${protocol}//${currentDomain}`, '_blank');
+          }}
+          className="bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white shadow-xl"
+        >
+          <Icon name="Users" size={16} className="mr-2" />
+          Подбор команды
+        </Button>
+      </div>
+
       {/* Sidebar Navigation */}
       <nav className="fixed left-0 top-0 h-screen w-20 bg-white/80 backdrop-blur-lg border-r border-blue-200 shadow-lg z-50 hidden lg:flex flex-col items-center py-8 gap-6 mt-20">
         <div className="mb-4">
@@ -79,12 +100,16 @@ const Roadmap = () => {
 
             <div className="flex flex-wrap justify-center gap-3 mb-6">
               <div className="bg-white rounded-xl px-5 py-3 shadow-lg border border-blue-200">
-                <div className="text-2xl font-bold text-blue-700">14</div>
+                <div className="text-2xl font-bold text-blue-700">8</div>
                 <div className="text-xs text-gray-600">месяцев</div>
               </div>
               <div className="bg-white rounded-xl px-5 py-3 shadow-lg border border-blue-200">
                 <div className="text-2xl font-bold text-blue-700">18.4</div>
                 <div className="text-xs text-gray-600">млн рублей</div>
+              </div>
+              <div className="bg-white rounded-xl px-5 py-3 shadow-lg border border-blue-200">
+                <div className="text-sm font-bold text-blue-700">Август 2025</div>
+                <div className="text-xs text-gray-600">завершение</div>
               </div>
             </div>
           </div>
@@ -654,10 +679,10 @@ const Roadmap = () => {
         <section id="phase5" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-emerald-100 text-emerald-700 border-emerald-300 px-4 py-2">
-              Месяцы 7-14
+              Месяцы 7-8 (Июль-Август)
             </Badge>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-gray-900">
-              Получение разрешений на строительство
+              Завершение проектирования и сдача документации
             </h2>
 
             <Card className="p-4 sm:p-8 mb-8 bg-white shadow-xl border-l-4 border-l-blue-500">
@@ -848,12 +873,12 @@ const Roadmap = () => {
 
               <div className="flex gap-4 items-start">
                 <div className="flex-shrink-0 w-32 sm:w-40">
-                  <Badge className="bg-emerald-500 text-white">Месяцы 7-14</Badge>
+                  <Badge className="bg-emerald-500 text-white">Месяцы 7-8</Badge>
                 </div>
                 <div className="flex-1">
                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <h4 className="font-bold mb-2">Разрешительная документация</h4>
-                    <p className="text-sm opacity-90">Переустройство инженерных сетей, получение разрешения на строительство</p>
+                    <h4 className="font-bold mb-2">Финализация и сдача</h4>
+                    <p className="text-sm opacity-90">Подготовка полного комплекта документации, сдача заказчику (Август 2025)</p>
                   </div>
                 </div>
               </div>

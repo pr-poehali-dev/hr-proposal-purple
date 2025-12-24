@@ -25,6 +25,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-lavender-50">
+      {/* Ссылка на дорожную карту */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          onClick={() => {
+            const currentDomain = window.location.hostname;
+            const protocol = window.location.protocol;
+            window.open(`${protocol}//roadmap.${currentDomain.replace('www.', '')}`, '_blank');
+          }}
+          className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-xl"
+        >
+          <Icon name="Map" size={16} className="mr-2" />
+          Дорожная карта проекта
+        </Button>
+      </div>
+
       <nav className="fixed left-0 top-0 h-screen w-20 bg-white/80 backdrop-blur-lg border-r border-purple-200 shadow-lg z-50 hidden lg:flex flex-col items-center py-8 gap-6">
         <div className="mb-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-violet-500 flex items-center justify-center text-white font-bold text-xl">
