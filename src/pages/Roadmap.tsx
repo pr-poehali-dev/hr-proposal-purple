@@ -29,16 +29,7 @@ const Roadmap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50">
-      {/* Ссылка на главную страницу */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          onClick={() => window.location.href = '/'}
-          className="bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white shadow-xl"
-        >
-          <Icon name="Users" size={16} className="mr-2" />
-          Подбор команды
-        </Button>
-      </div>
+
 
       {/* Sidebar Navigation */}
       <nav className="fixed left-0 top-0 h-screen w-20 bg-white/80 backdrop-blur-lg border-r border-blue-200 shadow-lg z-50 hidden lg:flex flex-col items-center py-8 gap-6 mt-20">
@@ -79,18 +70,26 @@ const Roadmap = () => {
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-700 via-cyan-600 to-blue-700 bg-clip-text text-transparent leading-tight">
               Дорожная карта
-              <br />проектного института
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-4 font-light px-2">
               Канал №294, Гидроузлы №7 и №8
             </p>
 
-            <div className="inline-flex items-center gap-3 bg-white rounded-full px-4 sm:px-8 py-3 sm:py-4 shadow-xl border border-blue-200 mb-8">
-              <Icon name="Building2" size={20} className="text-blue-600 flex-shrink-0" />
-              <div className="text-left">
-                <div className="text-xs sm:text-sm text-gray-600">Заказчик</div>
-                <div className="text-sm sm:text-lg font-bold text-gray-900">ООО «ЮГДОРПРОЕКТ»</div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+              <div className="inline-flex items-center gap-3 bg-white rounded-full px-4 sm:px-8 py-3 sm:py-4 shadow-xl border border-blue-200">
+                <Icon name="FileText" size={20} className="text-blue-600 flex-shrink-0" />
+                <div className="text-left">
+                  <div className="text-xs sm:text-sm text-gray-600">Подготовлено</div>
+                  <div className="text-sm sm:text-lg font-bold text-gray-900">ООО «СППИ»</div>
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-3 bg-white rounded-full px-4 sm:px-8 py-3 sm:py-4 shadow-xl border border-blue-200">
+                <Icon name="Building2" size={20} className="text-blue-600 flex-shrink-0" />
+                <div className="text-left">
+                  <div className="text-xs sm:text-sm text-gray-600">Заказчик</div>
+                  <div className="text-sm sm:text-lg font-bold text-gray-900">ООО «ЮГДОРПРОЕКТ»</div>
+                </div>
               </div>
             </div>
 
