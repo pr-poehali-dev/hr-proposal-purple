@@ -22,23 +22,61 @@ const Interactive3DChart = () => {
   const [tilt, setTilt] = useState(20);
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [viewMode, setViewMode] = useState<'list' | 'table'>('list');
 
   const tasks: Task[] = [
-    { id: '1.1', name: 'Допуск от ФГБУ', startWeek: 0, duration: 2, category: 'approval', responsible: 'ГИП', description: 'Получение письма-разрешения на мобилизацию и проведение работ от ФГБУ "Канал им. Москвы"' },
-    { id: '1.2', name: 'Геодезические изыскания', startWeek: 1, duration: 3, category: 'survey', responsible: 'Геодезия', dependencies: '1.1', description: 'Топографическая съемка М1:500, создание цифровой модели рельефа' },
-    { id: '1.3', name: 'Геологические изыскания', startWeek: 1, duration: 4, category: 'survey', responsible: 'Геология', dependencies: '1.1', description: 'Бурение скважин, фильтрационные расчеты, анализ грунтов' },
-    { id: '2.1', name: 'Водолазное обследование', startWeek: 1, duration: 3, category: 'survey', responsible: 'Водолазы', dependencies: '1.1', description: 'Подводная диагностика камер шлюзов №7 и №8, дефектные ведомости' },
-    { id: '2.2', name: 'Экологические изыскания', startWeek: 4, duration: 4, category: 'survey', responsible: 'Эколог', dependencies: '1.2', description: 'ИЭИ для раздела ПМООС, оценка воздействия на окружающую среду' },
-    { id: '3.1', name: 'Запрос ТУ Россети', startWeek: 0, duration: 8, category: 'approval', responsible: 'Электроснабжение', description: 'Заявка и получение технических условий на переустройство ЛЭП' },
-    { id: '3.2', name: 'Запрос ТУ Газпром', startWeek: 0, duration: 9, category: 'approval', responsible: 'Газоснабжение', description: 'Заявка и получение ТУ на переустройство газопровода' },
-    { id: '4.1', name: 'Конструкции ГТС', startWeek: 8, duration: 6, category: 'design', responsible: 'Конструкторы', dependencies: '1.3, 2.1', description: 'Раздел 4: конструктивные решения камер шлюзов, затворов, водосливов' },
-    { id: '4.2', name: 'Инженерные системы', startWeek: 10, duration: 5, category: 'design', responsible: 'ИТП', dependencies: '3.1, 3.2', description: 'Раздел 5: водоснабжение, канализация, электроснабжение, связь' },
-    { id: '4.3', name: 'ПМООС', startWeek: 9, duration: 5, category: 'design', responsible: 'Эколог', dependencies: '2.2', description: 'Раздел 8: перечень мероприятий по охране окружающей среды' },
-    { id: '5.1', name: 'Подача в ГГЭ', startWeek: 19, duration: 1, category: 'expertise', responsible: 'ГИП', dependencies: '4.1, 4.2, 4.3', description: 'Подача полного комплекта ПД в ФАУ "Главгосэкспертиза России"' },
-    { id: '5.2', name: 'Рассмотрение ГГЭ', startWeek: 19, duration: 9, category: 'expertise', responsible: 'ГГЭ', dependencies: '5.1', description: 'Государственная экспертиза проектной документации (45 раб.дней)' },
-    { id: '6.1', name: 'Устранение замечаний', startWeek: 27, duration: 3, category: 'expertise', responsible: 'Все отделы', dependencies: '5.2', description: 'Доработка ПД по замечаниям экспертизы' },
-    { id: '6.2', name: 'Положительное заключение', startWeek: 30, duration: 2, category: 'expertise', responsible: 'ГГЭ', dependencies: '6.1', description: 'Получение положительного заключения государственной экспертизы' },
-    { id: '7.1', name: 'Разрешение на строительство', startWeek: 31, duration: 1, category: 'permit', responsible: 'Госорган', dependencies: '6.2', description: 'Получение разрешения на строительство от уполномоченного органа' },
+    // Недели 1-4
+    { id: '1.1', name: 'Получение допуска от ФГБУ "Канал им. Москвы"', startWeek: 0, duration: 2, category: 'approval', responsible: 'ГИП / ЮГДОРПРОЕКТ', dependencies: '-', description: 'Получение письма-разрешения на мобилизацию и проведение работ' },
+    { id: '1.2', name: 'Анализ исходных данных', startWeek: 0, duration: 2, category: 'survey', responsible: 'ГИП', dependencies: '-', description: 'Изучение архивной документации, выявление недостающих данных' },
+    { id: '1.3', name: 'Инженерно-геодезические изыскания', startWeek: 1, duration: 3, category: 'survey', responsible: 'Геодезия', dependencies: '1.1', description: 'Топографическая съемка М1:500, цифровая модель рельефа' },
+    { id: '1.4', name: 'Инженерно-геологические изыскания', startWeek: 1, duration: 4, category: 'survey', responsible: 'Геология', dependencies: '1.1', description: 'Бурение скважин, фильтрационные расчеты, анализ грунтов' },
+    { id: '1.5', name: 'Водолазное обследование ГУ-7', startWeek: 1, duration: 2, category: 'survey', responsible: 'Водолазы', dependencies: '1.1', description: 'Подводная диагностика камеры шлюза №7, дефектные ведомости' },
+    { id: '1.6', name: 'Водолазное обследование ГУ-8', startWeek: 2, duration: 2, category: 'survey', responsible: 'Водолазы', dependencies: '1.1', description: 'Подводная диагностика камеры шлюза №8, дефектные ведомости' },
+    { id: '1.7', name: 'Запрос ТУ в ПАО "Россети" (ЛЭП)', startWeek: 0, duration: 2, category: 'approval', responsible: 'Электроснабжение', dependencies: '1.2', description: 'Заявка на выдачу технических условий на переустройство ЛЭП' },
+    { id: '1.8', name: 'Запрос ТУ в ПАО "Газпром"', startWeek: 0, duration: 2, category: 'approval', responsible: 'Газоснабжение', dependencies: '1.2', description: 'Заявка на выдачу ТУ на переустройство газопровода' },
+    { id: '1.9', name: 'Запрос ТУ на временное подключение', startWeek: 1, duration: 2, category: 'approval', responsible: 'Электроснабжение', dependencies: '1.2', description: 'Заявка на временное присоединение стройплощадки' },
+    
+    // Недели 5-8
+    { id: '2.1', name: 'Инженерно-гидрометеорологические изыскания', startWeek: 4, duration: 3, category: 'survey', responsible: 'Гидрометеорология', dependencies: '1.3, 1.4', description: 'Режимы уровней, ледовая нагрузка' },
+    { id: '2.2', name: 'Инженерно-экологические изыскания', startWeek: 4, duration: 4, category: 'survey', responsible: 'Экология', dependencies: '1.3, 1.4', description: 'ИЭИ для раздела ПМООС, оценка воздействия на окружающую среду' },
+    { id: '2.3', name: 'Дефектоскопия бетона', startWeek: 4, duration: 2, category: 'survey', responsible: 'Лаборатория НК', dependencies: '1.5, 1.6', description: 'Протоколы испытаний прочности бетона' },
+    { id: '2.4', name: 'Обследование металлоконструкций', startWeek: 5, duration: 2, category: 'survey', responsible: 'Лаборатория НК', dependencies: '1.5, 1.6', description: 'Дефектные ведомости затворов, расчет остаточного ресурса' },
+    { id: '2.5', name: 'Получение ТУ от Россети', startWeek: 5, duration: 3, category: 'approval', responsible: 'Россети / СППИ', dependencies: '1.7', description: 'Технические условия на переустройство ЛЭП' },
+    { id: '2.6', name: 'Получение ТУ от Газпром', startWeek: 6, duration: 3, category: 'approval', responsible: 'Газпром / СППИ', dependencies: '1.8', description: 'Технические условия на переустройство газопровода' },
+    
+    // Недели 9-16: Проектирование
+    { id: '3.1', name: 'Раздел 1. Пояснительная записка', startWeek: 8, duration: 4, category: 'design', responsible: 'ГИП', dependencies: 'Изыскания', description: 'Полный текст ПЗ с обоснованием технических решений' },
+    { id: '3.2', name: 'Раздел 2. Генплан', startWeek: 8, duration: 4, category: 'design', responsible: 'Архитектура', dependencies: '1.3, 2.2', description: 'Схема планировочной организации земельного участка' },
+    { id: '3.3', name: 'Раздел 3. Архитектурные решения', startWeek: 9, duration: 4, category: 'design', responsible: 'Архитектура', dependencies: '3.2', description: 'АР зданий и сооружений' },
+    { id: '3.4', name: 'Раздел 4. Конструкции ГТС', startWeek: 8, duration: 6, category: 'design', responsible: 'Конструкторы ГТС', dependencies: '1.4, 1.5, 2.3', description: 'Конструктивные решения камер шлюзов, затворов, водосливов' },
+    { id: '3.5', name: 'Раздел 5. Инженерные системы', startWeek: 10, duration: 5, category: 'design', responsible: 'ИТП', dependencies: '2.5, 2.6, 3.4', description: 'Водоснабжение, канализация, электроснабжение, связь' },
+    { id: '3.6', name: 'Раздел 6. ПОС', startWeek: 12, duration: 4, category: 'design', responsible: 'Технолог', dependencies: '3.4, 3.5', description: 'Проект организации строительства, стройгенплан, график работ' },
+    { id: '3.7', name: 'Раздел 8. ПМООС', startWeek: 9, duration: 5, category: 'design', responsible: 'Эколог', dependencies: '2.2, 3.2', description: 'Перечень мероприятий по охране окружающей среды' },
+    { id: '3.8', name: 'Раздел 10. Пожарная безопасность', startWeek: 11, duration: 4, category: 'design', responsible: 'Отдел ПБ', dependencies: '3.3, 3.5', description: 'Мероприятия по обеспечению пожарной безопасности' },
+    { id: '3.9', name: 'Раздел 11. Смета', startWeek: 13, duration: 3, category: 'design', responsible: 'Сметчик', dependencies: '3.4, 3.5, 3.6', description: 'Сводный сметный расчет стоимости строительства' },
+    { id: '3.10', name: 'Раздел 11.1. Безопасность ГТС', startWeek: 11, duration: 5, category: 'design', responsible: 'Отдел ГТС', dependencies: '3.4, 2.1', description: 'Декларация безопасности ГТС (ФЗ-117)' },
+    { id: '3.11', name: 'Проект переустройства ЛЭП', startWeek: 9, duration: 5, category: 'design', responsible: 'Электроснабжение', dependencies: '2.5, 3.2', description: 'Проект переустройства ЛЭП по ТУ Россети' },
+    { id: '3.12', name: 'Проект переустройства газопровода', startWeek: 10, duration: 5, category: 'design', responsible: 'Газоснабжение', dependencies: '2.6, 3.2', description: 'Проект переустройства газопровода по ТУ Газпром' },
+    { id: '3.13', name: 'Согласование проекта ЛЭП с Россети', startWeek: 13, duration: 3, category: 'approval', responsible: 'Россети / СППИ', dependencies: '3.11', description: 'Согласование проекта переустройства ЛЭП' },
+    { id: '3.14', name: 'Согласование проекта газопровода с Газпром', startWeek: 14, duration: 3, category: 'approval', responsible: 'Газпром / СППИ', dependencies: '3.12', description: 'Согласование проекта переустройства газопровода' },
+    
+    // Недели 17-24: Экспертиза
+    { id: '4.1', name: 'Предварительное согласование с ФГБУ', startWeek: 16, duration: 2, category: 'approval', responsible: 'ГИП / ЮГДОРПРОЕКТ', dependencies: '3.1-3.10', description: 'Письмо-согласование балансодержателя ГТС' },
+    { id: '4.2', name: 'Согласование с Росводресурсами', startWeek: 16, duration: 3, category: 'approval', responsible: 'Эколог / ЮГДОРПРОЕКТ', dependencies: '3.7', description: 'Согласование раздела ПМООС' },
+    { id: '4.3', name: 'Согласование с Ростехнадзором', startWeek: 16, duration: 4, category: 'approval', responsible: 'Отдел ГТС', dependencies: '3.10', description: 'Заключение Ростехнадзора на декларацию безопасности ГТС' },
+    { id: '4.4', name: 'Подготовка документов для ГГЭ', startWeek: 18, duration: 2, category: 'expertise', responsible: 'ГИП', dependencies: '4.1, 4.2, 4.3', description: 'Полный комплект ПД + все согласования' },
+    { id: '4.5', name: 'Подача в ГГЭ', startWeek: 19, duration: 1, category: 'expertise', responsible: 'ГИП / ЮГДОРПРОЕКТ', dependencies: '4.4', description: 'Регистрация заявления в ФАУ ГГЭ России' },
+    { id: '4.6', name: 'Рассмотрение в ГГЭ (45 раб.дней)', startWeek: 19, duration: 9, category: 'expertise', responsible: 'ФАУ ГГЭ России', dependencies: '4.5', description: 'Государственная экспертиза проектной документации' },
+    
+    // Недели 25-32: Доработка и разрешения
+    { id: '5.1', name: 'Получение замечаний ГГЭ', startWeek: 27, duration: 1, category: 'expertise', responsible: 'ГИП', dependencies: '4.6', description: 'Список замечаний экспертизы (итерация 1)' },
+    { id: '5.2', name: 'Устранение замечаний', startWeek: 27, duration: 3, category: 'expertise', responsible: 'Все отделы', dependencies: '5.1', description: 'Доработка ПД по замечаниям экспертизы' },
+    { id: '5.3', name: 'Повторная подача в ГГЭ', startWeek: 29, duration: 1, category: 'expertise', responsible: 'ГИП / ЮГДОРПРОЕКТ', dependencies: '5.2', description: 'Регистрация доработанной ПД в ГГЭ' },
+    { id: '5.4', name: 'Получение положительного заключения ГГЭ', startWeek: 30, duration: 2, category: 'expertise', responsible: 'ФАУ ГГЭ России', dependencies: '5.3', description: 'Положительное заключение государственной экспертизы' },
+    { id: '5.5', name: 'Разрешение на переустройство ЛЭП', startWeek: 17, duration: 11, category: 'permit', responsible: 'Россети', dependencies: '3.13', description: 'Разрешение на реконструкцию ЛЭП от ПАО Россети' },
+    { id: '5.6', name: 'Разрешение на переустройство газопровода', startWeek: 21, duration: 9, category: 'permit', responsible: 'Газпром', dependencies: '3.14', description: 'Разрешение на реконструкцию газопровода от ПАО Газпром' },
+    { id: '5.7', name: 'Подача заявления на РнС', startWeek: 31, duration: 1, category: 'permit', responsible: 'ЮГДОРПРОЕКТ / ФКУ', dependencies: '5.4, 5.5, 5.6', description: 'Заявление на разрешение на строительство' },
+    { id: '5.8', name: '✅ Получение разрешения на строительство', startWeek: 31, duration: 1, category: 'permit', responsible: 'Уполномоченный орган', dependencies: '5.7', description: 'Разрешение на строительство — ЗАВЕРШЕНИЕ ПРОЕКТА' },
   ];
 
   const categoryColors = {
@@ -195,7 +233,6 @@ const Interactive3DChart = () => {
                 {/* Base circle (3D depth) */}
                 {segments.map((segment, idx) => (
                   <g key={`base-${idx}`}>
-                    {/* Bottom layer for 3D effect */}
                     <path
                       d={createPieSegment(segment.startAngle, segment.endAngle, 180)}
                       fill={segment.color}
@@ -221,7 +258,6 @@ const Interactive3DChart = () => {
                       onMouseLeave={() => setSelectedSegment(null)}
                       className="cursor-pointer transition-transform duration-300"
                     >
-                      {/* Main segment */}
                       <path
                         d={createPieSegment(segment.startAngle, segment.endAngle, 180)}
                         fill={`url(#gradient-${idx})`}
@@ -233,7 +269,6 @@ const Interactive3DChart = () => {
                         }}
                       />
 
-                      {/* Percentage label */}
                       <text
                         x={Math.cos(((midAngle - 90) * Math.PI) / 180) * 120}
                         y={Math.sin(((midAngle - 90) * Math.PI) / 180) * 120}
@@ -253,7 +288,6 @@ const Interactive3DChart = () => {
                   );
                 })}
 
-                {/* Center info */}
                 <circle cx="0" cy="0" r="60" fill="rgba(255,255,255,0.1)" />
                 <text
                   x="0"
@@ -280,7 +314,7 @@ const Interactive3DChart = () => {
               </svg>
             </div>
 
-            {/* Legend and Stats */}
+            {/* Legend */}
             <div className="space-y-4">
               {segments.map((segment, idx) => {
                 const isActive = selectedSegment === idx;
@@ -356,139 +390,207 @@ const Interactive3DChart = () => {
         </div>
       </Card>
 
-      {/* Interactive Gantt with Side Panel */}
+      {/* Interactive Gantt */}
       <Card className="p-6 bg-white shadow-xl">
-        <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center gap-3">
-          <Icon name="CalendarRange" size={28} className="text-blue-600" />
-          Интерактивный план-график работ
-        </h3>
-
-        <div className="grid lg:grid-cols-[1fr,350px] gap-6">
-          {/* Gantt Chart */}
-          <div className="space-y-3">
-            {tasks.map((task) => {
-              const colors = categoryColors[task.category];
-              const isSelected = selectedTask?.id === task.id;
-              
-              return (
-                <div
-                  key={task.id}
-                  onClick={() => setSelectedTask(task)}
-                  className={`relative h-16 bg-gray-50 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
-                    isSelected ? 'border-blue-500 shadow-xl' : 'border-gray-200'
-                  }`}
-                >
-                  <div className="flex items-center h-full px-4 gap-4">
-                    <Badge 
-                      className="shrink-0 text-white"
-                      style={{ background: colors.color }}
-                    >
-                      {task.id}
-                    </Badge>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-gray-900 truncate">{task.name}</div>
-                      <div className="text-xs text-gray-600">
-                        W{task.startWeek + 1}-W{task.startWeek + task.duration} • {task.duration} недель
-                      </div>
-                    </div>
-                    <Icon name="ChevronRight" size={20} className={`text-gray-400 ${isSelected ? 'text-blue-600' : ''}`} />
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-lg overflow-hidden">
-                    <div
-                      className="h-full transition-all duration-1000"
-                      style={{ 
-                        width: `${(task.startWeek / 32) * 100}%`,
-                        background: colors.color 
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+            <Icon name="CalendarRange" size={28} className="text-blue-600" />
+            Интерактивный план-график работ ({totalTasks} работ)
+          </h3>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setViewMode('list')}
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+            >
+              <Icon name="List" size={16} className="mr-2" />
+              Список
+            </Button>
+            <Button
+              onClick={() => setViewMode('table')}
+              variant={viewMode === 'table' ? 'default' : 'outline'}
+              size="sm"
+            >
+              <Icon name="Table" size={16} className="mr-2" />
+              Таблица
+            </Button>
           </div>
+        </div>
 
-          {/* Side Panel */}
-          <div className="lg:sticky lg:top-4 h-fit">
-            {selectedTask ? (
-              <Card 
-                className="p-6 text-white shadow-2xl"
-                style={{ background: `linear-gradient(135deg, ${categoryColors[selectedTask.category].color} 0%, ${categoryColors[selectedTask.category].lightColor} 100%)` }}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <Badge className="bg-white/20 text-white border-white/30">
-                    {selectedTask.id}
-                  </Badge>
-                  <button
-                    onClick={() => setSelectedTask(null)}
-                    className="text-white hover:bg-white/20 p-1 rounded"
+        {viewMode === 'list' ? (
+          <div className="grid lg:grid-cols-[1fr,350px] gap-6">
+            {/* List View */}
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+              {tasks.map((task) => {
+                const colors = categoryColors[task.category];
+                const isSelected = selectedTask?.id === task.id;
+                
+                return (
+                  <div
+                    key={task.id}
+                    onClick={() => setSelectedTask(task)}
+                    className={`relative h-16 bg-gray-50 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
+                      isSelected ? 'border-blue-500 shadow-xl' : 'border-gray-200'
+                    }`}
                   >
-                    <Icon name="X" size={20} />
-                  </button>
-                </div>
-
-                <h4 className="text-2xl font-bold mb-4">{selectedTask.name}</h4>
-
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-white/70 text-sm mb-1">Описание</div>
-                    <p className="text-white">{selectedTask.description}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-white/70 text-sm mb-1">Начало</div>
-                      <div className="font-bold">Неделя {selectedTask.startWeek + 1}</div>
+                    <div className="flex items-center h-full px-4 gap-4">
+                      <Badge 
+                        className="shrink-0 text-white"
+                        style={{ background: colors.color }}
+                      >
+                        {task.id}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 truncate">{task.name}</div>
+                        <div className="text-xs text-gray-600">
+                          W{task.startWeek + 1}-W{task.startWeek + task.duration} • {task.duration} нед • {task.responsible}
+                        </div>
+                      </div>
+                      <Icon name="ChevronRight" size={20} className={`text-gray-400 ${isSelected ? 'text-blue-600' : ''}`} />
                     </div>
-                    <div>
-                      <div className="text-white/70 text-sm mb-1">Длительность</div>
-                      <div className="font-bold">{selectedTask.duration} нед</div>
-                    </div>
-                  </div>
 
-                  <div>
-                    <div className="text-white/70 text-sm mb-1">Категория</div>
-                    <div className="flex items-center gap-2">
-                      <Icon name={categoryColors[selectedTask.category].icon} size={18} />
-                      <span className="font-bold">{categoryColors[selectedTask.category].name}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-white/70 text-sm mb-1">Ответственный</div>
-                    <div className="font-bold">{selectedTask.responsible}</div>
-                  </div>
-
-                  {selectedTask.dependencies && (
-                    <div>
-                      <div className="text-white/70 text-sm mb-1">Зависимости</div>
-                      <div className="font-bold">{selectedTask.dependencies}</div>
-                    </div>
-                  )}
-
-                  <div className="pt-4 border-t border-white/20">
-                    <div className="text-white/70 text-sm mb-2">Прогресс</div>
-                    <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-lg overflow-hidden">
                       <div
-                        className="h-full bg-white transition-all duration-1000"
-                        style={{ width: `${(selectedTask.startWeek / 32) * 100}%` }}
+                        className="h-full transition-all duration-1000"
+                        style={{ 
+                          width: `${(task.startWeek / 32) * 100}%`,
+                          background: colors.color 
+                        }}
                       />
                     </div>
                   </div>
-                </div>
-              </Card>
-            ) : (
-              <Card className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 border-2 border-dashed border-gray-300">
-                <div className="text-center text-gray-500">
-                  <Icon name="MousePointerClick" size={48} className="mx-auto mb-4 text-gray-400" />
-                  <p className="font-semibold mb-2">Выберите задачу</p>
-                  <p className="text-sm">Нажмите на любую работу в графике, чтобы увидеть детальную информацию</p>
-                </div>
-              </Card>
-            )}
+                );
+              })}
+            </div>
+
+            {/* Side Panel */}
+            <div className="lg:sticky lg:top-4 h-fit">
+              {selectedTask ? (
+                <Card 
+                  className="p-6 text-white shadow-2xl"
+                  style={{ background: `linear-gradient(135deg, ${categoryColors[selectedTask.category].color} 0%, ${categoryColors[selectedTask.category].lightColor} 100%)` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <Badge className="bg-white/20 text-white border-white/30">
+                      {selectedTask.id}
+                    </Badge>
+                    <button
+                      onClick={() => setSelectedTask(null)}
+                      className="text-white hover:bg-white/20 p-1 rounded"
+                    >
+                      <Icon name="X" size={20} />
+                    </button>
+                  </div>
+
+                  <h4 className="text-2xl font-bold mb-4">{selectedTask.name}</h4>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div className="text-white/70 text-sm mb-1">Описание</div>
+                      <p className="text-white">{selectedTask.description}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="text-white/70 text-sm mb-1">Начало</div>
+                        <div className="font-bold">Неделя {selectedTask.startWeek + 1}</div>
+                      </div>
+                      <div>
+                        <div className="text-white/70 text-sm mb-1">Длительность</div>
+                        <div className="font-bold">{selectedTask.duration} нед</div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-white/70 text-sm mb-1">Категория</div>
+                      <div className="flex items-center gap-2">
+                        <Icon name={categoryColors[selectedTask.category].icon} size={18} />
+                        <span className="font-bold">{categoryColors[selectedTask.category].name}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-white/70 text-sm mb-1">Ответственный</div>
+                      <div className="font-bold">{selectedTask.responsible}</div>
+                    </div>
+
+                    {selectedTask.dependencies && selectedTask.dependencies !== '-' && (
+                      <div>
+                        <div className="text-white/70 text-sm mb-1">Зависимости</div>
+                        <div className="font-bold">{selectedTask.dependencies}</div>
+                      </div>
+                    )}
+
+                    <div className="pt-4 border-t border-white/20">
+                      <div className="text-white/70 text-sm mb-2">Прогресс выполнения</div>
+                      <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-white transition-all duration-1000"
+                          style={{ width: `${(selectedTask.startWeek / 32) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ) : (
+                <Card className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 border-2 border-dashed border-gray-300">
+                  <div className="text-center text-gray-500">
+                    <Icon name="MousePointerClick" size={48} className="mx-auto mb-4 text-gray-400" />
+                    <p className="font-semibold mb-2">Выберите задачу</p>
+                    <p className="text-sm">Нажмите на любую работу для детальной информации</p>
+                  </div>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Table View */
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-blue-100 text-left">
+                  <th className="p-3 font-bold border-r border-blue-200 sticky left-0 bg-blue-100">№</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Наименование работы</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Начало</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Окончание</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Длительность</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Категория</th>
+                  <th className="p-3 font-bold border-r border-blue-200">Ответственный</th>
+                  <th className="p-3 font-bold">Зависимости</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task, idx) => {
+                  const colors = categoryColors[task.category];
+                  return (
+                    <tr
+                      key={task.id}
+                      className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors border-b border-gray-200`}
+                    >
+                      <td className="p-3 border-r border-gray-200 sticky left-0" style={{ background: idx % 2 === 0 ? '#f9fafb' : 'white' }}>
+                        <Badge style={{ background: colors.color }} className="text-white">
+                          {task.id}
+                        </Badge>
+                      </td>
+                      <td className="p-3 font-semibold border-r border-gray-200">{task.name}</td>
+                      <td className="p-3 border-r border-gray-200">W{task.startWeek + 1}</td>
+                      <td className="p-3 border-r border-gray-200">W{task.startWeek + task.duration}</td>
+                      <td className="p-3 border-r border-gray-200">{task.duration} нед</td>
+                      <td className="p-3 border-r border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <Icon name={colors.icon} size={16} style={{ color: colors.color }} />
+                          <span className="text-xs">{colors.name}</span>
+                        </div>
+                      </td>
+                      <td className="p-3 text-xs border-r border-gray-200">{task.responsible}</td>
+                      <td className="p-3 text-xs">{task.dependencies || '-'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );
