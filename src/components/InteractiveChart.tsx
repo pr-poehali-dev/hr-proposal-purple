@@ -8,9 +8,9 @@ const InteractiveChart = () => {
 
   const categoryData = [
     { name: 'Изыскания', count: 9, color: 'bg-blue-500', percentage: 21 },
-    { name: 'Согласования', count: 9, color: 'bg-purple-500', percentage: 21 },
-    { name: 'Проектирование', count: 16, color: 'bg-indigo-500', percentage: 37 },
-    { name: 'Экспертиза', count: 5, color: 'bg-violet-500', percentage: 12 },
+    { name: 'Согласования', count: 11, color: 'bg-purple-500', percentage: 26 },
+    { name: 'Проектирование', count: 12, color: 'bg-indigo-500', percentage: 28 },
+    { name: 'Экспертиза', count: 7, color: 'bg-violet-500', percentage: 16 },
     { name: 'Разрешения', count: 4, color: 'bg-emerald-500', percentage: 9 },
   ];
 
