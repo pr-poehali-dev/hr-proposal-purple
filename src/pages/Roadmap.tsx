@@ -7,6 +7,7 @@ import Icon from '@/components/ui/icon';
 import GanttChart from '@/components/GanttChart';
 import InteractiveChart from '@/components/InteractiveChart';
 import RevolutionarySolutions from '@/components/RevolutionarySolutions';
+import Interactive3DChart from '@/components/Interactive3DChart';
 
 const Roadmap = () => {
   const [activePhase, setActivePhase] = useState<string>('overview');
@@ -21,6 +22,7 @@ const Roadmap = () => {
   const phases = [
     { id: 'overview', label: 'Обзор', icon: 'Eye' },
     { id: 'stakeholders', label: 'Стейкхолдеры', icon: 'Users' },
+    { id: 'interactive', label: 'Интерактив', icon: 'Box' },
     { id: 'phase1', label: 'Недели 1-4', icon: 'Calendar' },
     { id: 'phase2', label: 'Недели 5-8', icon: 'Calendar' },
     { id: 'phase3', label: 'Недели 9-16', icon: 'Calendar' },
@@ -317,6 +319,19 @@ const Roadmap = () => {
                 <p className="text-sm text-gray-700">Балансодержатель газопроводов, выдача ТУ на переустройство сетей</p>
               </Card>
             </div>
+          </div>
+        </section>
+
+        {/* Interactive Section */}
+        <section id="interactive" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
+          <div className="max-w-7xl mx-auto">
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
+              Интерактивная визуализация
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-gray-900">
+              Управление проектом в 3D
+            </h2>
+            <Interactive3DChart />
           </div>
         </section>
 
