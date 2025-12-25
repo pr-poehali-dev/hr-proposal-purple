@@ -99,6 +99,8 @@ const Interactive3DChart = () => {
     setRotation(rotation + deltaX * 0.5);
     setTilt(Math.max(-30, Math.min(60, tilt - deltaY * 0.3)));
     setStartPos({ x: e.clientX, y: e.clientY });
+    // Отключаем hover во время вращения
+    setSelectedSegment(null);
   };
 
   const handleMouseUp = () => {
@@ -191,7 +193,7 @@ const Interactive3DChart = () => {
           <div className="grid lg:grid-cols-[1fr,400px] gap-8 items-center">
             {/* 3D Pie Chart */}
             <div
-              className="relative h-[500px] cursor-move select-none"
+              className={`relative h-[500px] select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
               style={{ perspective: '1500px' }}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -261,11 +263,12 @@ const Interactive3DChart = () => {
                         fill={`url(#gradient-${idx})`}
                         filter={`url(#shadow-${idx})`}
                         className="cursor-pointer transition-all duration-300"
-                        onMouseEnter={() => setSelectedSegment(idx)}
-                        onMouseLeave={() => setSelectedSegment(null)}
+                        onMouseEnter={() => !isDragging && setSelectedSegment(idx)}
+                        onMouseLeave={() => !isDragging && setSelectedSegment(null)}
                         style={{
-                          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                          transform: isHovered && !isDragging ? 'scale(1.05)' : 'scale(1)',
                           transformOrigin: 'center',
+                          pointerEvents: isDragging ? 'none' : 'auto',
                         }}
                       />
 
@@ -317,17 +320,18 @@ const Interactive3DChart = () => {
             {/* Legend */}
             <div className="space-y-4">
               {segments.map((segment, idx) => {
-                const isActive = selectedSegment === idx;
+                const isActive = selectedSegment === idx && !isDragging;
                 return (
                   <div
                     key={idx}
-                    onMouseEnter={() => setSelectedSegment(idx)}
-                    onMouseLeave={() => setSelectedSegment(null)}
+                    onMouseEnter={() => !isDragging && setSelectedSegment(idx)}
+                    onMouseLeave={() => !isDragging && setSelectedSegment(null)}
                     className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
                       isActive
                         ? 'bg-white/20 border-white/50 scale-105 shadow-2xl'
                         : 'bg-white/5 border-white/20 hover:bg-white/10'
                     }`}
+                    style={{ pointerEvents: isDragging ? 'none' : 'auto' }}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
