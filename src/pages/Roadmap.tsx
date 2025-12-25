@@ -8,6 +8,7 @@ import GanttChart from '@/components/GanttChart';
 import InteractiveChart from '@/components/InteractiveChart';
 
 import Interactive3DChart from '@/components/Interactive3DChart';
+import { exportRoadmapToWord } from '@/utils/exportToWord';
 
 const Roadmap = () => {
   const [activePhase, setActivePhase] = useState<string>('overview');
@@ -142,6 +143,63 @@ const Roadmap = () => {
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:-rotate-2">
                 <div className="text-xl font-bold text-blue-700">Август 2026</div>
                 <div className="text-sm text-gray-600">завершение</div>
+              </div>
+            </div>
+
+            {/* Progress Control Notice */}
+            <div className="mt-8 max-w-2xl mx-auto">
+              <Card className="p-4 sm:p-6 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-200 shadow-lg">
+                <div className="flex items-start gap-3">
+                  <Icon name="Info" size={24} className="text-cyan-600 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Контроль прогресса</h3>
+                    <p className="text-xs sm:text-sm text-gray-700">
+                      Карта будет актуализироваться по мере выполнения работ, вы сможете отслеживать статус в реальном времени.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Agreement Stages */}
+            <div className="mt-8 max-w-4xl mx-auto">
+              <h3 className="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-900">Этапы согласования</h3>
+              <div className="grid sm:grid-cols-3 gap-4">
+                {/* Stage 1 - Completed */}
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 shadow-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                      <Icon name="Check" size={18} className="text-white" />
+                    </div>
+                    <Badge className="bg-green-100 text-green-700 border-green-300 text-xs">Завершено</Badge>
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">1. Согласование КП</h4>
+                  <p className="text-xs text-gray-600">Коммерческое предложение согласовано</p>
+                </Card>
+
+                {/* Stage 2 - In Progress (Current, Glowing) */}
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-400 shadow-2xl animate-pulse">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
+                      <Icon name="Clock" size={18} className="text-white" />
+                    </div>
+                    <Badge className="bg-blue-100 text-blue-700 border-blue-300 text-xs">Текущий</Badge>
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">2. Согласование дорожной карты</h4>
+                  <p className="text-xs text-gray-600">В процессе согласования</p>
+                </Card>
+
+                {/* Stage 3 - Pending */}
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-slate-50 border-2 border-gray-300 shadow-lg opacity-75">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center flex-shrink-0">
+                      <Icon name="CircleDashed" size={18} className="text-white" />
+                    </div>
+                    <Badge className="bg-gray-100 text-gray-600 border-gray-300 text-xs">Ожидается</Badge>
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">3. Согласование договора</h4>
+                  <p className="text-xs text-gray-600">После утверждения карты</p>
+                </Card>
               </div>
             </div>
           </div>
@@ -785,13 +843,21 @@ const Roadmap = () => {
                       <td className="p-3">Полный комплект ПД + все согласования</td>
                       <td className="p-3">4.1, 4.2, 4.3</td>
                     </tr>
+                    <tr className="hover:bg-amber-50/70 transition-colors border-l-4 border-amber-400">
+                      <td className="p-3 font-semibold">4.4A</td>
+                      <td className="p-3 font-semibold">Привлечение и работа с организацией, аккредитованной на проведение НТС для ГТС I класса</td>
+                      <td className="p-3">W19-W20</td>
+                      <td className="p-3">ГИП / Организация НТС</td>
+                      <td className="p-3">Заключение по НТС для ГТС I класса</td>
+                      <td className="p-3">4.4 (параллельно)</td>
+                    </tr>
                     <tr className="hover:bg-emerald-50/50 transition-colors">
                       <td className="p-3 font-semibold">4.5</td>
                       <td className="p-3">Подача документов в ГГЭ</td>
                       <td className="p-3">W20</td>
                       <td className="p-3">ГИП / ЮГДОРПРОЕКТ</td>
                       <td className="p-3">Регистрация заявления в ГГЭ</td>
-                      <td className="p-3">4.4</td>
+                      <td className="p-3">4.4, 4.4A</td>
                     </tr>
                     <tr className="hover:bg-emerald-50/50 transition-colors">
                       <td className="p-3 font-semibold">4.6</td>
@@ -991,21 +1057,33 @@ const Roadmap = () => {
         {/* Footer */}
         <footer className="py-12 px-4 bg-gradient-to-br from-blue-900 to-purple-900 text-white">
           <div className="max-w-6xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-4">ООО «Санкт-Петербургский проектный институт»</h3>
-            <p className="text-blue-200 mb-6">
+            {/* Download Button */}
+            <div className="mb-8">
+              <Button
+                onClick={exportRoadmapToWord}
+                size="lg"
+                className="bg-white text-blue-900 hover:bg-blue-50 font-semibold shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 px-8 py-6 text-base sm:text-lg"
+              >
+                <Icon name="Download" size={24} className="mr-3" />
+                Скачать дорожную карту (Word)
+              </Button>
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-bold mb-4">ООО «Санкт-Петербургский проектный институт»</h3>
+            <p className="text-sm sm:text-base text-blue-200 mb-6">
               Экспертиза в проектировании гидротехнических сооружений с 2005 года
             </p>
-            <div className="flex justify-center gap-6 flex-wrap text-sm">
+            <div className="flex justify-center gap-4 sm:gap-6 flex-wrap text-xs sm:text-sm">
               <div className="flex items-center gap-2">
-                <Icon name="Award" size={20} className="text-blue-300" />
+                <Icon name="Award" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
                 <span>Лицензии СРО</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Users" size={20} className="text-blue-300" />
+                <Icon name="Users" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
                 <span>120+ специалистов</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Trophy" size={20} className="text-blue-300" />
+                <Icon name="Trophy" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
                 <span>500+ реализованных проектов</span>
               </div>
             </div>
