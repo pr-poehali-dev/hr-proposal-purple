@@ -12,7 +12,6 @@ import Interactive3DChart from '@/components/Interactive3DChart';
 const Roadmap = () => {
   const [activePhase, setActivePhase] = useState<string>('overview');
   const [scrollY, setScrollY] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -35,7 +34,6 @@ const Roadmap = () => {
 
   const scrollToPhase = (id: string) => {
     setActivePhase(id);
-    setMobileMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -44,7 +42,7 @@ const Roadmap = () => {
       {/* Animated 3D Background Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-blue-400/20 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"
           style={{
             transform: `translate3d(${scrollY * 0.1}px, ${scrollY * 0.15}px, 0) scale(${1 + scrollY * 0.0001})`,
             top: '10%',
@@ -52,7 +50,7 @@ const Roadmap = () => {
           }}
         />
         <div 
-          className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-cyan-400/20 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl"
           style={{
             transform: `translate3d(${-scrollY * 0.12}px, ${scrollY * 0.1}px, 0) scale(${1 + scrollY * 0.0001})`,
             top: '40%',
@@ -60,7 +58,7 @@ const Roadmap = () => {
           }}
         />
         <div 
-          className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-purple-400/20 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-purple-400/20 rounded-full blur-3xl"
           style={{
             transform: `translate3d(${scrollY * 0.08}px, ${-scrollY * 0.1}px, 0) scale(${1 + scrollY * 0.0001})`,
             bottom: '20%',
@@ -68,34 +66,6 @@ const Roadmap = () => {
           }}
         />
       </div>
-
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-24 right-4 z-50 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg border border-blue-200"
-      >
-        <Icon name={mobileMenuOpen ? 'X' : 'Menu'} size={24} className="text-blue-600" />
-      </button>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed top-40 right-4 z-50 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-blue-200 p-4 max-h-[70vh] overflow-y-auto">
-          {phases.map((phase) => (
-            <button
-              key={phase.id}
-              onClick={() => scrollToPhase(phase.id)}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all mb-2 ${
-                activePhase === phase.id
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-600 hover:bg-blue-50'
-              }`}
-            >
-              <Icon name={phase.icon} size={20} />
-              <span className="font-medium">{phase.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Sidebar Navigation */}
       <nav className="fixed left-0 top-0 h-screen w-20 bg-white/80 backdrop-blur-lg border-r border-blue-200 shadow-lg z-50 hidden lg:flex flex-col items-center py-8 gap-6 mt-20">
@@ -130,734 +100,888 @@ const Roadmap = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-cyan-600/10 to-purple-600/10" />
           
           <div className="relative z-10 max-w-6xl text-center transform hover:scale-105 transition-transform duration-500">
-            <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-700 border-blue-300 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm animate-pulse">
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2 text-sm animate-pulse">
               Проектная документация ПП РФ №87
             </Badge>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-700 via-cyan-600 to-purple-700 bg-clip-text text-transparent leading-tight px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-700 via-cyan-600 to-purple-700 bg-clip-text text-transparent leading-tight">
               Дорожная карта проекта
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-4 sm:mb-6 font-light px-2">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-6 font-light px-2">
               Реконструкция Гидроузлов №7 и №8<br />Канала имени Москвы (канал №294)<br />
-              <span className="text-sm sm:text-base text-gray-600">Январь — Август 2026</span>
+              <span className="text-base text-gray-600">Январь — Август 2026</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-3 sm:px-6 sm:py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-105">
-                <Icon name="FileText" size={20} className="text-blue-600 sm:w-6 sm:h-6" />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+              <div className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-105">
+                <Icon name="FileText" size={24} className="text-blue-600" />
                 <div className="text-left">
                   <div className="text-xs text-gray-600">Исполнитель</div>
-                  <div className="text-base sm:text-lg font-bold text-gray-900">ООО «СППИ»</div>
+                  <div className="text-lg font-bold text-gray-900">ООО «СППИ»</div>
                 </div>
               </div>
-              <div className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-3 sm:px-6 sm:py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-105">
-                <Icon name="Building2" size={20} className="text-blue-600 sm:w-6 sm:h-6" />
+              <div className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-105">
+                <Icon name="Building2" size={24} className="text-blue-600" />
                 <div className="text-left">
                   <div className="text-xs text-gray-600">Заказчик</div>
-                  <div className="text-base sm:text-lg font-bold text-gray-900">ООО «ЮГДОРПРОЕКТ»</div>
+                  <div className="text-lg font-bold text-gray-900">ООО «ЮГДОРПРОЕКТ»</div>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-4 py-3 sm:px-6 sm:py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:-rotate-2">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-700">32</div>
-                <div className="text-xs sm:text-sm text-gray-600">недели</div>
+            <div className="flex flex-wrap justify-center gap-4 mb-6">
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:-rotate-2">
+                <div className="text-3xl font-bold text-blue-700">32</div>
+                <div className="text-sm text-gray-600">недели</div>
               </div>
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-4 py-3 sm:px-6 sm:py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:rotate-2">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-700">8</div>
-                <div className="text-xs sm:text-sm text-gray-600">месяцев</div>
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:rotate-2">
+                <div className="text-3xl font-bold text-blue-700">8</div>
+                <div className="text-sm text-gray-600">месяцев</div>
               </div>
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-4 py-3 sm:px-6 sm:py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:-rotate-2">
-                <div className="text-base sm:text-xl font-bold text-blue-700">Август 2026</div>
-                <div className="text-xs sm:text-sm text-gray-600">завершение</div>
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-blue-200 hover:shadow-blue-300/50 transition-all transform hover:scale-110 hover:-rotate-2">
+                <div className="text-xl font-bold text-blue-700">Август 2026</div>
+                <div className="text-sm text-gray-600">завершение</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Overview Section */}
-        <section id="overview" className="min-h-screen py-12 sm:py-20 px-4">
+        <section id="overview" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-700 border-blue-300 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
               Обзор проекта
             </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-gray-900">
               Стратегическое управление проектом ГТС
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-white to-blue-50 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 hover:-rotate-1">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-blue-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Target" size={20} className="text-blue-600 sm:w-6 sm:h-6" />
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6 bg-gradient-to-br from-white to-blue-50 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 hover:-rotate-1">
+                <h3 className="text-xl font-bold mb-4 text-blue-900 flex items-center gap-3">
+                  <Icon name="Target" size={24} className="text-blue-600" />
                   Цель проекта
                 </h3>
-                <p className="text-sm sm:text-base text-gray-700">
-                  Разработка полного комплекта проектной документации для реконструкции гидроузлов №7 и №8 канала №294 с получением положительного заключения государственной экспертизы
+                <p className="text-gray-700">
+                  Разработка полного комплекта проектной документации для реконструкции гидроузлов №7 и №8 канала №294 с получением положительного заключения государственной экспертизы и разрешения на строительство.
                 </p>
               </Card>
 
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-white to-cyan-50 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 hover:rotate-1">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-cyan-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Rocket" size={20} className="text-cyan-600 sm:w-6 sm:h-6" />
-                  Уникальность проекта
+              <Card className="p-6 bg-gradient-to-br from-white to-cyan-50 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 hover:rotate-1">
+                <h3 className="text-xl font-bold mb-4 text-cyan-900 flex items-center gap-3">
+                  <Icon name="Shield" size={24} className="text-cyan-600" />
+                  Нормативная база
                 </h3>
-                <p className="text-sm sm:text-base text-gray-700">
-                  Первая комплексная реконструкция крупных гидротехнических сооружений Канала им. Москвы за последние 40 лет с применением современных технологий BIM и цифрового моделирования
-                </p>
+                <ul className="space-y-2 text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <Icon name="CheckCircle2" size={16} className="text-cyan-600 mt-1 flex-shrink-0" />
+                    <span>ПП РФ №87 (состав проектной документации)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="CheckCircle2" size={16} className="text-cyan-600 mt-1 flex-shrink-0" />
+                    <span>СП 47.13330 (гидротехнические сооружения)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="CheckCircle2" size={16} className="text-cyan-600 mt-1 flex-shrink-0" />
+                    <span>ФЗ №117-ФЗ (безопасность ГТС)</span>
+                  </li>
+                </ul>
               </Card>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              <Card className="p-3 sm:p-4 text-center bg-gradient-to-br from-blue-50 to-white shadow-lg hover:shadow-2xl transition-all transform hover:scale-110 hover:-rotate-3">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-700 mb-1">2</div>
-                <div className="text-xs sm:text-sm text-gray-600">гидроузла</div>
-              </Card>
-
-              <Card className="p-3 sm:p-4 text-center bg-gradient-to-br from-cyan-50 to-white shadow-lg hover:shadow-2xl transition-all transform hover:scale-110 hover:rotate-3">
-                <div className="text-2xl sm:text-3xl font-bold text-cyan-700 mb-1">15</div>
-                <div className="text-xs sm:text-sm text-gray-600">разделов ПД</div>
-              </Card>
-
-              <Card className="p-3 sm:p-4 text-center bg-gradient-to-br from-purple-50 to-white shadow-lg hover:shadow-2xl transition-all transform hover:scale-110 hover:-rotate-3">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-700 mb-1">350+</div>
-                <div className="text-xs sm:text-sm text-gray-600">чертежей</div>
-              </Card>
-
-              <Card className="p-3 sm:p-4 text-center bg-gradient-to-br from-orange-50 to-white shadow-lg hover:shadow-2xl transition-all transform hover:scale-110 hover:rotate-3">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-700 mb-1">4 500+</div>
-                <div className="text-xs sm:text-sm text-gray-600">страниц</div>
-              </Card>
-            </div>
+            <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50 shadow-xl border-2 border-purple-200">
+              <h3 className="text-2xl font-bold mb-6 text-purple-900 flex items-center gap-3">
+                <Icon name="TrendingUp" size={28} className="text-purple-600" />
+                Ключевые особенности управления проектом
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="Zap" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Параллелизация процессов</h4>
+                  <p className="text-sm text-gray-700">Одновременное выполнение изысканий, получения ТУ и начало проектирования</p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="GitBranch" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Управление критическим путем</h4>
+                  <p className="text-sm text-gray-700">Фокус на разрешительные процедуры с длительными сроками согласования</p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="Timer" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Буферы на согласования</h4>
+                  <p className="text-sm text-gray-700">Резервное время на работу с замечаниями госорганов и монополистов</p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="Network" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Цепочка взаимодействия</h4>
+                  <p className="text-sm text-gray-700">СППИ → ЮГДОРПРОЕКТ → ФГБУ «Канал им. Москвы» → ФКУ «Ространсмодернизация»</p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="ShieldCheck" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Проактивное управление</h4>
+                  <p className="text-sm text-gray-700">Упреждающие действия для минимизации рисков и задержек</p>
+                </div>
+                <div className="bg-white/80 p-4 rounded-lg border border-purple-200 hover:shadow-lg transition-all transform hover:scale-105">
+                  <Icon name="CheckSquare" size={24} className="text-purple-600 mb-2" />
+                  <h4 className="font-bold text-gray-900 mb-2">Гарантия сроков</h4>
+                  <p className="text-sm text-gray-700">Завершение к августу 2026 с учетом всех согласований</p>
+                </div>
+              </div>
+            </Card>
           </div>
         </section>
 
         {/* Stakeholders Section */}
-        <section id="stakeholders" className="min-h-screen py-12 sm:py-20 px-4 bg-white/50 backdrop-blur-sm">
+        <section id="stakeholders" className="min-h-screen py-20 px-4 bg-gradient-to-br from-blue-50/50 to-purple-50/50">
           <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-purple-100 text-purple-700 border-purple-300 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+            <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-300 px-4 py-2">
               Стейкхолдеры
             </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-gray-900">
               Ключевые участники проекта
             </h2>
-            
-            <p className="text-base sm:text-lg text-gray-700 mb-6 sm:mb-8">
-              Проект объединяет ведущих экспертов в области гидротехники, проектирования и эксплуатации водных путей
-            </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-blue-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Briefcase" size={24} className="text-blue-600" />
-                  ООО «Санкт-Петербургский проектный институт»
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Роль и ответственность</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Разработка проектной документации</li>
-                      <li>Координация всех разделов проекта</li>
-                      <li>Техническое сопровождение экспертизы</li>
-                    </ul>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="p-6 bg-gradient-to-br from-white to-red-50 shadow-xl border-l-4 border-red-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <Icon name="Building" size={24} className="text-red-600" />
                   </div>
-                  
                   <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Ключевые ожидания</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Соблюдение сроков разработки</li>
-                      <li>Качество технических решений</li>
-                      <li>Прохождение экспертизы с первого раза</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Риски для стейкхолдера</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Репутационные риски при срыве сроков</li>
-                      <li>Финансовые потери при отрицательном заключении экспертизы</li>
-                    </ul>
+                    <h3 className="text-xl font-bold text-gray-900">Госзаказчик</h3>
+                    <p className="text-lg text-red-700 font-semibold">ФКУ «Ространсмодернизация»</p>
                   </div>
                 </div>
+                <p className="text-sm text-gray-700">Федеральный орган, финансирующий проект и контролирующий его выполнение</p>
               </Card>
 
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-cyan-50 to-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-cyan-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Building" size={24} className="text-cyan-600" />
-                  ООО «ЮГДОРПРОЕКТ»
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Роль и ответственность</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Заказчик проектной документации</li>
-                      <li>Финансирование работ</li>
-                      <li>Контроль исполнения контракта</li>
-                    </ul>
+              <Card className="p-6 bg-gradient-to-br from-white to-blue-50 shadow-xl border-l-4 border-blue-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Icon name="Building2" size={24} className="text-blue-600" />
                   </div>
-                  
                   <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Ключевые ожидания</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Получение полного комплекта ПД в срок</li>
-                      <li>Положительное заключение экспертизы</li>
-                      <li>Оптимальная стоимость строительства</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Риски для стейкхолдера</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Срыв сроков реализации федеральной программы</li>
-                      <li>Неосвоение бюджетных средств</li>
-                    </ul>
+                    <h3 className="text-xl font-bold text-gray-900">Заказчик</h3>
+                    <p className="text-lg text-blue-700 font-semibold">ООО «ЮГДОРПРОЕКТ»</p>
                   </div>
                 </div>
+                <p className="text-sm text-gray-700">Наш непосредственный заказчик, координирующий работу с госструктурами</p>
               </Card>
 
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-green-50 to-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-green-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Waves" size={24} className="text-green-600" />
-                  ФГБУ «Канал имени Москвы»
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Роль и ответственность</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Эксплуатирующая организация</li>
-                      <li>Предоставление исходных данных</li>
-                      <li>Техническое согласование решений</li>
-                    </ul>
+              <Card className="p-6 bg-gradient-to-br from-white to-purple-50 shadow-xl border-l-4 border-purple-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <Icon name="Briefcase" size={24} className="text-purple-600" />
                   </div>
-                  
                   <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Ключевые ожидания</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Минимизация простоев навигации</li>
-                      <li>Современные решения для эксплуатации</li>
-                      <li>Снижение затрат на обслуживание</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Риски для стейкхолдера</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Увеличение эксплуатационных расходов</li>
-                      <li>Сложность обслуживания новых систем</li>
-                    </ul>
+                    <h3 className="text-xl font-bold text-gray-900">Исполнитель</h3>
+                    <p className="text-lg text-purple-700 font-semibold">ООО «СППИ»</p>
                   </div>
                 </div>
+                <p className="text-sm text-gray-700">Санкт-Петербургский проектный институт — разработчик проектной документации</p>
               </Card>
 
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-orange-900 flex items-center gap-2 sm:gap-3">
-                  <Icon name="Shield" size={24} className="text-orange-600" />
-                  Государственная экспертиза
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Роль и ответственность</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Проверка соответствия нормам</li>
-                      <li>Оценка безопасности решений</li>
-                      <li>Выдача заключения экспертизы</li>
-                    </ul>
+              <Card className="p-6 bg-gradient-to-br from-white to-cyan-50 shadow-xl border-l-4 border-cyan-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center">
+                    <Icon name="Waves" size={24} className="text-cyan-600" />
                   </div>
-                  
                   <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Ключевые ожидания</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Полнота и качество документации</li>
-                      <li>Обоснованность технических решений</li>
-                      <li>Соответствие всем требованиям законодательства</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Риски для стейкхолдера</h4>
-                    <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
-                      <li>Репутационные риски при выявлении недостатков</li>
-                      <li>Давление по срокам со стороны заказчика</li>
-                    </ul>
+                    <h3 className="text-xl font-bold text-gray-900">Эксплуатант</h3>
+                    <p className="text-lg text-cyan-700 font-semibold">ФГБУ «Канал имени Москвы»</p>
                   </div>
                 </div>
+                <p className="text-sm text-gray-700">Балансодержатель ГТС, согласующий все проектные решения</p>
+              </Card>
+
+              <Card className="p-6 bg-gradient-to-br from-white to-emerald-50 shadow-xl border-l-4 border-emerald-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <Icon name="Zap" size={24} className="text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Ресурсники</h3>
+                    <p className="text-lg text-emerald-700 font-semibold">ПАО «Россети»</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-700">Балансодержатель электросетей, выдача ТУ на переустройство ЛЭП</p>
+              </Card>
+
+              <Card className="p-6 bg-gradient-to-br from-white to-orange-50 shadow-xl border-l-4 border-orange-500 hover:shadow-2xl transition-all transform hover:scale-105">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                    <Icon name="Flame" size={24} className="text-orange-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Ресурсники</h3>
+                    <p className="text-lg text-orange-700 font-semibold">ПАО «Газпром»</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-700">Балансодержатель газопроводов, выдача ТУ на переустройство сетей</p>
               </Card>
             </div>
           </div>
         </section>
 
-        {/* Interactive 3D Chart Section */}
-        <section id="interactive" className="min-h-screen py-12 sm:py-20 px-4">
+        {/* Interactive Section */}
+        <section id="interactive" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
           <div className="max-w-7xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              3D Визуализация
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
+              Интерактивная визуализация
             </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Интерактивная диаграмма проекта
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-gray-900">
+              Управление проектом в 3D
             </h2>
-            <Card className="p-0 overflow-hidden shadow-2xl">
-              <Interactive3DChart />
-            </Card>
+            <Interactive3DChart />
           </div>
         </section>
 
         {/* Phase 1: January */}
-        <section id="phase1" className="min-h-screen py-12 sm:py-20 px-4 bg-gradient-to-br from-blue-50 to-cyan-50">
+        <section id="phase1" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Фаза 1
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
+              Январь 2026 (Недели 1-4)
             </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Январь 2026: Подготовительный этап
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Мобилизация и инженерные изыскания
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-blue-900 flex items-center gap-2">
-                  <Icon name="ClipboardList" size={20} className="text-blue-600" />
-                  Организационные мероприятия
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Формирование проектной команды (120+ специалистов)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Разработка календарного плана-графика</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Получение исходно-разрешительной документации</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-blue-700">4</div>
-                  <div className="text-xs sm:text-sm text-gray-600">недели</div>
-                </div>
-              </Card>
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-blue-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-blue-900 flex items-center gap-3">
+                <Icon name="FileSearch" size={24} className="text-blue-600" />
+                Этап 1: Подготовительные работы и анализ
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-blue-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Мероприятие</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.1</td>
+                      <td className="p-3">Получение допуска от ФГБУ «Канал им. Москвы»</td>
+                      <td className="p-3">W1-W2</td>
+                      <td className="p-3">ГИП / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Письмо-разрешение на мобилизацию</td>
+                      <td className="p-3">-</td>
+                    </tr>
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.2</td>
+                      <td className="p-3">Анализ исходных данных и архивной документации</td>
+                      <td className="p-3">W1-W2</td>
+                      <td className="p-3">ГИП</td>
+                      <td className="p-3">Отчет по анализу, выявление недостающих данных</td>
+                      <td className="p-3">-</td>
+                    </tr>
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.3</td>
+                      <td className="p-3">Инженерно-геодезические изыскания</td>
+                      <td className="p-3">W2-W4</td>
+                      <td className="p-3">Геодезический отдел</td>
+                      <td className="p-3">Топографическая съемка М1:500, цифровая модель рельефа</td>
+                      <td className="p-3">1.1</td>
+                    </tr>
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.4</td>
+                      <td className="p-3">Инженерно-геологические и гидрогеотехнические изыскания</td>
+                      <td className="p-3">W2-W5</td>
+                      <td className="p-3">Геологический отдел</td>
+                      <td className="p-3">Отчет по ИГИ, фильтрационные расчеты</td>
+                      <td className="p-3">1.1</td>
+                    </tr>
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.5</td>
+                      <td className="p-3">Водолазное обследование ГУ-7</td>
+                      <td className="p-3">W2-W3</td>
+                      <td className="p-3">Подрядчик (водолазы)</td>
+                      <td className="p-3">Акт обследования, дефектные ведомости</td>
+                      <td className="p-3">1.1</td>
+                    </tr>
+                    <tr className="hover:bg-blue-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.6</td>
+                      <td className="p-3">Водолазное обследование ГУ-8</td>
+                      <td className="p-3">W3-W4</td>
+                      <td className="p-3">Подрядчик (водолазы)</td>
+                      <td className="p-3">Акт обследования, дефектные ведомости</td>
+                      <td className="p-3">1.1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
 
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-cyan-900 flex items-center gap-2">
-                  <Icon name="FileSearch" size={20} className="text-cyan-600" />
-                  Изыскательские работы
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Геодезические изыскания с БПЛА</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Инженерно-геологические исследования</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Обследование существующих конструкций</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-cyan-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-cyan-700">15+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">скважин</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 md:col-span-2">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-purple-900 flex items-center gap-2">
-                  <Icon name="Database" size={20} className="text-purple-600" />
-                  Сбор исходных данных
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                  <div className="p-3 bg-purple-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Архивные материалы</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Чертежи 1937 года</div>
-                  </div>
-                  <div className="p-3 bg-purple-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Эксплуатационные данные</div>
-                    <div className="text-xs sm:text-sm text-gray-600">20 лет наблюдений</div>
-                  </div>
-                  <div className="p-3 bg-purple-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Климатические данные</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Метеорология, гидрология</div>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-purple-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-purple-700">500+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">документов</div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Phase 2: February */}
-        <section id="phase2" className="min-h-screen py-12 sm:py-20 px-4 bg-gradient-to-br from-cyan-50 to-blue-50">
-          <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-cyan-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Фаза 2
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Февраль 2026: Концептуальное проектирование
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-cyan-900 flex items-center gap-2">
-                  <Icon name="Lightbulb" size={20} className="text-cyan-600" />
-                  Разработка вариантов
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Варианты реконструкции камер шлюзов</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Системы опорожнения и наполнения</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Гидравлическое моделирование</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-cyan-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-cyan-700">5</div>
-                  <div className="text-xs sm:text-sm text-gray-600">вариантов решений</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-blue-900 flex items-center gap-2">
-                  <Icon name="Calculator" size={20} className="text-blue-600" />
-                  Технико-экономическое обоснование
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Сравнительный анализ вариантов</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Предварительные сметы</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Выбор оптимального решения</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-blue-700">100+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">критериев оценки</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 md:col-span-2">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-purple-900 flex items-center gap-2">
-                  <Icon name="Users" size={20} className="text-purple-600" />
-                  Согласование с заказчиком
-                </h3>
-                <p className="text-sm sm:text-base text-gray-700 mb-3">
-                  Презентация концепции заказчику и эксплуатирующей организации для получения принципиального одобрения решений
-                </p>
-                <div className="mt-4 p-3 bg-purple-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-purple-700">3</div>
-                  <div className="text-xs sm:text-sm text-gray-600">раунда согласований</div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Phase 3: March-April */}
-        <section id="phase3" className="min-h-screen py-12 sm:py-20 px-4 bg-gradient-to-br from-purple-50 to-pink-50">
-          <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-purple-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Фаза 3
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Март-Апрель 2026: Основное проектирование
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-purple-900 flex items-center gap-2">
-                  <Icon name="Layers" size={20} className="text-purple-600" />
-                  Архитектурно-строительный раздел
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Детальные чертежи конструкций</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Армирование и спецификации</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Узлы и детали</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-purple-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-purple-700">150+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">чертежей АС</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-pink-900 flex items-center gap-2">
-                  <Icon name="Zap" size={20} className="text-pink-600" />
-                  Электротехнический раздел
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Системы электроснабжения</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Автоматизация управления затворами</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Освещение и сигнализация</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-pink-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-pink-700">80+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">схем ЭМ</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 md:col-span-2">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-blue-900 flex items-center gap-2">
-                  <Icon name="Droplet" size={20} className="text-blue-600" />
-                  Инженерные системы
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Водоснабжение</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Питьевое и техническое</div>
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Водоотведение</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Бытовое и производственное</div>
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Дренаж</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Понижение УГВ</div>
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Отопление и вентиляция</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Служебных помещений</div>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-blue-700">120+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">чертежей ВК</div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Phase 4: May-June */}
-        <section id="phase4" className="min-h-screen py-12 sm:py-20 px-4 bg-gradient-to-br from-orange-50 to-amber-50">
-          <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-orange-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Фаза 4
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Май-Июнь 2026: Завершение разработки ПД
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-orange-900 flex items-center gap-2">
-                  <Icon name="FileText" size={20} className="text-orange-600" />
-                  Пояснительная записка
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Обоснование принятых решений</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Расчёты и моделирование</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Нормативное обоснование</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-orange-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-orange-700">800+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">страниц текста</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-amber-900 flex items-center gap-2">
-                  <Icon name="DollarSign" size={20} className="text-amber-600" />
-                  Сметная документация
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Локальные сметные расчёты</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Объектные и сводные сметы</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Индексация цен</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-amber-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-amber-700">250+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">позиций смет</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 md:col-span-2">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-red-900 flex items-center gap-2">
-                  <Icon name="Shield" size={20} className="text-red-600" />
-                  Специальные разделы
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="p-3 bg-red-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Охрана окружающей среды</div>
-                    <div className="text-xs sm:text-sm text-gray-600">ООС, ПМООС</div>
-                  </div>
-                  <div className="p-3 bg-red-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Пожарная безопасность</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Раздел ПБ</div>
-                  </div>
-                  <div className="p-3 bg-red-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">ИТМ ГО и ЧС</div>
-                    <div className="text-xs sm:text-sm text-gray-600">Гражданская оборона</div>
-                  </div>
-                  <div className="p-3 bg-red-50 rounded-lg">
-                    <div className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Организация строительства</div>
-                    <div className="text-xs sm:text-sm text-gray-600">ПОС, календарный план</div>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-red-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-red-700">15</div>
-                  <div className="text-xs sm:text-sm text-gray-600">разделов ПД</div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Phase 5: July-August */}
-        <section id="phase5" className="min-h-screen py-12 sm:py-20 px-4 bg-gradient-to-br from-green-50 to-emerald-50">
-          <div className="max-w-6xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-green-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Фаза 5
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Июль-Август 2026: Экспертиза и утверждение
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-green-900 flex items-center gap-2">
-                  <Icon name="CheckCircle2" size={20} className="text-green-600" />
-                  Внутренняя проверка
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Нормоконтроль всех разделов</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Проверка комплектности</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Устранение замечаний</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-green-700">3</div>
-                  <div className="text-xs sm:text-sm text-gray-600">уровня контроля</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-emerald-900 flex items-center gap-2">
-                  <Icon name="Send" size={20} className="text-emerald-600" />
-                  Подача на экспертизу
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Формирование комплекта документов</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Загрузка в ЕГРЗ</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="Check" size={16} className="text-green-600 mt-1 flex-shrink-0" />
-                    <span>Ответы на вопросы экспертов</span>
-                  </li>
-                </ul>
-                <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-emerald-700">45</div>
-                  <div className="text-xs sm:text-sm text-gray-600">дней экспертизы</div>
-                </div>
-              </Card>
-
-              <Card className="p-4 sm:p-6 bg-white shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 md:col-span-2">
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-teal-900 flex items-center gap-2">
-                  <Icon name="Award" size={20} className="text-teal-600" />
-                  Положительное заключение
-                </h3>
-                <p className="text-sm sm:text-base text-gray-700 mb-3">
-                  Получение положительного заключения государственной экспертизы — финальный этап разработки проектной документации. После этого документация готова для начала строительно-монтажных работ.
-                </p>
-                <div className="mt-4 p-3 bg-teal-50 rounded-lg">
-                  <div className="text-2xl sm:text-3xl font-bold text-teal-700">100%</div>
-                  <div className="text-xs sm:text-sm text-gray-600">готовность к реализации</div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Gantt Chart Section */}
-        <section id="gantt" className="min-h-screen py-12 sm:py-20 px-4 bg-white/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-700 border-blue-300 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
-              Календарный план
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
-              Временной график проекта
-            </h2>
-            <p className="text-base sm:text-lg text-gray-700 mb-6 sm:mb-8">
-              Интерактивная диаграмма Гантта для управления сроками выполнения разделов проектной документации
-            </p>
-            <Card className="p-0 overflow-x-auto shadow-2xl">
-              <GanttChart />
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-white to-cyan-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-cyan-900 flex items-center gap-3">
+                <Icon name="FileCheck" size={24} className="text-cyan-600" />
+                Этап 2: Запрос технических условий (параллельно с изысканиями)
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-cyan-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Мероприятие</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-cyan-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.7</td>
+                      <td className="p-3">Запрос ТУ в ПАО «Россети» (ЛЭП)</td>
+                      <td className="p-3">W1-W2</td>
+                      <td className="p-3">Отдел электроснабжения</td>
+                      <td className="p-3">Заявка на выдачу ТУ</td>
+                      <td className="p-3">1.2</td>
+                    </tr>
+                    <tr className="hover:bg-cyan-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.8</td>
+                      <td className="p-3">Запрос ТУ в ПАО «Газпром» (газопровод)</td>
+                      <td className="p-3">W1-W2</td>
+                      <td className="p-3">Отдел газоснабжения</td>
+                      <td className="p-3">Заявка на выдачу ТУ</td>
+                      <td className="p-3">1.2</td>
+                    </tr>
+                    <tr className="hover:bg-cyan-50/50 transition-colors">
+                      <td className="p-3 font-semibold">1.9</td>
+                      <td className="p-3">Запрос ТУ на временное подключение стройплощадки</td>
+                      <td className="p-3">W2-W3</td>
+                      <td className="p-3">Отдел электроснабжения</td>
+                      <td className="p-3">Заявка на временное присоединение</td>
+                      <td className="p-3">1.2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </Card>
           </div>
         </section>
 
-        {/* Charts Section */}
-        <section id="charts" className="min-h-screen py-12 sm:py-20 px-4">
+        {/* Phase 2: February */}
+        <section id="phase2" className="min-h-screen py-20 px-4 bg-gradient-to-br from-purple-50/50 to-blue-50/50">
+          <div className="max-w-6xl mx-auto">
+            <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-300 px-4 py-2">
+              Февраль 2026 (Недели 5-8)
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Специальные обследования и согласования
+            </h2>
+
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-purple-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-purple-900 flex items-center gap-3">
+                <Icon name="Search" size={24} className="text-purple-600" />
+                Этап 3: Инструментальный контроль и экология
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-purple-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Мероприятие</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.1</td>
+                      <td className="p-3">Инженерно-гидрометеорологические изыскания</td>
+                      <td className="p-3">W5-W7</td>
+                      <td className="p-3">Гидрометеорологи</td>
+                      <td className="p-3">Отчет: режимы уровней, ледовая нагрузка</td>
+                      <td className="p-3">1.3, 1.4</td>
+                    </tr>
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.2</td>
+                      <td className="p-3">Инженерно-экологические изыскания (для ПМООС)</td>
+                      <td className="p-3">W5-W8</td>
+                      <td className="p-3">Экологический отдел</td>
+                      <td className="p-3">Отчет по ИЭИ, ОВОС</td>
+                      <td className="p-3">1.3, 1.4</td>
+                    </tr>
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.3</td>
+                      <td className="p-3">Дефектоскопия бетонных конструкций</td>
+                      <td className="p-3">W5-W6</td>
+                      <td className="p-3">Лаборатория НК</td>
+                      <td className="p-3">Протоколы испытаний прочности бетона</td>
+                      <td className="p-3">1.5, 1.6</td>
+                    </tr>
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.4</td>
+                      <td className="p-3">Обследование металлоконструкций затворов</td>
+                      <td className="p-3">W6-W7</td>
+                      <td className="p-3">Лаборатория НК</td>
+                      <td className="p-3">Дефектные ведомости, расчет остаточного ресурса</td>
+                      <td className="p-3">1.5, 1.6</td>
+                    </tr>
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.5</td>
+                      <td className="p-3">Получение ТУ от ПАО «Россети» (ответ)</td>
+                      <td className="p-3">W6-W8</td>
+                      <td className="p-3">Россети / СППИ</td>
+                      <td className="p-3">Технические условия на переустройство ЛЭП</td>
+                      <td className="p-3">1.7</td>
+                    </tr>
+                    <tr className="hover:bg-purple-50/50 transition-colors">
+                      <td className="p-3 font-semibold">2.6</td>
+                      <td className="p-3">Получение ТУ от ПАО «Газпром» (ответ)</td>
+                      <td className="p-3">W7-W9</td>
+                      <td className="p-3">Газпром / СППИ</td>
+                      <td className="p-3">Технические условия на переустройство газопровода</td>
+                      <td className="p-3">1.8</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Phase 3: March-April */}
+        <section id="phase3" className="min-h-screen py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <Badge className="mb-6 bg-indigo-100 text-indigo-700 border-indigo-300 px-4 py-2">
+              Март-Апрель 2026 (Недели 9-16)
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Разработка проектной документации
+            </h2>
+
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-indigo-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-indigo-900 flex items-center gap-3">
+                <Icon name="FileText" size={24} className="text-indigo-600" />
+                Этап 4: Проектирование по ПП РФ №87
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-indigo-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Раздел ПД</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.1</td>
+                      <td className="p-3">Раздел 1. Пояснительная записка</td>
+                      <td className="p-3">W9-W12</td>
+                      <td className="p-3">ГИП</td>
+                      <td className="p-3">Полный текст ПЗ с обоснованием решений</td>
+                      <td className="p-3">Все изыскания</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.2</td>
+                      <td className="p-3">Раздел 2. Схема планировочной организации земельного участка</td>
+                      <td className="p-3">W9-W12</td>
+                      <td className="p-3">Архитектурный отдел</td>
+                      <td className="p-3">Генплан, вертикальная планировка</td>
+                      <td className="p-3">1.3, 2.2</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.3</td>
+                      <td className="p-3">Раздел 3. Архитектурные решения</td>
+                      <td className="p-3">W10-W13</td>
+                      <td className="p-3">Архитектурный отдел</td>
+                      <td className="p-3">АР зданий и сооружений</td>
+                      <td className="p-3">3.2</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.4</td>
+                      <td className="p-3">Раздел 4. Конструктивные и объемно-планировочные решения ГТС</td>
+                      <td className="p-3">W9-W14</td>
+                      <td className="p-3">Конструкторский отдел ГТС</td>
+                      <td className="p-3">КР камер шлюзов, затворов, водосливных трактов</td>
+                      <td className="p-3">1.4, 1.5, 1.6, 2.3, 2.4</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.5</td>
+                      <td className="p-3">Раздел 5. Инженерно-технические системы (ИОС)</td>
+                      <td className="p-3">W11-W15</td>
+                      <td className="p-3">Отделы ИТП</td>
+                      <td className="p-3">Водоснабжение, канализация, электроснабжение, связь</td>
+                      <td className="p-3">2.5, 2.6, 3.4</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.6</td>
+                      <td className="p-3">Раздел 6. Проект организации строительства (ПОС)</td>
+                      <td className="p-3">W13-W16</td>
+                      <td className="p-3">Отдел технологии</td>
+                      <td className="p-3">ПОС, стройгенплан, график работ</td>
+                      <td className="p-3">3.4, 3.5</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.7</td>
+                      <td className="p-3">Раздел 8. Перечень мероприятий по охране окружающей среды (ПМООС)</td>
+                      <td className="p-3">W10-W14</td>
+                      <td className="p-3">Экологический отдел</td>
+                      <td className="p-3">ПМООС с программой экомониторинга</td>
+                      <td className="p-3">2.2, 3.2</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.8</td>
+                      <td className="p-3">Раздел 10. Мероприятия по обеспечению пожарной безопасности</td>
+                      <td className="p-3">W12-W15</td>
+                      <td className="p-3">Отдел ПБ</td>
+                      <td className="p-3">Раздел ПБ</td>
+                      <td className="p-3">3.3, 3.5</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.9</td>
+                      <td className="p-3">Раздел 11. Смета на строительство</td>
+                      <td className="p-3">W14-W16</td>
+                      <td className="p-3">Сметный отдел</td>
+                      <td className="p-3">Сводный сметный расчет</td>
+                      <td className="p-3">3.4, 3.5, 3.6</td>
+                    </tr>
+                    <tr className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.10</td>
+                      <td className="p-3">Раздел 11.1. Обоснование безопасности ГТС (ФЗ-117)</td>
+                      <td className="p-3">W12-W16</td>
+                      <td className="p-3">Отдел ГТС + эксперт</td>
+                      <td className="p-3">Декларация безопасности ГТС</td>
+                      <td className="p-3">3.4, 2.1</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-white to-violet-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-violet-900 flex items-center gap-3">
+                <Icon name="Shield" size={24} className="text-violet-600" />
+                Этап 5: Проекты переустройства инженерных сетей
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-violet-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Мероприятие</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-violet-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.11</td>
+                      <td className="p-3">Проект переустройства ЛЭП (по ТУ Россети)</td>
+                      <td className="p-3">W10-W14</td>
+                      <td className="p-3">Отдел электроснабжения</td>
+                      <td className="p-3">Проект переустройства ЛЭП</td>
+                      <td className="p-3">2.5, 3.2</td>
+                    </tr>
+                    <tr className="hover:bg-violet-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.12</td>
+                      <td className="p-3">Проект переустройства газопровода (по ТУ Газпром)</td>
+                      <td className="p-3">W11-W15</td>
+                      <td className="p-3">Отдел газоснабжения</td>
+                      <td className="p-3">Проект переустройства газопровода</td>
+                      <td className="p-3">2.6, 3.2</td>
+                    </tr>
+                    <tr className="hover:bg-violet-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.13</td>
+                      <td className="p-3">Согласование проекта переустройства с ПАО «Россети»</td>
+                      <td className="p-3">W14-W16</td>
+                      <td className="p-3">Россети / СППИ</td>
+                      <td className="p-3">Согласованный проект ЛЭП</td>
+                      <td className="p-3">3.11</td>
+                    </tr>
+                    <tr className="hover:bg-violet-50/50 transition-colors">
+                      <td className="p-3 font-semibold">3.14</td>
+                      <td className="p-3">Согласование проекта переустройства с ПАО «Газпром»</td>
+                      <td className="p-3">W15-W17</td>
+                      <td className="p-3">Газпром / СППИ</td>
+                      <td className="p-3">Согласованный проект газопровода</td>
+                      <td className="p-3">3.12</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Phase 4: May-June */}
+        <section id="phase4" className="min-h-screen py-20 px-4 bg-gradient-to-br from-emerald-50/50 to-blue-50/50">
+          <div className="max-w-6xl mx-auto">
+            <Badge className="mb-6 bg-emerald-100 text-emerald-700 border-emerald-300 px-4 py-2">
+              Май-Июнь 2026 (Недели 17-24)
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Государственная экспертиза
+            </h2>
+
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-emerald-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-emerald-900 flex items-center gap-3">
+                <Icon name="FileCheck" size={24} className="text-emerald-600" />
+                Этап 6: Прохождение экспертизы в ФАУ «Главгосэкспертиза России»
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-emerald-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Контрольная точка</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.1</td>
+                      <td className="p-3">Предварительное согласование с ФГБУ «Канал им. Москвы»</td>
+                      <td className="p-3">W17-W18</td>
+                      <td className="p-3">ГИП / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Письмо-согласование балансодержателя</td>
+                      <td className="p-3">3.1-3.10</td>
+                    </tr>
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.2</td>
+                      <td className="p-3">Предварительное согласование с Росводресурсами</td>
+                      <td className="p-3">W17-W19</td>
+                      <td className="p-3">Эколог / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Согласование раздела ПМООС</td>
+                      <td className="p-3">3.7</td>
+                    </tr>
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.3</td>
+                      <td className="p-3">Согласование декларации безопасности ГТС с Ростехнадзором</td>
+                      <td className="p-3">W17-W20</td>
+                      <td className="p-3">Отдел ГТС / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Заключение Ростехнадзора на декларацию</td>
+                      <td className="p-3">3.10</td>
+                    </tr>
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.4</td>
+                      <td className="p-3">Подготовка комплекта документов для экспертизы</td>
+                      <td className="p-3">W19-W20</td>
+                      <td className="p-3">ГИП</td>
+                      <td className="p-3">Полный комплект ПД + все согласования</td>
+                      <td className="p-3">4.1, 4.2, 4.3</td>
+                    </tr>
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.5</td>
+                      <td className="p-3">Подача документов в ГГЭ</td>
+                      <td className="p-3">W20</td>
+                      <td className="p-3">ГИП / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Регистрация заявления в ГГЭ</td>
+                      <td className="p-3">4.4</td>
+                    </tr>
+                    <tr className="hover:bg-emerald-50/50 transition-colors">
+                      <td className="p-3 font-semibold">4.6</td>
+                      <td className="p-3">Рассмотрение документации в ГГЭ (45 раб. дней)</td>
+                      <td className="p-3">W20-W29</td>
+                      <td className="p-3">ФАУ ГГЭ России</td>
+                      <td className="p-3">Замечания экспертизы (ожидаемо на W28)</td>
+                      <td className="p-3">4.5</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-gradient-to-br from-orange-50 to-red-50 border-l-4 border-orange-500 shadow-xl">
+              <div className="flex items-start gap-4">
+                <Icon name="AlertTriangle" size={32} className="text-orange-600 flex-shrink-0" />
+                <div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-2">Критический путь: Управление рисками экспертизы</h4>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Экспертиза ГГЭ — ключевой этап с наибольшими рисками задержек. Для гарантии сроков применяются:
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <Icon name="CheckCircle2" size={16} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                      <span>Предварительные согласования со всеми стейкхолдерами до подачи в ГГЭ</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon name="CheckCircle2" size={16} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                      <span>Внутренняя проверка качества ПД (Technical Review) перед подачей</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon name="CheckCircle2" size={16} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                      <span>Резерв 2 недели на устранение замечаний ГГЭ (итерация 1)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon name="CheckCircle2" size={16} className="text-orange-600 mt-0.5 flex-shrink-0" />
+                      <span>Оперативный штаб для ускоренного реагирования на замечания</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Phase 5: July-August */}
+        <section id="phase5" className="min-h-screen py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <Badge className="mb-6 bg-red-100 text-red-700 border-red-300 px-4 py-2">
+              Июль-Август 2026 (Недели 25-32)
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Завершение и получение разрешения на строительство
+            </h2>
+
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-red-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-red-900 flex items-center gap-3">
+                <Icon name="BadgeCheck" size={24} className="text-red-600" />
+                Этап 7: Устранение замечаний и финализация
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-red-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Контрольная точка</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-red-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.1</td>
+                      <td className="p-3">Получение замечаний ГГЭ (итерация 1)</td>
+                      <td className="p-3">W28</td>
+                      <td className="p-3">ГИП</td>
+                      <td className="p-3">Список замечаний экспертизы</td>
+                      <td className="p-3">4.6</td>
+                    </tr>
+                    <tr className="hover:bg-red-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.2</td>
+                      <td className="p-3">Устранение замечаний всеми отделами</td>
+                      <td className="p-3">W28-W30</td>
+                      <td className="p-3">Все профильные отделы</td>
+                      <td className="p-3">Исправленная ПД + пояснения</td>
+                      <td className="p-3">5.1</td>
+                    </tr>
+                    <tr className="hover:bg-red-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.3</td>
+                      <td className="p-3">Повторная подача в ГГЭ</td>
+                      <td className="p-3">W30</td>
+                      <td className="p-3">ГИП / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Регистрация доработанной ПД</td>
+                      <td className="p-3">5.2</td>
+                    </tr>
+                    <tr className="hover:bg-red-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.4</td>
+                      <td className="p-3">Получение положительного заключения ГГЭ</td>
+                      <td className="p-3">W31-W32</td>
+                      <td className="p-3">ФАУ ГГЭ России</td>
+                      <td className="p-3">Положительное заключение экспертизы</td>
+                      <td className="p-3">5.3</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-green-50 shadow-xl hover:shadow-2xl transition-all">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-green-900 flex items-center gap-3">
+                <Icon name="Trophy" size={24} className="text-green-600" />
+                Этап 8: Разрешительная документация
+              </h3>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-green-100">
+                    <tr>
+                      <th className="p-3 text-left font-bold">№</th>
+                      <th className="p-3 text-left font-bold">Мероприятие</th>
+                      <th className="p-3 text-left font-bold">Срок (недели)</th>
+                      <th className="p-3 text-left font-bold">Ответственный</th>
+                      <th className="p-3 text-left font-bold">Результат</th>
+                      <th className="p-3 text-left font-bold">Зависимости</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="hover:bg-green-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.5</td>
+                      <td className="p-3">Получение разрешения на переустройство ЛЭП от Россети</td>
+                      <td className="p-3">W18-W28</td>
+                      <td className="p-3">Россети / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Разрешение на реконструкцию ЛЭП</td>
+                      <td className="p-3">3.13</td>
+                    </tr>
+                    <tr className="hover:bg-green-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.6</td>
+                      <td className="p-3">Получение разрешения на переустройство газопровода от Газпром</td>
+                      <td className="p-3">W22-W30</td>
+                      <td className="p-3">Газпром / ЮГДОРПРОЕКТ</td>
+                      <td className="p-3">Разрешение на реконструкцию газопровода</td>
+                      <td className="p-3">3.14</td>
+                    </tr>
+                    <tr className="hover:bg-green-50/50 transition-colors">
+                      <td className="p-3 font-semibold">5.7</td>
+                      <td className="p-3">Подача заявления на разрешение строительства</td>
+                      <td className="p-3">W32</td>
+                      <td className="p-3">ЮГДОРПРОЕКТ / ФКУ Ространсмодернизация</td>
+                      <td className="p-3">Заявление в уполномоченный орган</td>
+                      <td className="p-3">5.4, 5.5, 5.6</td>
+                    </tr>
+                    <tr className="hover:bg-green-50/50 transition-colors bg-green-100 font-bold">
+                      <td className="p-3">5.8</td>
+                      <td className="p-3">✅ Получение разрешения на строительство</td>
+                      <td className="p-3">W32 (Август 2026)</td>
+                      <td className="p-3">Уполномоченный орган</td>
+                      <td className="p-3">🎉 РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО</td>
+                      <td className="p-3">5.7</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Gantt Chart Section */}
+        <section id="gantt" className="min-h-screen py-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
           <div className="max-w-7xl mx-auto">
-            <Badge className="mb-4 sm:mb-6 bg-blue-100 text-blue-700 border-blue-300 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm">
+            <Badge className="mb-6 bg-slate-100 text-slate-700 border-slate-300 px-4 py-2">
+              Визуализация
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
+              Интерактивный календарь работ
+            </h2>
+            <GanttChart />
+          </div>
+        </section>
+
+        {/* Charts Section */}
+        <section id="charts" className="min-h-screen py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
               Аналитика
             </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Диаграммы распределения работ
             </h2>
             <InteractiveChart />
@@ -865,23 +989,23 @@ const Roadmap = () => {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 sm:py-12 px-4 bg-gradient-to-br from-blue-900 to-purple-900 text-white">
+        <footer className="py-12 px-4 bg-gradient-to-br from-blue-900 to-purple-900 text-white">
           <div className="max-w-6xl mx-auto text-center">
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">ООО «Санкт-Петербургский проектный институт»</h3>
-            <p className="text-sm sm:text-base text-blue-200 mb-4 sm:mb-6">
+            <h3 className="text-2xl font-bold mb-4">ООО «Санкт-Петербургский проектный институт»</h3>
+            <p className="text-blue-200 mb-6">
               Экспертиза в проектировании гидротехнических сооружений с 2005 года
             </p>
-            <div className="flex justify-center gap-4 sm:gap-6 flex-wrap text-xs sm:text-sm">
+            <div className="flex justify-center gap-6 flex-wrap text-sm">
               <div className="flex items-center gap-2">
-                <Icon name="Award" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
+                <Icon name="Award" size={20} className="text-blue-300" />
                 <span>Лицензии СРО</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Users" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
+                <Icon name="Users" size={20} className="text-blue-300" />
                 <span>120+ специалистов</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Trophy" size={18} className="text-blue-300 sm:w-5 sm:h-5" />
+                <Icon name="Trophy" size={20} className="text-blue-300" />
                 <span>500+ реализованных проектов</span>
               </div>
             </div>
