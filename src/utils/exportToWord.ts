@@ -56,7 +56,7 @@ export const exportRoadmapToWord = async () => {
             new TableRow({
               children: [
                 createTableCell('Исполнитель', true),
-                createTableCell('ООО «Санкт-Петербургский проектный институт»'),
+                createTableCell('ООО «СППИ»'),
               ],
             }),
             new TableRow({
@@ -602,7 +602,7 @@ export const exportRoadmapToWord = async () => {
             new TableRow({
               children: [
                 createTableCell('Генеральный проектировщик'),
-                createTableCell('ООО «Санкт-Петербургский проектный институт»'),
+                createTableCell('ООО «СППИ»'),
                 createTableCell('Разработка ПД, управление проектом, координация работ'),
               ],
             }),
@@ -713,7 +713,7 @@ export const exportRoadmapToWord = async () => {
         }),
 
         new Paragraph({
-          text: 'ООО «Санкт-Петербургский проектный институт»',
+          text: 'ООО «СППИ»',
           italics: true,
           alignment: AlignmentType.CENTER,
           spacing: { before: 100 },
