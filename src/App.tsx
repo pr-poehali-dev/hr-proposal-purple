@@ -10,10 +10,6 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Определяем, на каком поддомене мы находимся
-  const hostname = window.location.hostname;
-  const isRoadmapSubdomain = hostname.startsWith('roadmap.');
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -21,20 +17,10 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Если roadmap.* поддомен, показываем только Roadmap */}
-            {isRoadmapSubdomain ? (
-              <>
-                <Route path="/" element={<Roadmap />} />
-                <Route path="*" element={<Roadmap />} />
-              </>
-            ) : (
-              <>
-                <Route path="/" element={<Index />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </>
-            )}
+            <Route path="/" element={<Roadmap />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
