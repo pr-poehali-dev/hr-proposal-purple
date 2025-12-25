@@ -138,14 +138,14 @@ const GanttChart = () => {
   
   // Generate month labels for visual grouping
   const monthLabels = [
-    { name: 'М1', weeks: 4 },
-    { name: 'М2', weeks: 4 },
-    { name: 'М3', weeks: 4 },
-    { name: 'М4', weeks: 4 },
-    { name: 'М5', weeks: 4 },
-    { name: 'М6', weeks: 4 },
-    { name: 'М7', weeks: 4 },
-    { name: 'М8', weeks: 4 },
+    { name: 'Янв 2026', weeks: 4 },
+    { name: 'Фев 2026', weeks: 4 },
+    { name: 'Мар 2026', weeks: 4 },
+    { name: 'Апр 2026', weeks: 4 },
+    { name: 'Май 2026', weeks: 4 },
+    { name: 'Июн 2026', weeks: 4 },
+    { name: 'Июл 2026', weeks: 4 },
+    { name: 'Авг 2026', weeks: 4 },
   ];
 
   return (
@@ -153,7 +153,7 @@ const GanttChart = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3">
           <Icon name="CalendarRange" size={24} className="text-blue-600" />
-          План-график работ (32 недели)
+          План-график работ (январь — август 2026)
         </h3>
         <Button
           onClick={exportToExcel}

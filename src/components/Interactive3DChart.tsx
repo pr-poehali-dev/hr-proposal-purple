@@ -254,15 +254,15 @@ const Interactive3DChart = () => {
                     <g
                       key={`segment-${idx}`}
                       transform={`translate(${offsetX}, ${offsetY})`}
-                      onMouseEnter={() => setSelectedSegment(idx)}
-                      onMouseLeave={() => setSelectedSegment(null)}
-                      className="cursor-pointer transition-transform duration-300"
+                      className="transition-transform duration-300"
                     >
                       <path
                         d={createPieSegment(segment.startAngle, segment.endAngle, 180)}
                         fill={`url(#gradient-${idx})`}
                         filter={`url(#shadow-${idx})`}
-                        className="transition-all duration-300"
+                        className="cursor-pointer transition-all duration-300"
+                        onMouseEnter={() => setSelectedSegment(idx)}
+                        onMouseLeave={() => setSelectedSegment(null)}
                         style={{
                           transform: isHovered ? 'scale(1.05)' : 'scale(1)',
                           transformOrigin: 'center',

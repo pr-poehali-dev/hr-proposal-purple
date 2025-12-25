@@ -15,14 +15,14 @@ const InteractiveChart = () => {
   ];
 
   const timelineData = [
-    { month: 'Месяц 1', tasks: 9, weeks: 'W1-W4', focus: 'Мобилизация и изыскания' },
-    { month: 'Месяц 2', tasks: 6, weeks: 'W5-W8', focus: 'Специальные изыскания и ТУ' },
-    { month: 'Месяц 3', tasks: 8, weeks: 'W9-W12', focus: 'Начало проектирования' },
-    { month: 'Месяц 4', tasks: 8, weeks: 'W13-W16', focus: 'Завершение ПД и согласования' },
-    { month: 'Месяц 5', tasks: 5, weeks: 'W17-W20', focus: 'Подготовка к экспертизе' },
-    { month: 'Месяц 6', tasks: 4, weeks: 'W21-W24', focus: 'Рассмотрение в ГГЭ' },
-    { month: 'Месяц 7', tasks: 2, weeks: 'W25-W28', focus: 'Доработка замечаний' },
-    { month: 'Месяц 8', tasks: 1, weeks: 'W29-W32', focus: 'Получение разрешения' },
+    { month: 'Январь 2026', tasks: 9, weeks: 'W1-W4', focus: 'Мобилизация и инженерные изыскания' },
+    { month: 'Февраль 2026', tasks: 6, weeks: 'W5-W8', focus: 'Специальные изыскания и получение ТУ' },
+    { month: 'Март 2026', tasks: 8, weeks: 'W9-W12', focus: 'Начало проектирования ПД' },
+    { month: 'Апрель 2026', tasks: 8, weeks: 'W13-W16', focus: 'Завершение ПД и согласования' },
+    { month: 'Май 2026', tasks: 5, weeks: 'W17-W20', focus: 'Предварительные согласования и подача в ГГЭ' },
+    { month: 'Июнь 2026', tasks: 4, weeks: 'W21-W24', focus: 'Рассмотрение в Главгосэкспертизе' },
+    { month: 'Июль 2026', tasks: 2, weeks: 'W25-W28', focus: 'Доработка по замечаниям ГГЭ' },
+    { month: 'Август 2026', tasks: 1, weeks: 'W29-W32', focus: 'Получение разрешения на строительство' },
   ];
 
   const keyMilestones = [

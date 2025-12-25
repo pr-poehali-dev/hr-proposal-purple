@@ -23,11 +23,11 @@ const Roadmap = () => {
     { id: 'overview', label: 'Обзор', icon: 'Eye' },
     { id: 'stakeholders', label: 'Стейкхолдеры', icon: 'Users' },
     { id: 'interactive', label: 'Интерактив', icon: 'Box' },
-    { id: 'phase1', label: 'Недели 1-4', icon: 'Calendar' },
-    { id: 'phase2', label: 'Недели 5-8', icon: 'Calendar' },
-    { id: 'phase3', label: 'Недели 9-16', icon: 'Calendar' },
-    { id: 'phase4', label: 'Недели 17-24', icon: 'Calendar' },
-    { id: 'phase5', label: 'Недели 25-32', icon: 'Calendar' },
+    { id: 'phase1', label: 'Январь', icon: 'Calendar' },
+    { id: 'phase2', label: 'Февраль', icon: 'Calendar' },
+    { id: 'phase3', label: 'Март-Апрель', icon: 'Calendar' },
+    { id: 'phase4', label: 'Май-Июнь', icon: 'Calendar' },
+    { id: 'phase5', label: 'Июль-Август', icon: 'Calendar' },
     { id: 'gantt', label: 'План-график', icon: 'BarChart3' },
     { id: 'charts', label: 'Диаграммы', icon: 'PieChart' },
   ];
@@ -109,7 +109,8 @@ const Roadmap = () => {
             </h1>
             
             <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-6 font-light px-2">
-              Реконструкция Гидроузлов №7 и №8<br />Канала имени Москвы (канал №294)
+              Реконструкция Гидроузлов №7 и №8<br />Канала имени Москвы (канал №294)<br />
+              <span className="text-base text-gray-600">Январь — Август 2026</span>
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
@@ -335,11 +336,11 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 1: Weeks 1-4 */}
+        {/* Phase 1: January */}
         <section id="phase1" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-blue-100 text-blue-700 border-blue-300 px-4 py-2">
-              Недели 1-4 (Месяц 1)
+              Январь 2026 (Недели 1-4)
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Мобилизация и инженерные изыскания
@@ -467,11 +468,11 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 2: Weeks 5-8 */}
+        {/* Phase 2: February */}
         <section id="phase2" className="min-h-screen py-20 px-4 bg-gradient-to-br from-purple-50/50 to-blue-50/50">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-300 px-4 py-2">
-              Недели 5-8 (Месяц 2)
+              Февраль 2026 (Недели 5-8)
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Специальные обследования и согласования
@@ -551,11 +552,11 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 3: Weeks 9-16 */}
+        {/* Phase 3: March-April */}
         <section id="phase3" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-indigo-100 text-indigo-700 border-indigo-300 px-4 py-2">
-              Недели 9-16 (Месяцы 3-4)
+              Март-Апрель 2026 (Недели 9-16)
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Разработка проектной документации
@@ -723,11 +724,11 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 4: Weeks 17-24 */}
+        {/* Phase 4: May-June */}
         <section id="phase4" className="min-h-screen py-20 px-4 bg-gradient-to-br from-emerald-50/50 to-blue-50/50">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-emerald-100 text-emerald-700 border-emerald-300 px-4 py-2">
-              Недели 17-24 (Месяцы 5-6)
+              Май-Июнь 2026 (Недели 17-24)
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Государственная экспертиза
@@ -837,11 +838,11 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Phase 5: Weeks 25-32 */}
+        {/* Phase 5: July-August */}
         <section id="phase5" className="min-h-screen py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <Badge className="mb-6 bg-red-100 text-red-700 border-red-300 px-4 py-2">
-              Недели 25-32 (Месяцы 7-8)
+              Июль-Август 2026 (Недели 25-32)
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
               Завершение и получение разрешения на строительство
