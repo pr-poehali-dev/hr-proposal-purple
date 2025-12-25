@@ -959,17 +959,6 @@ const Roadmap = () => {
                 </table>
               </div>
             </Card>
-
-            <Card className="p-8 bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-2xl transform hover:scale-105 transition-all">
-              <div className="text-center">
-                <Icon name="CheckCircle" size={64} className="mx-auto mb-4 text-white" />
-                <h3 className="text-3xl font-bold mb-4">Проект завершен!</h3>
-                <p className="text-xl mb-2">Август 2026</p>
-                <p className="text-white/90">
-                  Полный комплект проектной документации с положительным заключением ГГЭ и разрешением на строительство передан заказчику
-                </p>
-              </div>
-            </Card>
           </div>
         </section>
 
