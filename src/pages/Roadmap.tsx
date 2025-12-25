@@ -28,7 +28,7 @@ const Roadmap = () => {
     { id: 'phase3', label: 'Март-Апрель', icon: 'Calendar' },
     { id: 'phase4', label: 'Май-Июнь', icon: 'Calendar' },
     { id: 'phase5', label: 'Июль-Август', icon: 'Calendar' },
-    { id: 'gantt', label: 'План-график', icon: 'BarChart3' },
+    { id: 'gantt', label: 'Календарь', icon: 'BarChart3' },
     { id: 'charts', label: 'Диаграммы', icon: 'PieChart' },
   ];
 
@@ -969,7 +969,7 @@ const Roadmap = () => {
               Визуализация
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-900">
-              Интерактивный план-график работ
+              Интерактивный календарь работ
             </h2>
             <GanttChart />
           </div>

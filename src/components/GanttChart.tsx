@@ -153,7 +153,7 @@ const GanttChart = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3">
           <Icon name="CalendarRange" size={24} className="text-blue-600" />
-          План-график работ (январь — август 2026)
+          Календарь работ (январь — август 2026)
         </h3>
         <Button
           onClick={exportToExcel}
