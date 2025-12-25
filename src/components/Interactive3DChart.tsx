@@ -17,7 +17,9 @@ interface Task {
 
 const Interactive3DChart = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [rotation, setRotation] = useState({ x: 20, y: 45 });
+  const [selectedSegment, setSelectedSegment] = useState<number | null>(null);
+  const [rotation, setRotation] = useState(45);
+  const [tilt, setTilt] = useState(20);
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
@@ -40,11 +42,11 @@ const Interactive3DChart = () => {
   ];
 
   const categoryColors = {
-    survey: { bg: 'from-blue-500 to-blue-600', name: 'Изыскания', icon: 'MapPin' },
-    approval: { bg: 'from-purple-500 to-purple-600', name: 'Согласования', icon: 'FileCheck' },
-    design: { bg: 'from-indigo-500 to-indigo-600', name: 'Проектирование', icon: 'PenTool' },
-    expertise: { bg: 'from-violet-500 to-violet-600', name: 'Экспертиза', icon: 'Shield' },
-    permit: { bg: 'from-emerald-500 to-emerald-600', name: 'Разрешения', icon: 'Award' },
+    survey: { color: '#3B82F6', name: 'Изыскания', icon: 'MapPin', lightColor: '#93C5FD' },
+    approval: { color: '#A855F7', name: 'Согласования', icon: 'FileCheck', lightColor: '#D8B4FE' },
+    design: { color: '#6366F1', name: 'Проектирование', icon: 'PenTool', lightColor: '#C7D2FE' },
+    expertise: { color: '#8B5CF6', name: 'Экспертиза', icon: 'Shield', lightColor: '#DDD6FE' },
+    permit: { color: '#10B981', name: 'Разрешения', icon: 'Award', lightColor: '#6EE7B7' },
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -56,10 +58,8 @@ const Interactive3DChart = () => {
     if (!isDragging) return;
     const deltaX = e.clientX - startPos.x;
     const deltaY = e.clientY - startPos.y;
-    setRotation({
-      x: Math.max(-90, Math.min(90, rotation.x - deltaY * 0.5)),
-      y: rotation.y + deltaX * 0.5,
-    });
+    setRotation(rotation + deltaX * 0.5);
+    setTilt(Math.max(-30, Math.min(60, tilt - deltaY * 0.3)));
     setStartPos({ x: e.clientX, y: e.clientY });
   };
 
@@ -67,150 +67,292 @@ const Interactive3DChart = () => {
     setIsDragging(false);
   };
 
-  // 3D Bar positions
+  // Calculate statistics
   const categoryStats = Object.entries(categoryColors).map(([key, value]) => ({
     category: key as Task['category'],
     name: value.name,
-    color: value.bg,
+    color: value.color,
+    lightColor: value.lightColor,
     icon: value.icon,
     count: tasks.filter(t => t.category === key).length,
     weeks: tasks.filter(t => t.category === key).reduce((sum, t) => sum + t.duration, 0),
+    percentage: 0,
   }));
 
-  const maxCount = Math.max(...categoryStats.map(s => s.count));
+  const totalTasks = tasks.length;
+  const totalWeeks = tasks.reduce((sum, t) => sum + t.duration, 0);
+
+  categoryStats.forEach(stat => {
+    stat.percentage = Math.round((stat.count / totalTasks) * 100);
+  });
+
+  // Calculate pie chart segments
+  let currentAngle = 0;
+  const segments = categoryStats.map((stat, idx) => {
+    const angle = (stat.count / totalTasks) * 360;
+    const segment = {
+      ...stat,
+      startAngle: currentAngle,
+      endAngle: currentAngle + angle,
+      angle,
+      index: idx,
+    };
+    currentAngle += angle;
+    return segment;
+  });
+
+  // Create SVG path for pie segment
+  const createPieSegment = (startAngle: number, endAngle: number, radius: number) => {
+    const start = polarToCartesian(0, 0, radius, endAngle);
+    const end = polarToCartesian(0, 0, radius, startAngle);
+    const largeArc = endAngle - startAngle <= 180 ? '0' : '1';
+    return `M 0 0 L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+  };
+
+  const polarToCartesian = (cx: number, cy: number, radius: number, angle: number) => {
+    const rad = ((angle - 90) * Math.PI) / 180;
+    return {
+      x: cx + radius * Math.cos(rad),
+      y: cy + radius * Math.sin(rad),
+    };
+  };
 
   return (
     <div className="space-y-8">
-      {/* 3D Rotating Chart */}
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold flex items-center gap-3">
-            <Icon name="Box" size={28} className="text-blue-400" />
-            3D Интерактивная диаграмма
-          </h3>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              onClick={() => setRotation({ x: 20, y: 45 })}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-            >
-              <Icon name="RotateCcw" size={16} className="mr-1" />
-              Сброс
-            </Button>
+      {/* 3D Pie Chart */}
+      <Card className="p-6 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white shadow-2xl overflow-hidden relative">
+        {/* Animated background */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
+
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold flex items-center gap-3">
+              <Icon name="PieChart" size={28} className="text-blue-400" />
+              Интерактивная 3D диаграмма распределения работ
+            </h3>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => { setRotation(45); setTilt(20); }}
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              >
+                <Icon name="RotateCcw" size={16} className="mr-1" />
+                Сброс
+              </Button>
+            </div>
           </div>
-        </div>
 
-        <div className="text-sm text-blue-200 mb-4 flex items-center gap-2">
-          <Icon name="Info" size={16} />
-          Перетащите мышью для вращения диаграммы
-        </div>
+          <div className="text-sm text-blue-200 mb-6 flex items-center gap-2">
+            <Icon name="MousePointerClick" size={16} />
+            Перетащите мышью для вращения • Наведите на сегмент для деталей
+          </div>
 
-        <div
-          className="relative h-[500px] cursor-move select-none"
-          style={{ perspective: '1200px' }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          <div
-            className="absolute inset-0 flex items-end justify-center gap-8"
-            style={{
-              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-              transformStyle: 'preserve-3d',
-              transition: isDragging ? 'none' : 'transform 0.3s ease-out',
-            }}
-          >
-            {/* Grid Floor */}
+          <div className="grid lg:grid-cols-[1fr,400px] gap-8 items-center">
+            {/* 3D Pie Chart */}
             <div
-              className="absolute bottom-0 w-[600px] h-[600px] grid grid-cols-10 grid-rows-10 opacity-20"
-              style={{
-                transform: 'rotateX(90deg) translateZ(-50px)',
-                transformStyle: 'preserve-3d',
-              }}
+              className="relative h-[500px] cursor-move select-none"
+              style={{ perspective: '1500px' }}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             >
-              {Array.from({ length: 100 }).map((_, i) => (
-                <div key={i} className="border border-white/30" />
-              ))}
+              <svg
+                viewBox="-250 -250 500 500"
+                className="w-full h-full"
+                style={{
+                  transform: `rotateX(${tilt}deg) rotateZ(${rotation}deg)`,
+                  transformStyle: 'preserve-3d',
+                  transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+                }}
+              >
+                <defs>
+                  {segments.map((segment, idx) => (
+                    <filter key={idx} id={`shadow-${idx}`} x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+                      <feOffset dx="5" dy="10" result="offsetblur" />
+                      <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.5" />
+                      </feComponentTransfer>
+                      <feMerge>
+                        <feMergeNode />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  ))}
+
+                  {segments.map((segment, idx) => (
+                    <linearGradient key={idx} id={`gradient-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor={segment.color} />
+                      <stop offset="100%" stopColor={segment.lightColor} />
+                    </linearGradient>
+                  ))}
+                </defs>
+
+                {/* Base circle (3D depth) */}
+                {segments.map((segment, idx) => (
+                  <g key={`base-${idx}`}>
+                    {/* Bottom layer for 3D effect */}
+                    <path
+                      d={createPieSegment(segment.startAngle, segment.endAngle, 180)}
+                      fill={segment.color}
+                      opacity="0.3"
+                      transform="translate(0, 20)"
+                    />
+                  </g>
+                ))}
+
+                {/* Main pie segments */}
+                {segments.map((segment, idx) => {
+                  const isHovered = selectedSegment === idx;
+                  const midAngle = (segment.startAngle + segment.endAngle) / 2;
+                  const offset = isHovered ? 20 : 0;
+                  const offsetX = Math.cos(((midAngle - 90) * Math.PI) / 180) * offset;
+                  const offsetY = Math.sin(((midAngle - 90) * Math.PI) / 180) * offset;
+
+                  return (
+                    <g
+                      key={`segment-${idx}`}
+                      transform={`translate(${offsetX}, ${offsetY})`}
+                      onMouseEnter={() => setSelectedSegment(idx)}
+                      onMouseLeave={() => setSelectedSegment(null)}
+                      className="cursor-pointer transition-transform duration-300"
+                    >
+                      {/* Main segment */}
+                      <path
+                        d={createPieSegment(segment.startAngle, segment.endAngle, 180)}
+                        fill={`url(#gradient-${idx})`}
+                        filter={`url(#shadow-${idx})`}
+                        className="transition-all duration-300"
+                        style={{
+                          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+
+                      {/* Percentage label */}
+                      <text
+                        x={Math.cos(((midAngle - 90) * Math.PI) / 180) * 120}
+                        y={Math.sin(((midAngle - 90) * Math.PI) / 180) * 120}
+                        fill="white"
+                        fontSize="24"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        style={{
+                          filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        {segment.percentage}%
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Center info */}
+                <circle cx="0" cy="0" r="60" fill="rgba(255,255,255,0.1)" />
+                <text
+                  x="0"
+                  y="-10"
+                  fill="white"
+                  fontSize="32"
+                  fontWeight="bold"
+                  textAnchor="middle"
+                  style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+                >
+                  {totalTasks}
+                </text>
+                <text
+                  x="0"
+                  y="20"
+                  fill="white"
+                  fontSize="16"
+                  textAnchor="middle"
+                  opacity="0.8"
+                  style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))' }}
+                >
+                  работ
+                </text>
+              </svg>
             </div>
 
-            {/* 3D Bars */}
-            {categoryStats.map((stat, idx) => {
-              const height = (stat.count / maxCount) * 300;
-              const xPos = (idx - categoryStats.length / 2) * 100;
-              
-              return (
-                <div
-                  key={stat.category}
-                  className="relative group"
-                  style={{
-                    transform: `translateX(${xPos}px) translateZ(0)`,
-                    transformStyle: 'preserve-3d',
-                  }}
-                >
-                  {/* Bar */}
+            {/* Legend and Stats */}
+            <div className="space-y-4">
+              {segments.map((segment, idx) => {
+                const isActive = selectedSegment === idx;
+                return (
                   <div
-                    className={`relative w-20 bg-gradient-to-t ${stat.color} rounded-t-lg shadow-2xl transition-all duration-300 hover:brightness-125`}
-                    style={{
-                      height: `${height}px`,
-                      transform: 'translateZ(0)',
-                      boxShadow: '0 10px 50px rgba(0,0,0,0.5)',
-                    }}
+                    key={idx}
+                    onMouseEnter={() => setSelectedSegment(idx)}
+                    onMouseLeave={() => setSelectedSegment(null)}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                      isActive
+                        ? 'bg-white/20 border-white/50 scale-105 shadow-2xl'
+                        : 'bg-white/5 border-white/20 hover:bg-white/10'
+                    }`}
                   >
-                    {/* Top Face */}
-                    <div
-                      className={`absolute top-0 left-0 right-0 h-20 bg-gradient-to-br ${stat.color} rounded-lg opacity-80`}
-                      style={{
-                        transform: 'rotateX(90deg) translateZ(10px)',
-                        transformStyle: 'preserve-3d',
-                      }}
-                    />
-                    
-                    {/* Side Face */}
-                    <div
-                      className={`absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r ${stat.color} opacity-60`}
-                      style={{
-                        transform: 'rotateY(90deg) translateZ(10px)',
-                        transformOrigin: 'right',
-                        transformStyle: 'preserve-3d',
-                      }}
-                    />
-
-                    {/* Value Label */}
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white font-bold text-2xl">
-                      {stat.count}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-6 h-6 rounded-full shadow-lg"
+                          style={{ backgroundColor: segment.color }}
+                        />
+                        <div>
+                          <div className="font-bold text-lg flex items-center gap-2">
+                            <Icon name={segment.icon} size={20} />
+                            {segment.name}
+                          </div>
+                          <div className="text-sm text-blue-200">
+                            {segment.count} работ • {segment.weeks} недель
+                          </div>
+                        </div>
+                      </div>
+                      <Badge className="bg-white/20 text-white text-lg font-bold">
+                        {segment.percentage}%
+                      </Badge>
                     </div>
 
-                    {/* Glow Effect */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-t ${stat.color} opacity-0 group-hover:opacity-50 transition-opacity duration-300 blur-xl`}
-                      style={{ transform: 'translateZ(-10px)' }}
-                    />
+                    {isActive && (
+                      <div className="mt-3 pt-3 border-t border-white/20 space-y-2 animate-fade-in">
+                        <div className="grid grid-cols-3 gap-2 text-sm">
+                          <div>
+                            <div className="text-blue-300 text-xs">Работ</div>
+                            <div className="font-bold text-xl">{segment.count}</div>
+                          </div>
+                          <div>
+                            <div className="text-blue-300 text-xs">Недель</div>
+                            <div className="font-bold text-xl">{segment.weeks}</div>
+                          </div>
+                          <div>
+                            <div className="text-blue-300 text-xs">Доля</div>
+                            <div className="font-bold text-xl">{segment.percentage}%</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                );
+              })}
 
-                  {/* Label */}
-                  <div
-                    className="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center whitespace-nowrap"
-                    style={{ transform: 'translateZ(0)' }}
-                  >
-                    <Icon name={stat.icon} size={24} className="mx-auto mb-2 text-blue-300" />
-                    <div className="font-bold text-sm">{stat.name}</div>
-                    <div className="text-xs text-blue-300">{stat.weeks} недель</div>
+              <div className="mt-6 p-4 bg-white/10 rounded-lg border border-white/20">
+                <div className="text-sm text-blue-200 mb-2">Общая статистика</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-3xl font-bold">{totalTasks}</div>
+                    <div className="text-sm text-blue-300">Всего работ</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold">{totalWeeks}</div>
+                    <div className="text-sm text-blue-300">Всего недель</div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 lg:grid-cols-5 gap-4">
-          {categoryStats.map((stat) => (
-            <div key={stat.category} className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
-              <Icon name={stat.icon} size={20} className="text-blue-300 mb-2" />
-              <div className="text-2xl font-bold">{stat.count}</div>
-              <div className="text-xs text-blue-300">{stat.name}</div>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </Card>
 
@@ -237,7 +379,10 @@ const Interactive3DChart = () => {
                   }`}
                 >
                   <div className="flex items-center h-full px-4 gap-4">
-                    <Badge className={`bg-gradient-to-r ${colors.bg} text-white shrink-0`}>
+                    <Badge 
+                      className="shrink-0 text-white"
+                      style={{ background: colors.color }}
+                    >
                       {task.id}
                     </Badge>
                     <div className="flex-1 min-w-0">
@@ -252,8 +397,11 @@ const Interactive3DChart = () => {
                   {/* Progress bar */}
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-lg overflow-hidden">
                     <div
-                      className={`h-full bg-gradient-to-r ${colors.bg} transition-all duration-1000`}
-                      style={{ width: `${(task.startWeek / 32) * 100}%` }}
+                      className="h-full transition-all duration-1000"
+                      style={{ 
+                        width: `${(task.startWeek / 32) * 100}%`,
+                        background: colors.color 
+                      }}
                     />
                   </div>
                 </div>
@@ -264,7 +412,10 @@ const Interactive3DChart = () => {
           {/* Side Panel */}
           <div className="lg:sticky lg:top-4 h-fit">
             {selectedTask ? (
-              <Card className={`p-6 bg-gradient-to-br ${categoryColors[selectedTask.category].bg} text-white shadow-2xl`}>
+              <Card 
+                className="p-6 text-white shadow-2xl"
+                style={{ background: `linear-gradient(135deg, ${categoryColors[selectedTask.category].color} 0%, ${categoryColors[selectedTask.category].lightColor} 100%)` }}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <Badge className="bg-white/20 text-white border-white/30">
                     {selectedTask.id}
