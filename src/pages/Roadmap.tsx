@@ -8,7 +8,6 @@ import GanttChart from '@/components/GanttChart';
 import InteractiveChart from '@/components/InteractiveChart';
 
 import Interactive3DChart from '@/components/Interactive3DChart';
-import { exportRoadmapToWord } from '@/utils/exportToWord';
 
 const Roadmap = () => {
   const [activePhase, setActivePhase] = useState<string>('overview');
@@ -868,17 +867,6 @@ const Roadmap = () => {
         {/* Footer */}
         <footer className="py-8 sm:py-12 px-4 bg-gradient-to-br from-blue-900 to-purple-900 text-white">
           <div className="max-w-6xl mx-auto text-center">
-            <div className="mb-6 sm:mb-8">
-              <Button
-                onClick={exportRoadmapToWord}
-                size="lg"
-                className="bg-white text-blue-900 hover:bg-blue-50 font-semibold shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
-              >
-                <Icon name="Download" size={20} className="mr-2" />
-                Скачать дорожную карту (Word)
-              </Button>
-            </div>
-            
             <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">ООО «Санкт-Петербургский проектный институт»</h3>
             <p className="text-sm sm:text-base text-blue-200 mb-4 sm:mb-6">
               Экспертиза в проектировании гидротехнических сооружений с 2005 года
