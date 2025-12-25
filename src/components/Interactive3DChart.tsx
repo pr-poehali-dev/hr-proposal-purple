@@ -384,8 +384,8 @@ const Interactive3DChart = () => {
                     <div className="text-sm text-blue-300">Всего работ</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold">{totalWeeks}</div>
-                    <div className="text-sm text-blue-300">Всего недель</div>
+                    <div className="text-3xl font-bold">32</div>
+                    <div className="text-sm text-blue-300">Недель проекта</div>
                   </div>
                 </div>
               </div>
