@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import GanttChart from '@/components/GanttChart';
 import InteractiveChart from '@/components/InteractiveChart';
-import RevolutionarySolutions from '@/components/RevolutionarySolutions';
+
 import Interactive3DChart from '@/components/Interactive3DChart';
 
 const Roadmap = () => {
@@ -985,10 +985,6 @@ const Roadmap = () => {
               Диаграммы распределения работ
             </h2>
             <InteractiveChart />
-            
-            <div className="mt-12">
-              <RevolutionarySolutions />
-            </div>
           </div>
         </section>
 
