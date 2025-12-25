@@ -7,275 +7,270 @@ import * as XLSX from 'xlsx';
 interface Task {
   id: string;
   name: string;
-  startMonth: number;
+  startWeek: number;
   duration: number;
-  category: 'survey' | 'approval' | 'design' | 'expertise' | 'permit' | 'revolutionary';
+  category: 'survey' | 'approval' | 'design' | 'expertise' | 'permit';
   responsible: string;
   status: 'planned' | 'in-progress' | 'completed';
+  dependencies?: string;
 }
 
 const GanttChart = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [zoomLevel, setZoomLevel] = useState<'week' | 'month'>('month');
 
-  const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг'];
-  
   const tasks: Task[] = [
-    // Месяц 1: Изыскания
-    { id: '1.1', name: 'Анализ исходных данных', startMonth: 0, duration: 0.5, category: 'survey', responsible: 'ГИП', status: 'planned' },
-    { id: '1.2', name: 'Водолазные обследования ГУ-7', startMonth: 0, duration: 1, category: 'survey', responsible: 'Водолазы', status: 'planned' },
-    { id: '1.3', name: 'Водолазные обследования ГУ-8', startMonth: 0.5, duration: 1, category: 'survey', responsible: 'Водолазы', status: 'planned' },
-    { id: '1.4', name: 'Инж.-геодезические изыскания', startMonth: 0, duration: 1, category: 'survey', responsible: 'Геодезисты', status: 'planned' },
-    { id: '1.5', name: 'Инж.-геологические изыскания', startMonth: 0.5, duration: 1, category: 'survey', responsible: 'Геологи', status: 'planned' },
+    // Недели 1-4: Изыскания и запрос ТУ
+    { id: '1.1', name: 'Получение допуска от ФГБУ "Канал им. Москвы"', startWeek: 0, duration: 2, category: 'approval', responsible: 'ГИП / ЮГДОРПРОЕКТ', status: 'planned', dependencies: '-' },
+    { id: '1.2', name: 'Анализ исходных данных', startWeek: 0, duration: 2, category: 'survey', responsible: 'ГИП', status: 'planned', dependencies: '-' },
+    { id: '1.3', name: 'Инженерно-геодезические изыскания', startWeek: 1, duration: 3, category: 'survey', responsible: 'Геодезия', status: 'planned', dependencies: '1.1' },
+    { id: '1.4', name: 'Инженерно-геологические изыскания', startWeek: 1, duration: 4, category: 'survey', responsible: 'Геология', status: 'planned', dependencies: '1.1' },
+    { id: '1.5', name: 'Водолазное обследование ГУ-7', startWeek: 1, duration: 2, category: 'survey', responsible: 'Водолазы', status: 'planned', dependencies: '1.1' },
+    { id: '1.6', name: 'Водолазное обследование ГУ-8', startWeek: 2, duration: 2, category: 'survey', responsible: 'Водолазы', status: 'planned', dependencies: '1.1' },
+    { id: '1.7', name: 'Запрос ТУ в ПАО "Россети" (ЛЭП)', startWeek: 0, duration: 2, category: 'approval', responsible: 'Электроснабжение', status: 'planned', dependencies: '1.2' },
+    { id: '1.8', name: 'Запрос ТУ в ПАО "Газпром"', startWeek: 0, duration: 2, category: 'approval', responsible: 'Газоснабжение', status: 'planned', dependencies: '1.2' },
+    { id: '1.9', name: 'Запрос ТУ на временное подключение', startWeek: 1, duration: 2, category: 'approval', responsible: 'Электроснабжение', status: 'planned', dependencies: '1.2' },
     
-    // Месяц 2: Согласования
-    { id: '2.1', name: 'Согласование с ФГБУ "Канал им. Москвы"', startMonth: 1, duration: 1, category: 'approval', responsible: 'ГИП', status: 'planned' },
-    { id: '2.2', name: 'Ростехнадзор (декларация ГТС)', startMonth: 1, duration: 1.5, category: 'approval', responsible: 'Отдел ГТС', status: 'planned' },
-    { id: '2.3', name: 'Росводресурсы', startMonth: 1.5, duration: 1, category: 'approval', responsible: 'Эколог', status: 'planned' },
-    { id: '2.4', name: 'Переустройство ЛЭП (Россети)', startMonth: 1, duration: 2, category: 'approval', responsible: 'Электрики', status: 'planned' },
-    { id: '2.5', name: 'Переустройство газопровода (Газпром)', startMonth: 1.5, duration: 1.5, category: 'approval', responsible: 'ГАЗ отдел', status: 'planned' },
+    // Недели 5-8: Специальные изыскания и получение ТУ
+    { id: '2.1', name: 'Инженерно-гидрометеорологические изыскания', startWeek: 4, duration: 3, category: 'survey', responsible: 'Гидрометеорология', status: 'planned', dependencies: '1.3, 1.4' },
+    { id: '2.2', name: 'Инженерно-экологические изыскания', startWeek: 4, duration: 4, category: 'survey', responsible: 'Экология', status: 'planned', dependencies: '1.3, 1.4' },
+    { id: '2.3', name: 'Дефектоскопия бетона', startWeek: 4, duration: 2, category: 'survey', responsible: 'Лаборатория НК', status: 'planned', dependencies: '1.5, 1.6' },
+    { id: '2.4', name: 'Обследование металлоконструкций', startWeek: 5, duration: 2, category: 'survey', responsible: 'Лаборатория НК', status: 'planned', dependencies: '1.5, 1.6' },
+    { id: '2.5', name: 'Получение ТУ от Россети', startWeek: 5, duration: 3, category: 'approval', responsible: 'Россети / СППИ', status: 'planned', dependencies: '1.7' },
+    { id: '2.6', name: 'Получение ТУ от Газпром', startWeek: 6, duration: 3, category: 'approval', responsible: 'Газпром / СППИ', status: 'planned', dependencies: '1.8' },
     
-    // Месяцы 3-4: Проектирование
-    { id: '3.1', name: 'Раздел 1. Пояснительная записка', startMonth: 2, duration: 0.5, category: 'design', responsible: 'ГИП', status: 'planned' },
-    { id: '3.2', name: 'Раздел 2. Генплан', startMonth: 2, duration: 1, category: 'design', responsible: 'Архитектор', status: 'planned' },
-    { id: '3.3', name: 'Раздел 3. Архитектурные решения', startMonth: 2.5, duration: 1, category: 'design', responsible: 'Архитектор', status: 'planned' },
-    { id: '3.4', name: 'Раздел 4. Конструкции ГТС', startMonth: 2, duration: 2, category: 'design', responsible: 'Конструкторы', status: 'planned' },
-    { id: '3.5', name: 'Раздел 5. Инженерные системы', startMonth: 3, duration: 1.5, category: 'design', responsible: 'ИТП', status: 'planned' },
-    { id: '3.6', name: 'Раздел 6. ПОС', startMonth: 3.5, duration: 1, category: 'design', responsible: 'Технолог', status: 'planned' },
-    { id: '3.7', name: 'Раздел 8. ООС (ОВОС)', startMonth: 2.5, duration: 2, category: 'design', responsible: 'Эколог', status: 'planned' },
-    { id: '3.8', name: 'Раздел 11. Сметы', startMonth: 3.5, duration: 1, category: 'design', responsible: 'Сметчик', status: 'planned' },
-    { id: '3.9', name: 'Раздел 12. Транспортная безопасность', startMonth: 3, duration: 1.5, category: 'design', responsible: 'СБ отдел', status: 'planned' },
+    // Недели 9-16: Проектирование
+    { id: '3.1', name: 'Раздел 1. Пояснительная записка', startWeek: 8, duration: 4, category: 'design', responsible: 'ГИП', status: 'planned', dependencies: 'Все изыскания' },
+    { id: '3.2', name: 'Раздел 2. Генплан', startWeek: 8, duration: 4, category: 'design', responsible: 'Архитектура', status: 'planned', dependencies: '1.3, 2.2' },
+    { id: '3.3', name: 'Раздел 3. Архитектурные решения', startWeek: 9, duration: 4, category: 'design', responsible: 'Архитектура', status: 'planned', dependencies: '3.2' },
+    { id: '3.4', name: 'Раздел 4. Конструкции ГТС', startWeek: 8, duration: 6, category: 'design', responsible: 'Конструкторы ГТС', status: 'planned', dependencies: '1.4, 1.5, 1.6, 2.3, 2.4' },
+    { id: '3.5', name: 'Раздел 5. Инженерные системы', startWeek: 10, duration: 5, category: 'design', responsible: 'ИТП', status: 'planned', dependencies: '2.5, 2.6, 3.4' },
+    { id: '3.6', name: 'Раздел 6. ПОС', startWeek: 12, duration: 4, category: 'design', responsible: 'Технолог', status: 'planned', dependencies: '3.4, 3.5' },
+    { id: '3.7', name: 'Раздел 8. ПМООС', startWeek: 9, duration: 5, category: 'design', responsible: 'Эколог', status: 'planned', dependencies: '2.2, 3.2' },
+    { id: '3.8', name: 'Раздел 10. Пожарная безопасность', startWeek: 11, duration: 4, category: 'design', responsible: 'Отдел ПБ', status: 'planned', dependencies: '3.3, 3.5' },
+    { id: '3.9', name: 'Раздел 11. Смета', startWeek: 13, duration: 3, category: 'design', responsible: 'Сметчик', status: 'planned', dependencies: '3.4, 3.5, 3.6' },
+    { id: '3.10', name: 'Раздел 11.1. Безопасность ГТС', startWeek: 11, duration: 5, category: 'design', responsible: 'Отдел ГТС', status: 'planned', dependencies: '3.4, 2.1' },
+    { id: '3.11', name: 'Проект переустройства ЛЭП', startWeek: 9, duration: 5, category: 'design', responsible: 'Электроснабжение', status: 'planned', dependencies: '2.5, 3.2' },
+    { id: '3.12', name: 'Проект переустройства газопровода', startWeek: 10, duration: 5, category: 'design', responsible: 'Газоснабжение', status: 'planned', dependencies: '2.6, 3.2' },
+    { id: '3.13', name: 'Согласование проекта ЛЭП с Россети', startWeek: 13, duration: 3, category: 'approval', responsible: 'Россети / СППИ', status: 'planned', dependencies: '3.11' },
+    { id: '3.14', name: 'Согласование проекта газопровода с Газпром', startWeek: 14, duration: 3, category: 'approval', responsible: 'Газпром / СППИ', status: 'planned', dependencies: '3.12' },
     
-    // Революционные решения
-    { id: 'R1', name: 'BIM-модель цифрового двойника', startMonth: 2, duration: 2, category: 'revolutionary', responsible: 'BIM-отдел', status: 'planned' },
-    { id: 'R2', name: 'Автоматизация затворов (IoT)', startMonth: 3, duration: 1.5, category: 'revolutionary', responsible: 'Автоматизаторы', status: 'planned' },
-    { id: 'R3', name: 'Умный мониторинг состояния конструкций', startMonth: 3.5, duration: 1, category: 'revolutionary', responsible: 'IT-отдел', status: 'planned' },
+    // Недели 17-24: Экспертиза
+    { id: '4.1', name: 'Предварительное согласование с ФГБУ', startWeek: 16, duration: 2, category: 'approval', responsible: 'ГИП / ЮГДОРПРОЕКТ', status: 'planned', dependencies: '3.1-3.10' },
+    { id: '4.2', name: 'Согласование с Росводресурсами', startWeek: 16, duration: 3, category: 'approval', responsible: 'Эколог / ЮГДОРПРОЕКТ', status: 'planned', dependencies: '3.7' },
+    { id: '4.3', name: 'Согласование с Ростехнадзором', startWeek: 16, duration: 4, category: 'approval', responsible: 'Отдел ГТС', status: 'planned', dependencies: '3.10' },
+    { id: '4.4', name: 'Подготовка документов для ГГЭ', startWeek: 18, duration: 2, category: 'expertise', responsible: 'ГИП', status: 'planned', dependencies: '4.1, 4.2, 4.3' },
+    { id: '4.5', name: 'Подача в ГГЭ', startWeek: 19, duration: 1, category: 'expertise', responsible: 'ГИП / ЮГДОРПРОЕКТ', status: 'planned', dependencies: '4.4' },
+    { id: '4.6', name: 'Рассмотрение в ГГЭ (45 раб.дней)', startWeek: 19, duration: 9, category: 'expertise', responsible: 'ФАУ ГГЭ России', status: 'planned', dependencies: '4.5' },
     
-    // Месяцы 5-6: Экспертиза
-    { id: '4.1', name: 'Подача в Главгосэкспертизу', startMonth: 4.5, duration: 0.5, category: 'expertise', responsible: 'ГИП', status: 'planned' },
-    { id: '4.2', name: 'Рассмотрение документации', startMonth: 5, duration: 2, category: 'expertise', responsible: 'Эксперты', status: 'planned' },
-    { id: '4.3', name: 'Устранение замечаний', startMonth: 6, duration: 1, category: 'expertise', responsible: 'Все отделы', status: 'planned' },
-    { id: '4.4', name: 'Получение положительного заключения', startMonth: 7, duration: 0.5, category: 'expertise', responsible: 'ГИП', status: 'planned' },
-    
-    // Месяцы 7-8: Разрешения
-    { id: '5.1', name: 'Разрешение на реконструкцию ЛЭП', startMonth: 4, duration: 3, category: 'permit', responsible: 'Россети', status: 'planned' },
-    { id: '5.2', name: 'Разрешение на реконструкцию газопровода', startMonth: 5, duration: 2, category: 'permit', responsible: 'Газпром', status: 'planned' },
-    { id: '5.3', name: 'Подача на разрешение строительства', startMonth: 7, duration: 0.5, category: 'permit', responsible: 'ГИП', status: 'planned' },
-    { id: '5.4', name: 'Получение разрешения на строительство', startMonth: 7.5, duration: 0.5, category: 'permit', responsible: 'Мосгосстройнадзор', status: 'planned' },
+    // Недели 25-32: Доработка и разрешения
+    { id: '5.1', name: 'Получение замечаний ГГЭ', startWeek: 27, duration: 1, category: 'expertise', responsible: 'ГИП', status: 'planned', dependencies: '4.6' },
+    { id: '5.2', name: 'Устранение замечаний', startWeek: 27, duration: 3, category: 'expertise', responsible: 'Все отделы', status: 'planned', dependencies: '5.1' },
+    { id: '5.3', name: 'Повторная подача в ГГЭ', startWeek: 29, duration: 1, category: 'expertise', responsible: 'ГИП / ЮГДОРПРОЕКТ', status: 'planned', dependencies: '5.2' },
+    { id: '5.4', name: 'Получение положительного заключения ГГЭ', startWeek: 30, duration: 2, category: 'expertise', responsible: 'ФАУ ГГЭ России', status: 'planned', dependencies: '5.3' },
+    { id: '5.5', name: 'Разрешение на переустройство ЛЭП', startWeek: 17, duration: 11, category: 'permit', responsible: 'Россети', status: 'planned', dependencies: '3.13' },
+    { id: '5.6', name: 'Разрешение на переустройство газопровода', startWeek: 21, duration: 9, category: 'permit', responsible: 'Газпром', status: 'planned', dependencies: '3.14' },
+    { id: '5.7', name: 'Подача заявления на РнС', startWeek: 31, duration: 1, category: 'permit', responsible: 'ЮГДОРПРОЕКТ / ФКУ', status: 'planned', dependencies: '5.4, 5.5, 5.6' },
+    { id: '5.8', name: '✅ Получение разрешения на строительство', startWeek: 31, duration: 1, category: 'permit', responsible: 'Уполномоченный орган', status: 'planned', dependencies: '5.7' },
   ];
 
   const categoryColors = {
-    survey: { bg: 'bg-blue-500', border: 'border-blue-600', text: 'Изыскания' },
-    approval: { bg: 'bg-purple-500', border: 'border-purple-600', text: 'Согласования' },
-    design: { bg: 'bg-indigo-500', border: 'border-indigo-600', text: 'Проектирование' },
-    expertise: { bg: 'bg-violet-500', border: 'border-violet-600', text: 'Экспертиза' },
-    permit: { bg: 'bg-emerald-500', border: 'border-emerald-600', text: 'Разрешения' },
-    revolutionary: { bg: 'bg-orange-500', border: 'border-orange-600', text: 'Революционные решения' },
+    survey: { bg: 'bg-blue-500', border: 'border-blue-600', text: 'Изыскания', hover: 'hover:bg-blue-600' },
+    approval: { bg: 'bg-purple-500', border: 'border-purple-600', text: 'Согласования', hover: 'hover:bg-purple-600' },
+    design: { bg: 'bg-indigo-500', border: 'border-indigo-600', text: 'Проектирование', hover: 'hover:bg-indigo-600' },
+    expertise: { bg: 'bg-violet-500', border: 'border-violet-600', text: 'Экспертиза', hover: 'hover:bg-violet-600' },
+    permit: { bg: 'bg-emerald-500', border: 'border-emerald-600', text: 'Разрешения', hover: 'hover:bg-emerald-600' },
   };
 
   const getTaskPosition = (task: Task) => {
-    const monthWidth = 12.5; // 100% / 8 months
-    const left = task.startMonth * monthWidth;
-    const width = task.duration * monthWidth;
+    const weekWidth = 100 / 32; // 32 weeks total
+    const left = task.startWeek * weekWidth;
+    const width = task.duration * weekWidth;
     return { left: `${left}%`, width: `${width}%` };
   };
 
   const exportToExcel = () => {
-    // Подготовка данных для экспорта
     const excelData = tasks.map(task => ({
       '№': task.id,
       'Наименование работы': task.name,
-      'Начало (месяц)': Math.floor(task.startMonth) + 1,
-      'Длительность (мес)': task.duration,
-      'Окончание (месяц)': Math.floor(task.startMonth + task.duration) + 1,
+      'Начало (неделя)': task.startWeek + 1,
+      'Длительность (нед)': task.duration,
+      'Окончание (неделя)': task.startWeek + task.duration,
       'Категория': categoryColors[task.category].text,
       'Ответственный': task.responsible,
-      'Статус': task.status === 'planned' ? 'Запланировано' : task.status === 'in-progress' ? 'В работе' : 'Завершено',
+      'Зависимости': task.dependencies || '-',
     }));
 
-    // Создание рабочей книги
     const wb = XLSX.utils.book_new();
-    
-    // Создание листа с данными
     const ws = XLSX.utils.json_to_sheet(excelData);
     
-    // Настройка ширины колонок
     ws['!cols'] = [
-      { wch: 8 },  // №
-      { wch: 45 }, // Наименование
-      { wch: 15 }, // Начало
-      { wch: 17 }, // Длительность
-      { wch: 17 }, // Окончание
-      { wch: 25 }, // Категория
-      { wch: 20 }, // Ответственный
-      { wch: 15 }, // Статус
+      { wch: 8 },
+      { wch: 50 },
+      { wch: 15 },
+      { wch: 17 },
+      { wch: 17 },
+      { wch: 20 },
+      { wch: 25 },
+      { wch: 25 },
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, 'План-график');
 
-    // Создание листа со сводкой
     const summaryData = [
       { 'Показатель': 'Всего работ', 'Значение': tasks.length },
-      { 'Показатель': 'Срок выполнения', 'Значение': '8 месяцев (январь-август 2025)' },
+      { 'Показатель': 'Срок выполнения', 'Значение': '32 недели (8 месяцев, до августа 2026)' },
       { 'Показатель': 'Изыскания', 'Значение': tasks.filter(t => t.category === 'survey').length },
       { 'Показатель': 'Согласования', 'Значение': tasks.filter(t => t.category === 'approval').length },
       { 'Показатель': 'Проектирование', 'Значение': tasks.filter(t => t.category === 'design').length },
-      { 'Показатель': 'Революционные решения', 'Значение': tasks.filter(t => t.category === 'revolutionary').length },
       { 'Показатель': 'Экспертиза', 'Значение': tasks.filter(t => t.category === 'expertise').length },
       { 'Показатель': 'Разрешения', 'Значение': tasks.filter(t => t.category === 'permit').length },
     ];
     
     const wsSummary = XLSX.utils.json_to_sheet(summaryData);
-    wsSummary['!cols'] = [{ wch: 30 }, { wch: 40 }];
+    wsSummary['!cols'] = [{ wch: 30 }, { wch: 50 }];
     XLSX.utils.book_append_sheet(wb, wsSummary, 'Сводка');
 
-    // Экспорт файла
-    XLSX.writeFile(wb, 'План-график_Гидроузлы_7-8.xlsx');
+    XLSX.writeFile(wb, 'План-график_ГУ-7-8_Канал-294.xlsx');
   };
+
+  // Generate week labels (W1, W2, ..., W32)
+  const weekLabels = Array.from({ length: 32 }, (_, i) => `W${i + 1}`);
+  
+  // Generate month labels for visual grouping
+  const monthLabels = [
+    { name: 'М1', weeks: 4 },
+    { name: 'М2', weeks: 4 },
+    { name: 'М3', weeks: 4 },
+    { name: 'М4', weeks: 4 },
+    { name: 'М5', weeks: 4 },
+    { name: 'М6', weeks: 4 },
+    { name: 'М7', weeks: 4 },
+    { name: 'М8', weeks: 4 },
+  ];
 
   return (
     <Card className="p-4 sm:p-6 bg-white shadow-xl">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-3">
           <Icon name="CalendarRange" size={24} className="text-blue-600" />
-          План-график работ (до августа 2025)
+          План-график работ (32 недели)
         </h3>
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={exportToExcel}
-            className="bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Icon name="Download" size={16} className="mr-2" />
-            Скачать Excel
-          </Button>
-          <Button
-            variant={zoomLevel === 'month' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setZoomLevel('month')}
-          >
-            Месяц
-          </Button>
-          <Button
-            variant={zoomLevel === 'week' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setZoomLevel('week')}
-          >
-            Неделя
-          </Button>
-        </div>
+        <Button
+          onClick={exportToExcel}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        >
+          <Icon name="Download" size={16} className="mr-2" />
+          Скачать Excel
+        </Button>
       </div>
 
-      {/* Легенда */}
-      <div className="flex flex-wrap gap-3 mb-6 text-xs sm:text-sm">
+      {/* Legend */}
+      <div className="flex flex-wrap gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
         {Object.entries(categoryColors).map(([key, value]) => (
           <div key={key} className="flex items-center gap-2">
-            <div className={`w-4 h-4 ${value.bg} rounded`}></div>
-            <span className="text-gray-700">{value.text}</span>
+            <div className={`w-4 h-4 rounded ${value.bg}`} />
+            <span className="text-sm text-gray-700">{value.text}</span>
           </div>
         ))}
       </div>
 
-      {/* График Ганта */}
+      {/* Gantt Chart */}
       <div className="overflow-x-auto">
-        <div className="min-w-[800px]">
-          {/* Заголовок с месяцами */}
-          <div className="flex mb-2 bg-gray-100 rounded-lg p-2">
-            <div className="w-48 font-semibold text-gray-700 text-sm">Работа</div>
-            <div className="flex-1 flex">
-              {months.map((month, idx) => (
-                <div key={idx} className="flex-1 text-center text-xs font-semibold text-gray-600">
-                  {month}
-                </div>
-              ))}
-            </div>
-            <div className="w-32 text-right font-semibold text-gray-700 text-sm">Ответственный</div>
+        <div className="min-w-[1200px]">
+          {/* Month Headers */}
+          <div className="flex border-b-2 border-gray-300 mb-2">
+            {monthLabels.map((month, idx) => (
+              <div
+                key={idx}
+                className="flex-1 text-center py-2 font-bold text-gray-700 bg-gray-100 border-r border-gray-300"
+                style={{ width: `${(month.weeks / 32) * 100}%` }}
+              >
+                {month.name}
+              </div>
+            ))}
           </div>
 
-          {/* Задачи */}
-          <div className="space-y-1">
+          {/* Week Headers */}
+          <div className="flex border-b border-gray-300 mb-4">
+            {weekLabels.map((week, idx) => (
+              <div
+                key={idx}
+                className={`flex-1 text-center py-1 text-xs text-gray-600 ${
+                  idx % 4 === 3 ? 'border-r-2 border-gray-400' : 'border-r border-gray-200'
+                }`}
+                style={{ width: `${100 / 32}%` }}
+              >
+                {week}
+              </div>
+            ))}
+          </div>
+
+          {/* Tasks */}
+          <div className="space-y-2">
             {tasks.map((task) => {
-              const colors = categoryColors[task.category];
               const position = getTaskPosition(task);
+              const colors = categoryColors[task.category];
               
               return (
                 <div
                   key={task.id}
-                  className="flex items-center hover:bg-gray-50 rounded transition-colors cursor-pointer"
+                  className="relative h-10 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
                   onClick={() => setSelectedTask(task)}
                 >
-                  <div className="w-48 text-xs sm:text-sm text-gray-700 py-2 px-1">
-                    <span className="font-mono text-gray-500 mr-1">{task.id}</span>
-                    {task.name}
-                  </div>
-                  <div className="flex-1 relative h-8">
-                    <div
-                      className={`absolute ${colors.bg} ${colors.border} border-2 rounded-lg h-6 top-1 transition-all hover:scale-105 hover:shadow-lg flex items-center justify-center text-white text-xs font-semibold opacity-90 hover:opacity-100`}
-                      style={position}
-                    >
-                      <span className="truncate px-1">{task.duration}м</span>
-                    </div>
-                  </div>
-                  <div className="w-32 text-right text-xs text-gray-600 py-2 px-1">
-                    {task.responsible}
+                  <div
+                    className={`absolute h-full ${colors.bg} ${colors.hover} ${colors.border} border-2 rounded flex items-center px-2 text-white text-xs font-semibold transition-all shadow-md hover:shadow-lg overflow-hidden`}
+                    style={position}
+                    title={task.name}
+                  >
+                    <span className="truncate">{task.id} {task.name}</span>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Вертикальные линии месяцев */}
-          <div className="relative h-2 mt-2">
-            <div className="absolute inset-0 flex">
-              {months.map((_, idx) => (
-                <div key={idx} className="flex-1 border-l border-gray-300"></div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Детали выбранной задачи */}
+      {/* Selected Task Details */}
       {selectedTask && (
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-l-4 border-l-blue-600">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h4 className="font-bold text-gray-900 mb-2">
-                {selectedTask.id} {selectedTask.name}
-              </h4>
-              <div className="space-y-1 text-sm text-gray-700">
-                <p><strong>Категория:</strong> {categoryColors[selectedTask.category].text}</p>
-                <p><strong>Начало:</strong> Месяц {Math.floor(selectedTask.startMonth) + 1}</p>
-                <p><strong>Длительность:</strong> {selectedTask.duration} месяцев</p>
-                <p><strong>Ответственный:</strong> {selectedTask.responsible}</p>
-                <p><strong>Статус:</strong> {selectedTask.status === 'planned' ? 'Запланировано' : selectedTask.status === 'in-progress' ? 'В работе' : 'Завершено'}</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedTask(null)}
-            >
+        <Card className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300">
+          <div className="flex items-start justify-between mb-4">
+            <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Icon name="Info" size={20} className="text-blue-600" />
+              {selectedTask.id}: {selectedTask.name}
+            </h4>
+            <button onClick={() => setSelectedTask(null)} className="text-gray-500 hover:text-gray-700">
               <Icon name="X" size={20} />
-            </Button>
+            </button>
           </div>
-        </div>
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="font-semibold text-gray-700">Начало:</span>
+              <span className="ml-2">Неделя {selectedTask.startWeek + 1}</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-700">Длительность:</span>
+              <span className="ml-2">{selectedTask.duration} недель</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-700">Окончание:</span>
+              <span className="ml-2">Неделя {selectedTask.startWeek + selectedTask.duration}</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-700">Категория:</span>
+              <span className="ml-2">{categoryColors[selectedTask.category].text}</span>
+            </div>
+            <div className="sm:col-span-2">
+              <span className="font-semibold text-gray-700">Ответственный:</span>
+              <span className="ml-2">{selectedTask.responsible}</span>
+            </div>
+            <div className="sm:col-span-2">
+              <span className="font-semibold text-gray-700">Зависимости:</span>
+              <span className="ml-2">{selectedTask.dependencies || '-'}</span>
+            </div>
+          </div>
+        </Card>
       )}
-
-      {/* Критический путь */}
-      <div className="mt-6 p-4 bg-red-50 border-l-4 border-l-red-600 rounded-lg">
-        <h4 className="font-bold text-red-900 mb-2 flex items-center gap-2">
-          <Icon name="AlertTriangle" size={20} className="text-red-600" />
-          Критический путь (нельзя задерживать!)
-        </h4>
-        <ul className="text-sm text-gray-700 space-y-1">
-          <li>• Водолазные обследования → Конструкции ГТС → Экспертиза</li>
-          <li>• Декларация Ростехнадзора → Подача в экспертизу</li>
-          <li>• Переустройство ЛЭП (Россети) → Разрешение на строительство</li>
-          <li>• ОВОС + общественные слушания → Экологическая экспертиза</li>
-        </ul>
-      </div>
     </Card>
   );
 };
