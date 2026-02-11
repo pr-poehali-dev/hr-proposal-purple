@@ -21,6 +21,8 @@ const KazarmaRoadmap = () => {
         scale: 2,
         useCORS: true,
         logging: false,
+        width: element.scrollWidth,
+        height: element.scrollHeight
       });
 
       const imgData = canvas.toDataURL("image/png");
@@ -29,20 +31,20 @@ const KazarmaRoadmap = () => {
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const ratio = pdfWidth / imgWidth;
+      const imgX = 0;
       const imgY = 0;
 
       let heightLeft = imgHeight * ratio;
       let position = 0;
 
-      pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.addImage(imgData, "PNG", imgX, imgY, pdfWidth, imgHeight * ratio);
       heightLeft -= pdfHeight;
 
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight * ratio;
         pdf.addPage();
-        pdf.addImage(imgData, "PNG", imgX, position, imgWidth * ratio, imgHeight * ratio);
+        pdf.addImage(imgData, "PNG", imgX, position, pdfWidth, imgHeight * ratio);
         heightLeft -= pdfHeight;
       }
 
@@ -87,9 +89,12 @@ const KazarmaRoadmap = () => {
         <div id="roadmap-content" className="bg-white rounded-xl shadow-lg p-12">
           {/* Заголовок */}
           <div className="text-center mb-12 pb-8 border-b-2 border-slate-200">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Дорожная карта выполнения работ
+            <h2 className="text-2xl font-bold text-blue-600 mb-6">
+              Санкт-Петербургский Проектный Институт
             </h2>
+            <h3 className="text-3xl font-bold text-slate-900 mb-4">
+              Дорожная карта выполнения работ
+            </h3>
             <p className="text-xl text-slate-700 mb-2">
               по капитальному ремонту казармы
             </p>
@@ -248,7 +253,7 @@ const KazarmaRoadmap = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Wallet" size={20} className="text-green-600" />
-                      <span className="font-semibold">2 100 000 ₽</span>
+                      <span className="font-semibold">2 800 000 ₽</span>
                     </div>
                   </div>
                 </div>
@@ -316,7 +321,7 @@ const KazarmaRoadmap = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Wallet" size={20} className="text-purple-600" />
-                      <span className="font-semibold">1 400 000 ₽</span>
+                      <span className="font-semibold">700 000 ₽</span>
                     </div>
                   </div>
                 </div>
@@ -332,7 +337,7 @@ const KazarmaRoadmap = () => {
                 { week: "21-22", title: "Согласование с эксплуатирующими организациями", desc: "Направление разделов в электросети, водоканал, теплосети. Внесение корректировок", resp: "ГИП, инженеры ИОС" },
                 { week: "22", title: "Комплектация и выпуск", desc: "Тиражирование документации, формирование томов, подготовка электронной версии", resp: "Технический специалист" },
                 { week: "22", title: "Итоговая сдача", desc: "Передача полного комплекта согласованной ПД. Подписание итогового акта", resp: "Руководитель проекта", milestone: true },
-                { week: "22", title: "Окончательный расчет", desc: "Получение окончательного платежа 20% (1 400 000 ₽)", resp: "Руководитель проекта", milestone: true }
+                { week: "22", title: "Окончательный расчет", desc: "Получение окончательного платежа 20% (700 000 ₽)", resp: "Руководитель проекта", milestone: true }
               ].map((task, idx) => (
                 <Card key={idx} className={`p-4 ${task.milestone ? 'bg-green-50 border-2 border-green-400' : 'hover:bg-slate-50'}`}>
                   <div className="flex items-start gap-4">
@@ -405,7 +410,7 @@ const KazarmaRoadmap = () => {
               {[
                 { title: "Аванс", percent: "40%", amount: "2 800 000 ₽", timing: "Начало работ (после подписания договора)", color: "from-blue-500 to-blue-600" },
                 { title: "Промежуточный платеж", percent: "40%", amount: "2 800 000 ₽", timing: "По завершении разработки ПД (этап 2)", color: "from-green-500 to-green-600" },
-                { title: "Окончательный расчет", percent: "20%", amount: "1 400 000 ₽", timing: "После полного согласования и передачи документации", color: "from-purple-500 to-purple-600" }
+                { title: "Окончательный расчет", percent: "20%", amount: "700 000 ₽", timing: "После полного согласования и передачи документации", color: "from-purple-500 to-purple-600" }
               ].map((payment, idx) => (
                 <Card key={idx} className="p-6 hover:shadow-lg transition-shadow">
                   <div className={`w-full h-2 bg-gradient-to-r ${payment.color} rounded-full mb-4`}></div>
