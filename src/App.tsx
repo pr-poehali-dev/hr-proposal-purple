@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Roadmap from "./pages/Roadmap";
+import KazarmaProposal from "./pages/KazarmaProposal";
+import KazarmaRoadmap from "./pages/KazarmaRoadmap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,6 +21,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Roadmap />} />
             <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/kazarma" element={<KazarmaProposal />} />
+            <Route path="/kazarma/roadmap" element={<KazarmaRoadmap />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
