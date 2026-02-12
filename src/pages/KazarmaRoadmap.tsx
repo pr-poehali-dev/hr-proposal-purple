@@ -191,7 +191,7 @@ const KazarmaRoadmap = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Wallet" size={20} className="text-blue-600" />
-                      <span className="font-semibold">3 500 000 ₽</span>
+                      <span className="font-semibold">2 800 000 ₽</span>
                     </div>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ const KazarmaRoadmap = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Wallet" size={20} className="text-purple-600" />
-                      <span className="font-semibold">700 000 ₽</span>
+                      <span className="font-semibold">1 400 000 ₽</span>
                     </div>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ const KazarmaRoadmap = () => {
                 { week: "21-22", title: "Согласование с эксплуатирующими организациями", desc: "Направление разделов в электросети, водоканал, теплосети. Внесение корректировок", resp: "ГИП, инженеры ИОС" },
                 { week: "22", title: "Комплектация и выпуск", desc: "Тиражирование документации, формирование томов, подготовка электронной версии", resp: "Технический специалист" },
                 { week: "22", title: "Итоговая сдача", desc: "Передача полного комплекта согласованной ПД. Подписание итогового акта", resp: "Руководитель проекта", milestone: true },
-                { week: "22", title: "Окончательный расчет", desc: "Получение окончательного платежа 20% (700 000 ₽)", resp: "Руководитель проекта", milestone: true }
+                { week: "22", title: "Окончательный расчет", desc: "Получение окончательного платежа 20% (1 400 000 ₽)", resp: "Руководитель проекта", milestone: true }
               ].map((task, idx) => (
                 <Card key={idx} className={`p-4 ${task.milestone ? 'bg-green-50 border-2 border-green-400' : 'hover:bg-slate-50'}`}>
                   <div className="flex items-start gap-4">
