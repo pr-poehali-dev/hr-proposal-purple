@@ -86,16 +86,16 @@ const KazarmaRoadmap = () => {
           </div>
         </div>
 
-        <div id="roadmap-content" className="bg-white rounded-xl shadow-lg p-12">
+        <div id="roadmap-content" className="bg-white rounded-xl shadow-lg p-6">
           {/* Заголовок */}
-          <div className="text-center mb-12 pb-8 border-b-2 border-slate-200">
-            <h2 className="text-2xl font-bold text-blue-600 mb-6">
+          <div className="text-center mb-6 pb-4 border-b-2 border-slate-200">
+            <h2 className="text-xl font-bold text-blue-600 mb-3">
               Санкт-Петербургский Проектный Институт
             </h2>
-            <h3 className="text-3xl font-bold text-slate-900 mb-4">
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
               Дорожная карта выполнения работ
             </h3>
-            <p className="text-xl text-slate-700 mb-2">
+            <p className="text-lg text-slate-700 mb-2">
               по капитальному ремонту казармы
             </p>
             <div className="mt-6 grid grid-cols-4 gap-4 text-slate-600">
@@ -119,12 +119,12 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* Ключевые преимущества */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">
+          <div className="mb-5">
+            <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">
               Как мы закрываем боли клиентов в проектировании
             </h3>
             
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-3">
               {[
                 {
                   icon: "Shield",
@@ -163,7 +163,7 @@ const KazarmaRoadmap = () => {
                   color: "text-indigo-600"
                 }
               ].map((benefit, idx) => (
-                <Card key={idx} className="p-6 hover:shadow-lg transition-all border-2 hover:border-blue-300">
+                <Card key={idx} className="p-3 hover:shadow-lg transition-all border-2 hover:border-blue-300">
                   <Icon name={benefit.icon} size={40} className={`${benefit.color} mb-4`} />
                   <h4 className="font-bold text-lg text-slate-900 mb-2">{benefit.title}</h4>
                   <p className="text-sm text-slate-600">{benefit.desc}</p>
@@ -173,12 +173,12 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* ЭТАП 1 */}
-          <div className="mb-12">
+          <div className="mb-5">
             <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 p-8 mb-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <Badge className="mb-3 bg-blue-600">Этап 1</Badge>
-                  <h3 className="text-3xl font-bold text-slate-900 mb-2">
+                  <Badge className="mb-2 bg-blue-600 text-xs">Этап 1</Badge>
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">
                     Предпроектная подготовка и комплексное обследование
                   </h3>
                   <p className="text-slate-600 mb-4">
@@ -186,16 +186,16 @@ const KazarmaRoadmap = () => {
                   </p>
                   <div className="flex gap-6">
                     <div className="flex items-center gap-2">
-                      <Icon name="Clock" size={20} className="text-blue-600" />
-                      <span className="font-semibold">8 недель</span>
+                      <Icon name="Clock" size={16} className="text-blue-600" />
+                      <span className="font-semibold text-sm">8 недель</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="Wallet" size={20} className="text-blue-600" />
+                      <Icon name="Wallet" size={16} className="text-blue-600" />
                       <span className="font-semibold">2 800 000 ₽</span>
                     </div>
                   </div>
                 </div>
-                <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-white text-4xl font-bold">
+                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-3xl font-bold">
                   1
                 </div>
               </div>
@@ -213,11 +213,11 @@ const KazarmaRoadmap = () => {
               ].map((task, idx) => (
                 <Card key={idx} className={`p-4 ${task.milestone ? 'bg-green-50 border-2 border-green-400' : 'hover:bg-slate-50'}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                       {task.milestone ? (
                         <Icon name="Flag" size={28} className="text-green-600" />
                       ) : (
-                        <span className="font-bold text-blue-600">{task.week}</span>
+                        <span className="font-bold text-sm text-blue-600">{task.week}</span>
                       )}
                     </div>
                     <div className="flex-1">
@@ -235,12 +235,12 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* ЭТАП 2 */}
-          <div className="mb-12">
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 p-8 mb-6">
+          <div className="mb-5">
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 p-4 mb-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <Badge className="mb-3 bg-green-600">Этап 2</Badge>
-                  <h3 className="text-3xl font-bold text-slate-900 mb-2">
+                  <Badge className="mb-2 bg-green-600 text-xs">Этап 2</Badge>
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">
                     Разработка проектной документации
                   </h3>
                   <p className="text-slate-600 mb-4">
@@ -248,16 +248,16 @@ const KazarmaRoadmap = () => {
                   </p>
                   <div className="flex gap-6">
                     <div className="flex items-center gap-2">
-                      <Icon name="Clock" size={20} className="text-green-600" />
-                      <span className="font-semibold">12 недель</span>
+                      <Icon name="Clock" size={16} className="text-green-600" />
+                      <span className="font-semibold text-sm">12 недель</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="Wallet" size={20} className="text-green-600" />
+                      <Icon name="Wallet" size={16} className="text-green-600" />
                       <span className="font-semibold">2 800 000 ₽</span>
                     </div>
                   </div>
                 </div>
-                <div className="w-24 h-24 rounded-full bg-green-600 flex items-center justify-center text-white text-4xl font-bold">
+                <div className="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-white text-3xl font-bold">
                   2
                 </div>
               </div>
@@ -278,11 +278,11 @@ const KazarmaRoadmap = () => {
               ].map((task, idx) => (
                 <Card key={idx} className={`p-4 ${task.milestone ? 'bg-green-50 border-2 border-green-400' : 'hover:bg-slate-50'}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
                       {task.milestone ? (
                         <Icon name="Flag" size={28} className="text-green-600" />
                       ) : task.icon ? (
-                        <Icon name={task.icon} size={28} className="text-green-600" />
+                        <Icon name={task.icon} size={20} className="text-green-600" />
                       ) : (
                         <span className="font-bold text-green-600">{task.week}</span>
                       )}
@@ -302,12 +302,12 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* ЭТАП 3 */}
-          <div className="mb-12">
-            <Card className="bg-gradient-to-r from-purple-50 to-violet-50 border-2 border-purple-300 p-8 mb-6">
+          <div className="mb-5">
+            <Card className="bg-gradient-to-r from-purple-50 to-violet-50 border-2 border-purple-300 p-4 mb-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <Badge className="mb-3 bg-purple-600">Этап 3</Badge>
-                  <h3 className="text-3xl font-bold text-slate-900 mb-2">
+                  <Badge className="mb-2 bg-purple-600 text-xs">Этап 3</Badge>
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">
                     ПОС, согласование и итоговая сдача
                   </h3>
                   <p className="text-slate-600 mb-4">
@@ -315,16 +315,16 @@ const KazarmaRoadmap = () => {
                   </p>
                   <div className="flex gap-6">
                     <div className="flex items-center gap-2">
-                      <Icon name="Clock" size={20} className="text-purple-600" />
-                      <span className="font-semibold">4 недели</span>
+                      <Icon name="Clock" size={16} className="text-purple-600" />
+                      <span className="font-semibold text-sm">4 недели</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="Wallet" size={20} className="text-purple-600" />
-                      <span className="font-semibold">1 400 000 ₽</span>
+                      <Icon name="Wallet" size={16} className="text-purple-600" />
+                      <span className="font-semibold text-sm">1 400 000 ₽</span>
                     </div>
                   </div>
                 </div>
-                <div className="w-24 h-24 rounded-full bg-purple-600 flex items-center justify-center text-white text-4xl font-bold">
+                <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white text-3xl font-bold">
                   3
                 </div>
               </div>
@@ -341,7 +341,7 @@ const KazarmaRoadmap = () => {
               ].map((task, idx) => (
                 <Card key={idx} className={`p-4 ${task.milestone ? 'bg-green-50 border-2 border-green-400' : 'hover:bg-slate-50'}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
                       {task.milestone ? (
                         <Icon name="Flag" size={28} className="text-green-600" />
                       ) : (
@@ -363,16 +363,16 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* Ключевые вехи */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-              <Icon name="TrendingUp" size={28} className="text-blue-600" />
+          <div className="mb-5">
+            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <Icon name="TrendingUp" size={20} className="text-blue-600" />
               Ключевые вехи проекта
             </h3>
             
             <div className="relative">
               <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 via-green-400 to-purple-400"></div>
               
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {[
                   { week: "Неделя 1", title: "Старт проекта", desc: "Подписан договор, получен аванс", color: "bg-blue-500" },
                   { week: "Неделя 8", title: "Завершение обследования", desc: "Передано техническое заключение, подписан акт этапа 1", color: "bg-blue-500" },
@@ -381,8 +381,8 @@ const KazarmaRoadmap = () => {
                   { week: "Неделя 22", title: "Получение всех согласований", desc: "Листы согласования с пользователем и эксплуатирующими организациями", color: "bg-purple-500" },
                   { week: "Неделя 23", title: "Итоговая сдача", desc: "Подписан итоговый акт, передан полный комплект, получен окончательный платеж", color: "bg-green-600" }
                 ].map((milestone, idx) => (
-                  <div key={idx} className="relative flex items-start gap-6 pl-16">
-                    <div className={`absolute left-4 w-8 h-8 rounded-full ${milestone.color} ring-4 ring-white flex items-center justify-center`}>
+                  <div key={idx} className="relative flex items-start gap-4 pl-12">
+                    <div className={`absolute left-2 w-6 h-6 rounded-full ${milestone.color} ring-2 ring-white flex items-center justify-center`}>
                       <Icon name="Check" size={20} className="text-white" />
                     </div>
                     <Card className="flex-1 p-4 hover:shadow-lg transition-shadow">
@@ -401,8 +401,8 @@ const KazarmaRoadmap = () => {
           </div>
 
           {/* График финансирования */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+          <div className="mb-5">
+            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
               <Icon name="PiggyBank" size={28} className="text-blue-600" />
               График финансирования
             </h3>
@@ -413,43 +413,43 @@ const KazarmaRoadmap = () => {
                 { title: "Промежуточный платеж", percent: "40%", amount: "2 800 000 ₽", timing: "По завершении разработки ПД (этап 2)", color: "from-green-500 to-green-600" },
                 { title: "Окончательный расчет", percent: "20%", amount: "1 400 000 ₽", timing: "После полного согласования и передачи документации", color: "from-purple-500 to-purple-600" }
               ].map((payment, idx) => (
-                <Card key={idx} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className={`w-full h-2 bg-gradient-to-r ${payment.color} rounded-full mb-4`}></div>
-                  <h4 className="font-bold text-lg text-slate-900 mb-2">{payment.title}</h4>
-                  <p className="text-4xl font-bold text-slate-900 mb-1">{payment.percent}</p>
-                  <p className="text-2xl font-semibold text-blue-600 mb-3">{payment.amount}</p>
-                  <p className="text-sm text-slate-600">{payment.timing}</p>
+                <Card key={idx} className="p-3 hover:shadow-lg transition-shadow">
+                  <div className={`w-full h-1 bg-gradient-to-r ${payment.color} rounded-full mb-2`}></div>
+                  <h4 className="font-bold text-base text-slate-900 mb-1">{payment.title}</h4>
+                  <p className="text-3xl font-bold text-slate-900 mb-1">{payment.percent}</p>
+                  <p className="text-xl font-semibold text-blue-600 mb-2">{payment.amount}</p>
+                  <p className="text-xs text-slate-600">{payment.timing}</p>
                 </Card>
               ))}
             </div>
           </div>
 
           {/* Риски и меры */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-              <Icon name="AlertTriangle" size={28} className="text-orange-600" />
+          <div className="mb-5">
+            <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+              <Icon name="AlertTriangle" size={20} className="text-orange-600" />
               Риски и меры их минимизации
             </h3>
             
-            <div className="space-y-4">
+            <div className="space-y-2">
               {[
                 { risk: "Неполнота исходных данных", prob: "Средняя", impact: "Высокое", measure: "Формирование детального запроса на старте, регулярный контроль" },
                 { risk: "Выявление скрытых дефектов при вскрытиях", prob: "Высокая", impact: "Среднее", measure: "Оперативная фиксация, включение в дефектную ведомость, корректировка объемов" },
                 { risk: "Задержки согласований", prob: "Высокая", impact: "Высокое", measure: "Параллельное направление во все инстанции, предварительные консультации" },
                 { risk: "Изменение требований в процессе", prob: "Низкая", impact: "Среднее", measure: "Фиксация в протоколах совещаний, оформление дополнительных соглашений" }
               ].map((risk, idx) => (
-                <Card key={idx} className="p-4 hover:bg-slate-50">
+                <Card key={idx} className="p-2 hover:bg-slate-50">
                   <div className="grid grid-cols-12 gap-4 items-start">
                     <div className="col-span-4">
-                      <h4 className="font-bold text-slate-900 mb-1">{risk.risk}</h4>
-                      <div className="flex gap-2">
+                      <h4 className="font-bold text-sm text-slate-900 mb-1">{risk.risk}</h4>
+                      <div className="flex gap-1">
                         <Badge variant="outline" className="text-xs">{risk.prob}</Badge>
                         <Badge variant="outline" className="text-xs">{risk.impact}</Badge>
                       </div>
                     </div>
                     <div className="col-span-8">
-                      <p className="text-sm text-slate-600 flex items-start gap-2">
-                        <Icon name="ShieldCheck" size={16} className="text-green-600 mt-1 flex-shrink-0" />
+                      <p className="text-xs text-slate-600 flex items-start gap-2">
+                        <Icon name="ShieldCheck" size={14} className="text-green-600 mt-1 flex-shrink-0" />
                         <span>{risk.measure}</span>
                       </p>
                     </div>
