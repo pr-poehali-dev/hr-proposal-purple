@@ -40,7 +40,7 @@ const KazarmaProposal = () => {
       pdf.addImage(imgData, "PNG", imgX, imgY, pdfWidth, imgHeight * ratio);
       heightLeft -= pdfHeight;
 
-      while (heightLeft >= 0) {
+      while (heightLeft > 0) {
         position = heightLeft - imgHeight * ratio;
         pdf.addPage();
         pdf.addImage(imgData, "PNG", imgX, position, pdfWidth, imgHeight * ratio);
