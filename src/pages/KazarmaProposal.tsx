@@ -151,8 +151,8 @@ const KazarmaProposal = () => {
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600">
                       Разработка объемно-планировочных и архитектурных решений по ремонту кровли, фасада, внутренних помещений. Ведомости отделки, спецификации материалов, узлы и детали
                     </td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">840 000</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">12,0%</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">700 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">10,0%</td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm">3</td>
@@ -160,16 +160,16 @@ const KazarmaProposal = () => {
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600">
                       Разработка решений по усилению и восстановлению несущих и ограждающих конструкций, узлы, детали, ведомости расхода материалов, указания по производству работ
                     </td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">840 000</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">12,0%</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">700 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">10,0%</td>
                   </tr>
                   <tr className="bg-blue-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm">4</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm font-semibold" colSpan={2}>
                       Раздел 5. Сведения об инженерном оборудовании (ИОС)
                     </td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">1 120 000</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">16,0%</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">2 800 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">40,0%</td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm"></td>
@@ -182,39 +182,31 @@ const KazarmaProposal = () => {
                     <td className="border border-slate-300 px-4 py-3 text-sm"></td>
                     <td className="border border-slate-300 px-4 py-3 text-sm pl-8">Подраздел ИОС 5.2 — Система водоснабжения</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600"></td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">210 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">525 000</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-right"></td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm"></td>
                     <td className="border border-slate-300 px-4 py-3 text-sm pl-8">Подраздел ИОС 5.3 — Система водоотведения</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600"></td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">210 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">525 000</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-right"></td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm"></td>
                     <td className="border border-slate-300 px-4 py-3 text-sm pl-8">Подраздел ИОС 5.4 — Отопление, вентиляция, кондиционирование</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600"></td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">280 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">700 000</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-right"></td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="border border-slate-300 px-4 py-3 text-sm"></td>
                     <td className="border border-slate-300 px-4 py-3 text-sm pl-8">Подраздел ИОС 5.5 — Система АПС (Болид)</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600"></td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">140 000</td>
+                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">350 000</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-right"></td>
                   </tr>
-                  <tr className="hover:bg-slate-50">
-                    <td className="border border-slate-300 px-4 py-3 text-sm">5</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm font-semibold">Раздел 7. Проект организации строительства (ПОС)</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-slate-600">
-                      Календарный план производства работ, стройгенплан, ведомости объемов демонтажных и монтажных работ, ведомость строительных отходов, схема вывоза отходов, мероприятия по безопасной организации работ
-                    </td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right font-semibold">1 400 000</td>
-                    <td className="border border-slate-300 px-4 py-3 text-sm text-right">20,0%</td>
-                  </tr>
+
                   <tr className="bg-slate-200 font-bold">
                     <td colSpan={3} className="border border-slate-300 px-4 py-3 text-sm text-right">ИТОГО:</td>
                     <td className="border border-slate-300 px-4 py-3 text-sm text-right">7 000 000</td>
@@ -245,17 +237,17 @@ const KazarmaProposal = () => {
                 {
                   num: "2",
                   name: "Разработка проектной документации",
-                  content: "Разработка разделов АР, КР, ИОС (комплексно), ПОС. Взаимная увязка разделов, внутренняя проверка, нормоконтроль",
+                  content: "Разработка разделов АР, КР, ИОС (комплексно). Взаимная увязка разделов, внутренняя проверка, нормоконтроль",
                   cost: "2 800 000",
-                  period: "10-12 недель",
+                  period: "11 недель",
                   color: "bg-green-100 border-green-300"
                 },
                 {
                   num: "3",
-                  name: "Согласование и сдача",
-                  content: "Согласование проектной документации с пользователем и эксплуатирующими организациями. Внесение корректировок по замечаниям. Передача Заказчику полного комплекта документации по Акту сдачи-приемки",
+                  name: "ПОС, согласование и сдача",
+                  content: "Разработка раздела ПОС (календарный план, стройгенплан, ведомости). Согласование проектной документации с пользователем и эксплуатирующими организациями. Внесение корректировок по замечаниям. Передача Заказчику полного комплекта документации по Акту сдачи-приемки",
                   cost: "1 400 000",
-                  period: "2-3 недели",
+                  period: "4 недели",
                   color: "bg-purple-100 border-purple-300"
                 }
 
@@ -290,7 +282,7 @@ const KazarmaProposal = () => {
                 <span className="text-lg font-bold text-slate-900">ИТОГО:</span>
                 <div className="flex gap-8 items-center">
                   <span className="text-3xl font-bold text-slate-900">7 000 000 ₽</span>
-                  <span className="text-lg font-semibold text-slate-700">18-23 недели</span>
+                  <span className="text-lg font-semibold text-slate-700">21-23 недели</span>
                 </div>
               </div>
             </Card>
