@@ -1,714 +1,700 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const POEM_STANZAS = [
-  `Шумел кабак, и музыка гремела,
-Девчонки вились в танце у стола.
-Но только сердце вдруг оцепенело,
-Когда Аксинья мимо проплыла.`,
+const DENIS_PHOTO = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/3c190eea-e041-4841-b769-284b6570939f.jpg";
+const AURORA_PHOTO = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/e37526b1-7ed7-47b2-8364-3a18f8abaafc.jpg";
+const AKSINIA_1 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/957e3bcf-bb03-4864-a25c-187913323315.jpg";
+const AKSINIA_2 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/5761686f-bee5-486b-9109-ce2b92303d08.jpg";
+const AKSINIA_3 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/ab451697-26a3-405a-8284-e87ff32d7769.jpg";
 
-  `Она — как лёд из северного края,
-Где в Мурманске холодная пурга.
-Гитарой звонкой струны задевая,
-В душе растаяла моя струна.`,
-
-  `Я к ним за стол подсел неосторожно,
-Мешал поесть и путал все слова.
-Я был хмельной, нескладный и нелепый,
-Но взгляд её, таинственный и светлый,
-Манил меня, сквозь шум и облака.`,
-
-  `Ты — мечта и вдохновенье,
-В твоих глазах — сиянье чистоты.
-Хоть был я пьян в то краткое мгновенье,
-В душе моей зажглись твои черты.`,
-
-  `Мы встретимся на площади красивой,
-На самой лучшей, где все Пять Углов.
-Под небом заполярным и счастливым,
-Под шёпот близких северных ветров.`,
-
-  `Я верю в свет твоей души прекрасной,
-В завет семьи и в чистоту речей.
-Пусть первый вечер был не сильно ясный,
-Но впереди — Аврора ста лучей.`,
-
-  `С любовью, Денис ♥`
-];
-
-interface Snowflake {
-  id: number;
+interface Particle {
   x: number;
   y: number;
+  vx: number;
+  vy: number;
   size: number;
-  speed: number;
-  opacity: number;
-  wobble: number;
+  life: number;
+  maxLife: number;
+  hue: number;
+  brightness: number;
+  pulseSpeed: number;
+  pulsePhase: number;
 }
 
-interface FloatingHeart {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  speed: number;
-  drift: number;
-}
+const createGoosebumpMelody = (ctx: AudioContext) => {
+  const master = ctx.createGain();
+  master.gain.value = 0.12;
+  master.connect(ctx.destination);
 
-const playRomanticMelody = (audioCtx: AudioContext) => {
-  const masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.15;
-  masterGain.connect(audioCtx.destination);
-
-  const reverb = audioCtx.createConvolver();
-  const reverbTime = 3;
-  const sampleRate = audioCtx.sampleRate;
-  const length = sampleRate * reverbTime;
-  const impulse = audioCtx.createBuffer(2, length, sampleRate);
-  for (let channel = 0; channel < 2; channel++) {
-    const data = impulse.getChannelData(channel);
-    for (let i = 0; i < length; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+  const convolver = ctx.createConvolver();
+  const rate = ctx.sampleRate;
+  const len = rate * 4;
+  const buf = ctx.createBuffer(2, len, rate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
     }
   }
-  reverb.buffer = impulse;
-  
-  const reverbGain = audioCtx.createGain();
-  reverbGain.gain.value = 0.3;
-  reverb.connect(reverbGain);
-  reverbGain.connect(masterGain);
+  convolver.buffer = buf;
+  const wetGain = ctx.createGain();
+  wetGain.gain.value = 0.5;
+  convolver.connect(wetGain);
+  wetGain.connect(master);
+  const dryGain = ctx.createGain();
+  dryGain.gain.value = 0.6;
+  dryGain.connect(master);
 
-  const dryGain = audioCtx.createGain();
-  dryGain.gain.value = 0.7;
-  dryGain.connect(masterGain);
-
-  const playNote = (freq: number, startTime: number, duration: number, vol: number = 0.5) => {
-    const osc = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    
-    osc.type = "sine";
-    osc.frequency.value = freq;
-    osc2.type = "triangle";
-    osc2.frequency.value = freq * 1.001;
-    
-    const oscGain1 = audioCtx.createGain();
-    const oscGain2 = audioCtx.createGain();
-    oscGain1.gain.value = 0.7;
-    oscGain2.gain.value = 0.3;
-    
-    osc.connect(oscGain1);
-    osc2.connect(oscGain2);
-    oscGain1.connect(gain);
-    oscGain2.connect(gain);
-    
-    gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(vol, startTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(vol * 0.6, startTime + duration * 0.4);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-    
-    gain.connect(dryGain);
-    gain.connect(reverb);
-    
-    osc.start(startTime);
-    osc.stop(startTime + duration);
-    osc2.start(startTime);
-    osc2.stop(startTime + duration);
+  const pad = (freq: number, start: number, dur: number, vol: number = 0.06) => {
+    const o1 = ctx.createOscillator();
+    const o2 = ctx.createOscillator();
+    const o3 = ctx.createOscillator();
+    const g = ctx.createGain();
+    o1.type = "sine"; o1.frequency.value = freq;
+    o2.type = "sine"; o2.frequency.value = freq * 1.002;
+    o3.type = "sine"; o3.frequency.value = freq * 0.998;
+    const g1 = ctx.createGain(); g1.gain.value = 0.5;
+    const g2 = ctx.createGain(); g2.gain.value = 0.3;
+    const g3 = ctx.createGain(); g3.gain.value = 0.2;
+    o1.connect(g1); o2.connect(g2); o3.connect(g3);
+    g1.connect(g); g2.connect(g); g3.connect(g);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol, start + dur * 0.3);
+    g.gain.setValueAtTime(vol, start + dur * 0.7);
+    g.gain.linearRampToValueAtTime(0.001, start + dur);
+    g.connect(dryGain); g.connect(convolver);
+    o1.start(start); o1.stop(start + dur);
+    o2.start(start); o2.stop(start + dur);
+    o3.start(start); o3.stop(start + dur);
   };
 
-  const playChord = (freqs: number[], startTime: number, duration: number, vol: number = 0.15) => {
-    freqs.forEach(f => playNote(f, startTime, duration, vol));
+  const note = (freq: number, start: number, dur: number, vol: number = 0.2) => {
+    const o = ctx.createOscillator();
+    const o2 = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = freq;
+    o2.type = "triangle"; o2.frequency.value = freq * 1.001;
+    const g1 = ctx.createGain(); g1.gain.value = 0.7;
+    const g2 = ctx.createGain(); g2.gain.value = 0.3;
+    o.connect(g1); o2.connect(g2);
+    g1.connect(g); g2.connect(g);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol, start + 0.08);
+    g.gain.exponentialRampToValueAtTime(vol * 0.4, start + dur * 0.6);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+    g.connect(dryGain); g.connect(convolver);
+    o.start(start); o.stop(start + dur);
+    o2.start(start); o2.stop(start + dur);
   };
 
-  const C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23, G4 = 392.00;
-  const A4 = 440.00, B4 = 493.88;
-  const C5 = 523.25, D5 = 587.33, E5 = 659.25, F5 = 698.46, G5 = 783.99;
-  const A3 = 220.00, B3 = 246.94, C3 = 130.81, E3 = 164.81, F3 = 174.61, G3 = 196.00;
+  const t = ctx.currentTime + 0.2;
+  const b = 60 / 58;
 
-  const now = audioCtx.currentTime + 0.1;
-  const bpm = 72;
-  const beat = 60 / bpm;
+  const Am = [220, 261.63, 329.63];
+  const F = [174.61, 261.63, 349.23];
+  const C = [130.81, 196, 261.63];
+  const G = [196, 246.94, 392];
+  const Dm = [146.83, 220, 293.66];
+  const Em = [164.81, 246.94, 329.63];
 
-  const melody: [number, number, number][] = [
-    [E4, 0, 1.5], [D4, 1.5, 0.5], [C4, 2, 1], [E4, 3, 1],
-    [G4, 4, 1.5], [F4, 5.5, 0.5], [E4, 6, 1.5], [D4, 7.5, 0.5],
-    
-    [C4, 8, 1.5], [D4, 9.5, 0.5], [E4, 10, 1], [G4, 11, 1],
-    [A4, 12, 1.5], [G4, 13.5, 0.5], [F4, 14, 1], [E4, 15, 1],
-
-    [F4, 16, 1.5], [E4, 17.5, 0.5], [D4, 18, 1], [C4, 19, 1],
-    [D4, 20, 1.5], [E4, 21.5, 0.5], [F4, 22, 1], [D4, 23, 1],
-
-    [E4, 24, 2], [G4, 26, 1], [A4, 27, 1],
-    [G4, 28, 1.5], [E4, 29.5, 0.5], [C4, 30, 2],
-
-    [A4, 32, 1.5], [G4, 33.5, 0.5], [F4, 34, 1], [E4, 35, 1],
-    [D4, 36, 1.5], [E4, 37.5, 0.5], [F4, 38, 1], [G4, 39, 1],
-
-    [C5, 40, 2], [B4, 42, 1], [A4, 43, 1],
-    [G4, 44, 1.5], [F4, 45.5, 0.5], [E4, 46, 2],
-
-    [F4, 48, 1.5], [G4, 49.5, 0.5], [A4, 50, 1], [G4, 51, 1],
-    [E4, 52, 1.5], [D4, 53.5, 0.5], [C4, 54, 2],
-
-    [D4, 56, 1.5], [E4, 57.5, 0.5], [C4, 58, 2],
-    [C4, 60, 4],
+  const chordSeq: [number[], number, number][] = [
+    [Am, 0, 8], [F, 8, 8], [C, 16, 8], [G, 24, 8],
+    [Am, 32, 8], [Dm, 40, 8], [F, 48, 4], [Em, 52, 4], [Am, 56, 8],
+    [F, 64, 8], [C, 72, 8], [G, 80, 4], [Am, 84, 4],
+    [Dm, 88, 8], [Am, 96, 8], [F, 104, 4], [G, 108, 4], [Am, 112, 8],
   ];
 
-  const highMelody: [number, number, number][] = [
-    [G5, 4, 2], [F5, 6, 2],
-    [E5, 10, 2], [D5, 12, 2],
-    [C5, 16, 2], [D5, 20, 2],
-    [E5, 24, 4],
-    [G5, 32, 2], [F5, 36, 2],
-    [E5, 40, 4],
-    [D5, 48, 2], [C5, 52, 2],
-    [C5, 58, 6],
+  chordSeq.forEach(([ch, start, dur]) => {
+    ch.forEach(f => pad(f, t + start * b, dur * b, 0.04));
+    ch.forEach(f => pad(f * 2, t + start * b, dur * b, 0.015));
+  });
+
+  const A4 = 440, B4 = 493.88, C5 = 523.25, D5 = 587.33, E5 = 659.25;
+  const G4 = 392, F4 = 349.23, E4 = 329.63, D4 = 293.66, C4 = 261.63, A3 = 220;
+
+  const mel: [number, number, number, number?][] = [
+    [E4, 2, 3], [D4, 5, 1], [C4, 6, 2],
+    [E4, 10, 2], [G4, 12, 2], [A4, 14, 2],
+    [G4, 18, 3], [E4, 21, 1], [D4, 22, 2],
+    [C4, 26, 2], [D4, 28, 2], [E4, 30, 2],
+
+    [A4, 34, 3], [G4, 37, 1], [E4, 38, 2],
+    [D4, 42, 2], [E4, 44, 2], [G4, 46, 2],
+    [A4, 50, 2], [C5, 52, 3], [B4, 55, 1],
+    [A4, 56, 4],
+
+    [E5, 66, 3], [D5, 69, 1], [C5, 70, 2],
+    [B4, 74, 2], [A4, 76, 2], [G4, 78, 2],
+    [A4, 82, 3], [G4, 85, 1], [E4, 86, 2],
+    [D4, 90, 2], [C4, 92, 2], [E4, 94, 2],
+
+    [A4, 98, 3], [C5, 101, 1], [B4, 102, 2],
+    [A4, 106, 2], [G4, 108, 2], [A4, 110, 2],
+    [E4, 114, 4], [A3, 118, 4],
   ];
 
-  const chords: [number[], number, number][] = [
-    [[C3, G3, E4], 0, 4],
-    [[C3, G3, E4], 4, 4],
-    [[A3, E3, C4], 8, 4],
-    [[F3, C4, A4], 12, 4],
-    [[F3, C4, A4], 16, 4],
-    [[G3, B3, D4], 20, 4],
-    [[C3, G3, E4], 24, 4],
-    [[C3, G3, E4], 28, 4],
-    [[F3, C4, A4], 32, 4],
-    [[G3, B3, D4], 36, 4],
-    [[A3, E3, C4], 40, 4],
-    [[F3, C4, A4], 44, 4],
-    [[F3, C4, A4], 48, 4],
-    [[G3, B3, D4], 52, 4],
-    [[C3, G3, E4], 56, 4],
-    [[C3, G3, E4], 60, 4],
-  ];
-
-  melody.forEach(([freq, beatStart, dur]) => {
-    playNote(freq, now + beatStart * beat, dur * beat, 0.35);
+  mel.forEach(([freq, beatStart, dur]) => {
+    note(freq, t + beatStart * b, dur * b, 0.18);
   });
 
-  highMelody.forEach(([freq, beatStart, dur]) => {
-    playNote(freq, now + beatStart * beat, dur * beat, 0.08);
+  const arp: [number, number, number][] = [];
+  chordSeq.forEach(([ch, start, dur]) => {
+    const extended = [...ch, ch[0] * 2, ch[1] * 2];
+    const step = dur / extended.length;
+    extended.forEach((f, i) => {
+      arp.push([f, start + i * step, step * 1.5]);
+    });
+  });
+  arp.forEach(([freq, beatStart, dur]) => {
+    note(freq * 2, t + beatStart * b, dur * b, 0.04);
   });
 
-  chords.forEach(([freqs, beatStart, dur]) => {
-    playChord(freqs, now + beatStart * beat, dur * beat, 0.1);
-  });
-
-  const totalDuration = 64 * beat;
-  return totalDuration;
+  return 122 * b;
 };
+
+const SECTIONS = [
+  {
+    type: "photo" as const,
+    image: AKSINIA_1,
+    title: "Аксинья",
+    text: "Есть люди, рядом с которыми мир замирает. Ты — одна из них. Одного взгляда было достаточно, чтобы я понял: такие, как ты, встречаются раз в жизни.",
+  },
+  {
+    type: "aurora" as const,
+    image: AURORA_PHOTO,
+    title: "Как северное сияние",
+    text: "Ты — как полярное сияние над Мурманском. Невозможно предугадать, невозможно забыть, невозможно отвести взгляд. Ты появляешься — и всё вокруг наполняется светом.",
+  },
+  {
+    type: "photo" as const,
+    image: AKSINIA_2,
+    title: "Твоя нежность",
+    text: "В тебе столько тепла, сколько нет во всех южных морях. Твоя улыбка способна растопить самую долгую полярную ночь. Ты — моё личное чудо.",
+  },
+  {
+    type: "plankton" as const,
+    image: "",
+    title: "Ты светишься",
+    text: "Знаешь, в океане есть планктон, который светится в темноте. Он превращает обычную воду в звёздное небо. Вот и ты — превращаешь обычные дни в нечто волшебное. Каждое мгновение рядом с тобой наполнено светом.",
+  },
+  {
+    type: "photo" as const,
+    image: AKSINIA_3,
+    title: "Та самая",
+    text: "Я не умею говорить красиво. Я путаю слова и иногда говорю не то, что хочу. Но одно я знаю точно — с тех пор, как я тебя встретил, мне не нужно искать больше никого.",
+  },
+];
 
 const Valentine = () => {
   const [started, setStarted] = useState(false);
-  const [envelopeOpen, setEnvelopeOpen] = useState(false);
-  const [showContent, setShowContent] = useState(false);
-  const [visibleStanzas, setVisibleStanzas] = useState(0);
-  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
-  const [hearts, setHearts] = useState<FloatingHeart[]>([]);
-  const [clickHearts, setClickHearts] = useState<{id: number; x: number; y: number}[]>([]);
-  const [auroraPhase, setAuroraPhase] = useState(0);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const melodyIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [currentSection, setCurrentSection] = useState(-1);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [clickSparks, setClickSparks] = useState<{id: number; x: number; y: number}[]>([]);
+  const [showFinal, setShowFinal] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<Particle[]>([]);
+  const animFrameRef = useRef<number>(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const melodyTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartRef = useRef<number | null>(null);
 
-  const createSnowflakes = useCallback(() => {
-    const flakes: Snowflake[] = [];
-    for (let i = 0; i < 60; i++) {
-      flakes.push({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100 - 100,
-        size: Math.random() * 4 + 1,
-        speed: Math.random() * 0.3 + 0.1,
-        opacity: Math.random() * 0.7 + 0.3,
-        wobble: Math.random() * 360
+  const initParticles = useCallback((width: number, height: number) => {
+    const particles: Particle[] = [];
+    for (let i = 0; i < 200; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 3 + 1,
+        life: Math.random() * 200,
+        maxLife: 200 + Math.random() * 300,
+        hue: 170 + Math.random() * 60,
+        brightness: Math.random(),
+        pulseSpeed: 0.02 + Math.random() * 0.03,
+        pulsePhase: Math.random() * Math.PI * 2,
       });
     }
-    return flakes;
+    particlesRef.current = particles;
   }, []);
-
-  const createHearts = useCallback(() => {
-    const h: FloatingHeart[] = [];
-    for (let i = 0; i < 15; i++) {
-      h.push({
-        id: i,
-        x: Math.random() * 100,
-        y: 100 + Math.random() * 20,
-        size: Math.random() * 20 + 10,
-        opacity: Math.random() * 0.4 + 0.1,
-        speed: Math.random() * 0.2 + 0.05,
-        drift: (Math.random() - 0.5) * 0.3
-      });
-    }
-    return h;
-  }, []);
-
-  useEffect(() => {
-    if (!started) return;
-    setSnowflakes(createSnowflakes());
-    setHearts(createHearts());
-  }, [started, createSnowflakes, createHearts]);
-
-  useEffect(() => {
-    if (!started) return;
-    const interval = setInterval(() => {
-      setSnowflakes(prev => prev.map(f => ({
-        ...f,
-        y: f.y > 110 ? -10 : f.y + f.speed,
-        x: f.x + Math.sin((f.y + f.wobble) * 0.02) * 0.15
-      })));
-      setHearts(prev => prev.map(h => ({
-        ...h,
-        y: h.y < -20 ? 110 : h.y - h.speed,
-        x: h.x + h.drift
-      })));
-      setAuroraPhase(p => p + 0.02);
-    }, 50);
-    return () => clearInterval(interval);
-  }, [started]);
-
-  useEffect(() => {
-    if (!showContent) return;
-    if (visibleStanzas >= POEM_STANZAS.length) return;
-    const timer = setTimeout(() => {
-      setVisibleStanzas(v => v + 1);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [showContent, visibleStanzas]);
 
   useEffect(() => {
     if (!started || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationId: number;
-    let phase = 0;
+    const ctx2d = canvas.getContext("2d");
+    if (!ctx2d) return;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      if (particlesRef.current.length === 0) {
+        initParticles(canvas.width, canvas.height);
+      }
     };
     resize();
     window.addEventListener("resize", resize);
 
-    const drawAurora = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      phase += 0.003;
-      
-      const colors = [
-        "rgba(0, 255, 128, 0.04)",
-        "rgba(0, 200, 255, 0.03)",
-        "rgba(100, 0, 255, 0.03)",
-        "rgba(0, 255, 200, 0.04)",
-        "rgba(150, 50, 255, 0.02)",
-      ];
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    const onMove = (e: MouseEvent) => { mouseX = e.clientX; mouseY = e.clientY; };
+    const onTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+      }
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onTouch);
 
-      for (let band = 0; band < colors.length; band++) {
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height * 0.15);
-        
-        for (let x = 0; x <= canvas.width; x += 3) {
-          const normalX = x / canvas.width;
-          const y = canvas.height * 0.15 + 
-            Math.sin(normalX * 3 + phase + band * 0.8) * 60 +
-            Math.sin(normalX * 5 + phase * 1.3 + band) * 30 +
-            Math.sin(normalX * 7 + phase * 0.7) * 20 +
-            band * 25;
-          ctx.lineTo(x, y);
+    let time = 0;
+    const draw = () => {
+      time += 1;
+      ctx2d.fillStyle = "rgba(5, 5, 25, 0.15)";
+      ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+
+      particlesRef.current.forEach(p => {
+        p.life += 1;
+        if (p.life > p.maxLife) {
+          p.x = Math.random() * canvas.width;
+          p.y = Math.random() * canvas.height;
+          p.life = 0;
+          p.maxLife = 200 + Math.random() * 300;
         }
-        
-        ctx.lineTo(canvas.width, 0);
-        ctx.lineTo(0, 0);
-        ctx.closePath();
-        
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.4);
-        gradient.addColorStop(0, "transparent");
-        gradient.addColorStop(0.3, colors[band]);
-        gradient.addColorStop(0.6, colors[band]);
-        gradient.addColorStop(1, "transparent");
-        
-        ctx.fillStyle = gradient;
-        ctx.fill();
-      }
 
-      for (let i = 0; i < 80; i++) {
-        const x = (Math.sin(i * 127.1 + phase * 0.1) * 0.5 + 0.5) * canvas.width;
-        const y = (Math.sin(i * 311.7 + phase * 0.05) * 0.5 + 0.5) * canvas.height * 0.4;
-        const brightness = Math.sin(phase * 2 + i * 0.5) * 0.5 + 0.5;
-        const size = brightness * 2;
-        
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.8})`;
-        ctx.fill();
-      }
+        const dx = mouseX - p.x;
+        const dy = mouseY - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180) {
+          const force = (180 - dist) / 180;
+          p.brightness = Math.min(1, p.brightness + force * 0.1);
+          p.vx += (dx / dist) * force * 0.03;
+          p.vy += (dy / dist) * force * 0.03;
+        } else {
+          p.brightness *= 0.995;
+        }
 
-      animationId = requestAnimationFrame(drawAurora);
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+        p.vx += (Math.random() - 0.5) * 0.05;
+        p.vy += (Math.random() - 0.5) * 0.05;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        const pulse = Math.sin(time * p.pulseSpeed + p.pulsePhase) * 0.5 + 0.5;
+        const alpha = (0.2 + p.brightness * 0.8) * (0.5 + pulse * 0.5);
+        const lifeRatio = p.life < 30 ? p.life / 30 : p.life > p.maxLife - 30 ? (p.maxLife - p.life) / 30 : 1;
+        const finalAlpha = alpha * lifeRatio;
+        const glowSize = p.size * (1 + p.brightness * 3);
+
+        const grad = ctx2d.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowSize * 3);
+        grad.addColorStop(0, `hsla(${p.hue}, 100%, 75%, ${finalAlpha})`);
+        grad.addColorStop(0.3, `hsla(${p.hue}, 100%, 55%, ${finalAlpha * 0.5})`);
+        grad.addColorStop(1, `hsla(${p.hue}, 100%, 40%, 0)`);
+
+        ctx2d.beginPath();
+        ctx2d.arc(p.x, p.y, glowSize * 3, 0, Math.PI * 2);
+        ctx2d.fillStyle = grad;
+        ctx2d.fill();
+
+        ctx2d.beginPath();
+        ctx2d.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+        ctx2d.fillStyle = `hsla(${p.hue}, 100%, 90%, ${finalAlpha})`;
+        ctx2d.fill();
+      });
+
+      animFrameRef.current = requestAnimationFrame(draw);
     };
+    draw();
 
-    drawAurora();
     return () => {
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onTouch);
     };
-  }, [started]);
+  }, [started, initParticles]);
 
   const startExperience = () => {
     setStarted(true);
-    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    audioCtxRef.current = ctx;
-    
-    const duration = playRomanticMelody(ctx);
-    melodyIntervalRef.current = setInterval(() => {
-      playRomanticMelody(ctx);
-    }, duration * 1000 + 500);
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const actx = new AudioCtx();
+    audioCtxRef.current = actx;
+    const dur = createGoosebumpMelody(actx);
+    melodyTimerRef.current = setInterval(() => {
+      if (audioCtxRef.current) createGoosebumpMelody(audioCtxRef.current);
+    }, dur * 1000 + 200);
 
     setTimeout(() => {
-      setEnvelopeOpen(true);
-      setTimeout(() => {
-        setShowContent(true);
-        setVisibleStanzas(1);
-      }, 1500);
-    }, 800);
+      setCurrentSection(0);
+      setTimeout(() => setFadeIn(true), 100);
+    }, 600);
   };
 
-  const handlePageClick = (e: React.MouseEvent) => {
-    if (!showContent) return;
-    const id = Date.now();
-    setClickHearts(prev => [...prev, { id, x: e.clientX, y: e.clientY }]);
+  const goNext = () => {
+    if (currentSection >= SECTIONS.length - 1) {
+      setFadeIn(false);
+      setTimeout(() => setShowFinal(true), 600);
+      return;
+    }
+    setFadeIn(false);
     setTimeout(() => {
-      setClickHearts(prev => prev.filter(h => h.id !== id));
-    }, 2000);
+      setCurrentSection(prev => prev + 1);
+      setTimeout(() => setFadeIn(true), 100);
+    }, 600);
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!started) return;
+    const id = Date.now() + Math.random();
+    setClickSparks(prev => [...prev, { id, x: e.clientX, y: e.clientY }]);
+    setTimeout(() => setClickSparks(prev => prev.filter(s => s.id !== id)), 1500);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartRef.current === null) return;
+    const diff = touchStartRef.current - e.changedTouches[0].clientY;
+    if (diff > 50 && started && !showFinal && currentSection >= 0) {
+      goNext();
+    }
+    touchStartRef.current = null;
   };
 
   useEffect(() => {
     return () => {
-      if (melodyIntervalRef.current) clearInterval(melodyIntervalRef.current);
+      if (melodyTimerRef.current) clearInterval(melodyTimerRef.current);
       if (audioCtxRef.current) audioCtxRef.current.close();
     };
   }, []);
 
   if (!started) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#0a0a2e] via-[#1a1a4e] to-[#0d0d3a] flex items-center justify-center overflow-hidden relative">
+      <div
+        className="min-h-screen flex items-center justify-center overflow-hidden relative cursor-pointer"
+        style={{ background: "linear-gradient(135deg, #050519 0%, #0a0a30 40%, #0f0525 100%)" }}
+        onClick={startExperience}
+      >
         <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 50 }).map((_, i) => (
+          {Array.from({ length: 70 }).map((_, i) => (
             <div
               key={i}
-              className="absolute rounded-full bg-white animate-pulse"
+              className="absolute rounded-full"
               style={{
                 width: Math.random() * 3 + 1,
                 height: Math.random() * 3 + 1,
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
+                background: `hsl(${180 + Math.random() * 40}, 100%, ${60 + Math.random() * 30}%)`,
+                animation: `starTwinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
                 animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${Math.random() * 2 + 1}s`,
-                opacity: Math.random() * 0.8 + 0.2
               }}
             />
           ))}
         </div>
 
-        <div className="text-center z-10 cursor-pointer" onClick={startExperience}>
-          <div className="relative inline-block mb-8 group">
-            <div className="w-32 h-32 mx-auto relative">
-              <div 
-                className="absolute inset-0 animate-pulse"
+        <div className="text-center z-10 px-6">
+          <div className="relative inline-block mb-10">
+            <div className="w-36 h-36 mx-auto relative">
+              <div
+                className="absolute inset-0 rounded-full animate-pulse"
                 style={{
-                  background: "radial-gradient(circle, rgba(255,70,100,0.3) 0%, transparent 70%)",
-                  filter: "blur(20px)"
+                  background: "radial-gradient(circle, rgba(255,80,120,0.25) 0%, transparent 70%)",
+                  filter: "blur(25px)",
                 }}
               />
-              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl group-hover:scale-110 transition-transform duration-500">
+              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl" style={{ filter: "drop-shadow(0 0 20px rgba(255,80,120,0.4))" }}>
                 <defs>
-                  <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#ff6b8a" />
                     <stop offset="50%" stopColor="#ff4571" />
-                    <stop offset="100%" stopColor="#d63060" />
+                    <stop offset="100%" stopColor="#c93060" />
                   </linearGradient>
                 </defs>
                 <path
                   d="M50 88 C25 65, 2 45, 2 28 C2 14, 15 2, 30 2 C38 2, 45 7, 50 18 C55 7, 62 2, 70 2 C85 2, 98 14, 98 28 C98 45, 75 65, 50 88Z"
-                  fill="url(#heartGrad)"
-                  className="animate-pulse"
+                  fill="url(#hg)"
+                  style={{ animation: "heartPulse 1.5s ease-in-out infinite" }}
                 />
               </svg>
             </div>
-
-            <div className="absolute -inset-8 pointer-events-none">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full"
-                  style={{
-                    background: i % 2 === 0 ? "#ff6b8a" : "#ffb3c6",
-                    left: `${50 + 45 * Math.cos((i / 8) * Math.PI * 2)}%`,
-                    top: `${50 + 45 * Math.sin((i / 8) * Math.PI * 2)}%`,
-                    animation: `sparkle ${1.5 + i * 0.2}s ease-in-out infinite`,
-                    animationDelay: `${i * 0.15}s`
-                  }}
-                />
-              ))}
-            </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: "Georgia, serif" }}>
+          <h1
+            className="text-4xl md:text-6xl font-bold mb-4"
+            style={{
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              background: "linear-gradient(135deg, #ffd4e0, #ff8aab, #ffd4e0)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundSize: "200% 200%",
+              animation: "shimmer 3s ease-in-out infinite",
+            }}
+          >
             Для тебя, Аксинья
           </h1>
-          <p className="text-pink-300 text-lg mb-8 animate-pulse">
-            Нажми на сердце...
+
+          <p className="text-pink-300/60 text-base md:text-lg mb-10" style={{ fontFamily: "Georgia, serif" }}>
+            14 февраля
           </p>
-          
-          <div className="flex justify-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span 
-                key={i} 
-                className="text-2xl animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              >
-                ✨
-              </span>
-            ))}
+
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-pink-400/30 bg-pink-400/5 backdrop-blur-sm animate-pulse">
+            <span className="text-pink-300/80 text-sm tracking-wider">Нажми, чтобы открыть</span>
+            <span className="text-pink-400">♥</span>
           </div>
         </div>
 
         <style>{`
-          @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
+          @keyframes starTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+          }
+          @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.12); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.08); }
+            60% { transform: scale(1); }
+          }
+          @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
           }
         `}</style>
       </div>
     );
   }
 
-  return (
-    <div 
-      className="min-h-screen relative overflow-hidden"
-      style={{ background: "linear-gradient(to bottom, #070720, #0e1538, #0a0a2e, #121240)" }}
-      onClick={handlePageClick}
-    >
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }} />
+  if (showFinal) {
+    return (
+      <div
+        className="min-h-screen relative overflow-hidden flex items-center justify-center"
+        style={{ background: "linear-gradient(135deg, #050519 0%, #0a0a30 40%, #0f0525 100%)" }}
+        onClick={handleClick}
+      >
+        <canvas ref={canvasRef} className="absolute inset-0" style={{ zIndex: 0 }} />
 
-      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}>
-        {snowflakes.map(f => (
-          <div
-            key={f.id}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: f.size,
-              height: f.size,
-              left: `${f.x}%`,
-              top: `${f.y}%`,
-              opacity: f.opacity,
-              filter: `blur(${f.size > 3 ? 1 : 0}px)`,
-              transition: "left 0.5s ease, top 0.05s linear"
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}>
-        {hearts.map(h => (
-          <div
-            key={h.id}
-            className="absolute"
-            style={{
-              left: `${h.x}%`,
-              top: `${h.y}%`,
-              opacity: h.opacity,
-              fontSize: h.size,
-              transition: "top 0.5s linear"
-            }}
-          >
-            ♥
+        {clickSparks.map(s => (
+          <div key={s.id} className="fixed pointer-events-none" style={{ left: s.x - 15, top: s.y - 15, zIndex: 100, animation: "sparkUp 1.5s ease-out forwards" }}>
+            <span className="text-2xl">✨</span>
           </div>
         ))}
-      </div>
 
-      {clickHearts.map(h => (
-        <div
-          key={h.id}
-          className="fixed pointer-events-none"
-          style={{
-            left: h.x - 15,
-            top: h.y - 15,
-            zIndex: 100,
-            animation: "clickHeart 2s ease-out forwards"
-          }}
-        >
-          <span className="text-3xl">💖</span>
+        <div className="relative z-10 text-center px-6 max-w-lg mx-auto" style={{ animation: "fadeUp 1.5s ease-out" }}>
+          <div
+            className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-2 border-pink-400/40"
+            style={{
+              boxShadow: "0 0 40px rgba(255,80,120,0.2), 0 0 80px rgba(255,80,120,0.1)",
+            }}
+          >
+            <img src={DENIS_PHOTO} alt="" className="w-full h-full object-cover" />
+          </div>
+
+          <p
+            className="text-2xl md:text-3xl font-bold mb-6"
+            style={{
+              fontFamily: "Georgia, serif",
+              background: "linear-gradient(135deg, #ffd4e0, #ff8aab)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            С Днём Святого Валентина, Аксинья
+          </p>
+
+          <p className="text-pink-200/70 text-base md:text-lg mb-8 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+            Ты — лучшее, что случилось в моей жизни. Я хочу быть рядом, видеть твою улыбку каждый день и дарить тебе весь этот мир.
+          </p>
+
+          <p
+            className="text-3xl md:text-4xl font-bold mb-4"
+            style={{
+              fontFamily: "Georgia, serif",
+              background: "linear-gradient(135deg, #ff8aab, #ffd4e0, #ff8aab)",
+              backgroundSize: "200% 200%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "shimmer 3s ease-in-out infinite",
+            }}
+          >
+            Твой Денис ♥
+          </p>
+
+          <div className="flex justify-center gap-2 mt-8">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <span
+                key={i}
+                className="text-lg"
+                style={{
+                  animation: `floatHeart 2s ease-in-out infinite`,
+                  animationDelay: `${i * 0.2}s`,
+                  opacity: 0.4 + Math.random() * 0.4,
+                }}
+              >
+                ♥
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes sparkUp { 0% { opacity: 1; transform: scale(0.5); } 100% { opacity: 0; transform: scale(1.5) translateY(-40px); } }
+          @keyframes floatHeart { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+          @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        `}</style>
+      </div>
+    );
+  }
+
+  const section = SECTIONS[currentSection];
+
+  return (
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #050519 0%, #0a0a30 40%, #0f0525 100%)" }}
+      onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <canvas ref={canvasRef} className="absolute inset-0" style={{ zIndex: 0 }} />
+
+      {clickSparks.map(s => (
+        <div key={s.id} className="fixed pointer-events-none" style={{ left: s.x - 15, top: s.y - 15, zIndex: 100, animation: "sparkUp 1.5s ease-out forwards" }}>
+          <span className="text-2xl">✨</span>
         </div>
       ))}
 
-      <div className="relative z-10 max-w-2xl mx-auto px-6 py-12">
-        <div className={`transition-all duration-1000 ${envelopeOpen ? 'opacity-0 scale-50 -translate-y-20' : 'opacity-100'}`}>
-          {!envelopeOpen && (
-            <div className="flex justify-center pt-32">
-              <div className="relative">
-                <div className="w-64 h-44 bg-gradient-to-br from-pink-200 to-pink-300 rounded-lg shadow-2xl flex items-center justify-center">
-                  <div 
-                    className="absolute -top-20 w-0 h-0"
-                    style={{
-                      borderLeft: "128px solid transparent",
-                      borderRight: "128px solid transparent",
-                      borderBottom: "80px solid #f9a8c9",
-                      animation: "envelopeOpen 1.5s ease-out forwards",
-                      transformOrigin: "bottom center"
-                    }}
-                  />
-                  <span className="text-4xl">💌</span>
-                </div>
+      {currentSection >= 0 && section && (
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+          <div className={`max-w-lg w-full transition-all duration-700 ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {section.type === "aurora" && (
+              <div className="mb-8 rounded-2xl overflow-hidden" style={{ boxShadow: "0 0 60px rgba(0,255,150,0.15)" }}>
+                <img src={section.image} alt="" className="w-full h-56 md:h-72 object-cover" />
               </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {showContent && (
-          <div className="space-y-12 pt-8">
-            <div className="text-center animate-fadeInDown">
-              <h1 
-                className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text mb-4"
-                style={{ 
-                  backgroundImage: "linear-gradient(135deg, #ff6b8a, #ff9ec0, #ffd4e0, #ff9ec0, #ff6b8a)",
-                  backgroundSize: "200% 200%",
-                  animation: "shimmer 3s ease-in-out infinite",
-                  fontFamily: "Georgia, serif"
-                }}
-              >
-                Аксинья
-              </h1>
-              <div className="flex justify-center gap-3 mb-2">
-                <span className="text-pink-400 animate-pulse">✦</span>
-                <span className="text-pink-300 text-sm tracking-[0.3em] uppercase">14 февраля</span>
-                <span className="text-pink-400 animate-pulse">✦</span>
-              </div>
-              <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-pink-400 to-transparent" />
-            </div>
-
-            {POEM_STANZAS.map((stanza, idx) => (
-              <div
-                key={idx}
-                className={`transition-all duration-1000 ${
-                  idx < visibleStanzas 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-8'
-                }`}
-                style={{ transitionDelay: `${idx * 200}ms` }}
-              >
-                {idx === POEM_STANZAS.length - 1 ? (
-                  <div className="text-center pt-4">
-                    <div className="inline-block relative">
-                      <p 
-                        className="text-2xl md:text-3xl font-bold text-pink-300 italic"
-                        style={{ fontFamily: "Georgia, serif" }}
-                      >
-                        {stanza}
-                      </p>
-                      <div 
-                        className="absolute -inset-4 rounded-full opacity-30 animate-pulse"
-                        style={{ background: "radial-gradient(circle, rgba(255,107,138,0.4) 0%, transparent 70%)" }}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="relative group">
-                    <div 
-                      className="absolute -left-4 top-0 bottom-0 w-0.5 rounded-full"
-                      style={{ 
-                        background: `linear-gradient(to bottom, transparent, ${
-                          idx % 3 === 0 ? 'rgba(255,107,138,0.5)' : 
-                          idx % 3 === 1 ? 'rgba(147,130,255,0.5)' : 
-                          'rgba(100,200,255,0.5)'
-                        }, transparent)`
-                      }}
-                    />
-                    <div className="pl-4">
-                      {stanza.split('\n').map((line, lineIdx) => (
-                        <p 
-                          key={lineIdx} 
-                          className="text-lg md:text-xl leading-relaxed mb-1"
-                          style={{ 
-                            color: "rgba(230, 210, 230, 0.9)",
-                            fontFamily: "Georgia, serif",
-                            textShadow: "0 0 30px rgba(255,107,138,0.15)"
-                          }}
-                        >
-                          {line}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {visibleStanzas >= POEM_STANZAS.length && (
-              <div className="flex justify-center pt-8 animate-fadeInUp">
-                <div className="relative">
-                  <svg viewBox="0 0 100 100" className="w-20 h-20 drop-shadow-2xl" style={{ animation: "heartbeat 1.5s ease-in-out infinite" }}>
-                    <defs>
-                      <linearGradient id="finalHeart" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#ff6b8a" />
-                        <stop offset="100%" stopColor="#d63060" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M50 88 C25 65, 2 45, 2 28 C2 14, 15 2, 30 2 C38 2, 45 7, 50 18 C55 7, 62 2, 70 2 C85 2, 98 14, 98 28 C98 45, 75 65, 50 88Z"
-                      fill="url(#finalHeart)"
-                    />
-                  </svg>
-                  <div 
-                    className="absolute -inset-6 rounded-full animate-pulse"
-                    style={{ background: "radial-gradient(circle, rgba(255,70,100,0.2) 0%, transparent 70%)" }}
-                  />
+            {section.type === "photo" && section.image && (
+              <div className="mb-8 flex justify-center">
+                <div
+                  className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2"
+                  style={{
+                    borderColor: "rgba(255,130,170,0.3)",
+                    boxShadow: "0 0 50px rgba(255,80,120,0.15), 0 0 100px rgba(255,80,120,0.08)",
+                  }}
+                >
+                  <img src={section.image} alt="" className="w-full h-full object-cover" />
                 </div>
               </div>
             )}
+
+            {section.type === "plankton" && (
+              <div className="mb-8 text-center">
+                <div className="inline-block relative">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute rounded-full"
+                      style={{
+                        width: 3 + Math.random() * 5,
+                        height: 3 + Math.random() * 5,
+                        left: `${Math.random() * 200 - 50}px`,
+                        top: `${Math.random() * 100 - 50}px`,
+                        background: `hsl(${170 + Math.random() * 50}, 100%, 70%)`,
+                        boxShadow: `0 0 ${8 + Math.random() * 12}px hsl(${170 + Math.random() * 50}, 100%, 60%)`,
+                        animation: `planktonFloat ${3 + Math.random() * 4}s ease-in-out infinite`,
+                        animationDelay: `${Math.random() * 3}s`,
+                      }}
+                    />
+                  ))}
+                  <span className="text-7xl md:text-8xl" style={{ filter: "drop-shadow(0 0 30px rgba(0,255,200,0.3))" }}>
+                    🌊
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <h2
+              className="text-2xl md:text-4xl font-bold text-center mb-5"
+              style={{
+                fontFamily: "Georgia, serif",
+                background: section.type === "aurora"
+                  ? "linear-gradient(135deg, #80ffdb, #a0f0ff, #80ffdb)"
+                  : section.type === "plankton"
+                  ? "linear-gradient(135deg, #64ffda, #80e8ff, #64ffda)"
+                  : "linear-gradient(135deg, #ffd4e0, #ff8aab, #ffd4e0)",
+                backgroundSize: "200% 200%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                animation: "shimmer 3s ease-in-out infinite",
+              }}
+            >
+              {section.title}
+            </h2>
+
+            <p
+              className="text-base md:text-lg leading-relaxed text-center mb-10"
+              style={{
+                fontFamily: "Georgia, serif",
+                color: "rgba(220, 200, 230, 0.85)",
+                textShadow: "0 0 40px rgba(180,100,255,0.1)",
+              }}
+            >
+              {section.text}
+            </p>
+
+            <div className="flex justify-center">
+              <button
+                onClick={(e) => { e.stopPropagation(); goNext(); }}
+                className="group flex items-center gap-3 px-8 py-3 rounded-full border transition-all duration-300 hover:scale-105"
+                style={{
+                  borderColor: "rgba(255,130,170,0.3)",
+                  background: "rgba(255,80,120,0.08)",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <span className="text-pink-300/80 text-sm tracking-wider" style={{ fontFamily: "Georgia, serif" }}>
+                  {currentSection < SECTIONS.length - 1 ? "Дальше" : "Финал"}
+                </span>
+                <span className="text-pink-400 group-hover:translate-x-1 transition-transform">→</span>
+              </button>
+            </div>
           </div>
-        )}
-      </div>
+
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+            {SECTIONS.map((_, idx) => (
+              <div
+                key={idx}
+                className="w-2 h-2 rounded-full transition-all duration-500"
+                style={{
+                  background: idx === currentSection ? "rgba(255,130,170,0.8)" : "rgba(255,255,255,0.2)",
+                  boxShadow: idx === currentSection ? "0 0 8px rgba(255,130,170,0.5)" : "none",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <style>{`
-        @keyframes envelopeOpen {
-          0% { transform: rotateX(0deg); }
-          100% { transform: rotateX(180deg); }
-        }
         @keyframes shimmer {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
-        @keyframes heartbeat {
-          0%, 100% { transform: scale(1); }
-          15% { transform: scale(1.15); }
-          30% { transform: scale(1); }
-          45% { transform: scale(1.1); }
-          60% { transform: scale(1); }
+        @keyframes sparkUp {
+          0% { opacity: 1; transform: scale(0.5); }
+          100% { opacity: 0; transform: scale(1.5) translateY(-40px); }
         }
-        @keyframes clickHeart {
-          0% { opacity: 1; transform: scale(0.5) translateY(0); }
-          50% { opacity: 0.8; transform: scale(1.5) translateY(-30px); }
-          100% { opacity: 0; transform: scale(0.5) translateY(-80px); }
-        }
-        @keyframes fadeInDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeInDown {
-          animation: fadeInDown 1.5s ease-out forwards;
-        }
-        .animate-fadeInUp {
-          animation: fadeInUp 1s ease-out forwards;
+        @keyframes planktonFloat {
+          0%, 100% { opacity: 0.3; transform: translateY(0) scale(0.8); }
+          50% { opacity: 1; transform: translateY(-15px) scale(1.2); }
         }
       `}</style>
     </div>
