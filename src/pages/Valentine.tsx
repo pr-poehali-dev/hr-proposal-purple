@@ -5,6 +5,9 @@ const AURORA_PHOTO = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e
 const AKSINIA_1 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/957e3bcf-bb03-4864-a25c-187913323315.jpg";
 const AKSINIA_2 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/5761686f-bee5-486b-9109-ce2b92303d08.jpg";
 const AKSINIA_3 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/ab451697-26a3-405a-8284-e87ff32d7769.jpg";
+const AKSINIA_4 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/69f33c5b-411c-4fd4-892e-5043eb51840d.jpg";
+const AKSINIA_5 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/7397ac7b-e549-4932-bd8e-740b8767abf8.jpg";
+const AKSINIA_6 = "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/f35478dd-51b8-489a-8aa8-2d28bc014ff5.jpg";
 
 interface Particle {
   x: number;
@@ -178,9 +181,21 @@ const SECTIONS = [
   },
   {
     type: "photo" as const,
-    image: AKSINIA_3,
+    image: AKSINIA_4,
     title: "Та самая улыбка",
     text: "В тебе столько тепла, сколько нет во всех южных морях. Эта улыбка способна растопить самую долгую полярную ночь. Я не умею говорить красиво — но одно я знаю точно: с тех пор, как я тебя встретил, мне не нужно искать больше никого.",
+  },
+  {
+    type: "photo" as const,
+    image: AKSINIA_5,
+    title: "Глаза, в которых тону",
+    text: "Ты смотришь — и я забываю, о чём хотел сказать. Забываю, где нахожусь. Забываю обо всём. Потому что в этих глазах — целая вселенная, и я хочу заблудиться в ней навсегда.",
+  },
+  {
+    type: "photo" as const,
+    image: AKSINIA_6,
+    title: "Моя слабость",
+    text: "Я могу быть сильным. Могу не спать сутками, могу сдвинуть горы. Но стоит тебе вот так посмотреть — и я сдаюсь. Без боя, без слов. Просто сдаюсь. И мне нравится проигрывать именно тебе.",
   },
 ];
 
@@ -509,9 +524,16 @@ const Valentine = () => {
             С Днём Святого Валентина, Аксинья
           </p>
 
-          <p className="text-pink-200/70 text-base md:text-lg mb-8 leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
-            Ты — лучшее, что случилось в моей жизни. Я хочу быть рядом, видеть твою улыбку каждый день и дарить тебе весь этот мир.
-          </p>
+          <div className="text-pink-200/60 text-base md:text-lg mb-10 leading-loose italic text-left max-w-md mx-auto" style={{ fontFamily: "Georgia, serif" }}>
+            <p className="mb-1">Среди снегов, среди полярной тьмы,</p>
+            <p className="mb-1">Где тишина звенит в морозном небе,</p>
+            <p className="mb-1">Ты стала светом посреди зимы,</p>
+            <p className="mb-4">Единственным, во что я верю слепо.</p>
+            <p className="mb-1">Мне не нужны слова — достаточно тепла</p>
+            <p className="mb-1">Твоих ладоней, шёпота и взгляда.</p>
+            <p className="mb-1">Ты рядом — и метель вокруг светла,</p>
+            <p className="mb-4">И большего мне в жизни и не надо.</p>
+          </div>
 
           <p
             className="text-3xl md:text-4xl font-bold mb-4"
