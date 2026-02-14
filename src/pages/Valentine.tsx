@@ -175,7 +175,7 @@ const SECTIONS = [
   },
   {
     type: "plankton" as const,
-    image: "",
+    image: "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/bucket/a2b387a5-b180-4e8e-b569-71ac95f65677.jpg",
     title: "Ты светишься",
     text: "Знаешь, в океане есть планктон, который светится в темноте. Он превращает обычную воду в звёздное небо. Вот и ты — превращаешь обычные дни в нечто волшебное. Каждое мгновение рядом с тобой наполнено светом.",
   },
@@ -195,7 +195,7 @@ const SECTIONS = [
     type: "photo" as const,
     image: AKSINIA_6,
     title: "Моя слабость",
-    text: "Я могу быть сильным. Могу не спать сутками, могу сдвинуть горы. Но стоит тебе вот так посмотреть — и я сдаюсь. Без боя, без слов. Просто сдаюсь. И мне нравится проигрывать именно тебе.",
+    text: "Я могу быть сильным. Могу не спать сутками, могу сдвинуть горы. Но стоит тебе посмотреть — я сдаюсь. Без боя, без слов. Просто сдаюсь. И мне нравится проигрывать именно тебе.",
   },
 ];
 
@@ -528,11 +528,11 @@ const Valentine = () => {
             <p className="mb-1">Среди снегов, среди полярной тьмы,</p>
             <p className="mb-1">Где тишина звенит в морозном небе,</p>
             <p className="mb-1">Ты стала светом посреди зимы,</p>
-            <p className="mb-4">Единственным, во что я верю слепо.</p>
-            <p className="mb-1">Мне не нужны слова — достаточно тепла</p>
+            <p className="mb-4">Единственным, во что я верю</p>
+            <p className="mb-1">Не нужно слов - достаточно тепла</p>
             <p className="mb-1">Твоих ладоней, шёпота и взгляда.</p>
             <p className="mb-1">Ты рядом — и метель вокруг светла,</p>
-            <p className="mb-4">И большего мне в жизни и не надо.</p>
+            <p className="mb-4">А большего мне в жизни и не надо.</p>
           </div>
 
           <p
@@ -618,27 +618,25 @@ const Valentine = () => {
             )}
 
             {section.type === "plankton" && (
-              <div className="mb-8 text-center">
-                <div className="inline-block relative">
-                  {Array.from({ length: 20 }).map((_, i) => (
+              <div className="mb-8 rounded-2xl overflow-hidden relative" style={{ boxShadow: "0 0 60px rgba(0,255,200,0.15)" }}>
+                <img src={section.image} alt="" className="w-full h-56 md:h-72 object-cover" />
+                <div className="absolute inset-0 pointer-events-none">
+                  {Array.from({ length: 15 }).map((_, i) => (
                     <div
                       key={i}
                       className="absolute rounded-full"
                       style={{
                         width: 3 + Math.random() * 5,
                         height: 3 + Math.random() * 5,
-                        left: `${Math.random() * 200 - 50}px`,
-                        top: `${Math.random() * 100 - 50}px`,
-                        background: `hsl(${170 + Math.random() * 50}, 100%, 70%)`,
+                        left: `${10 + Math.random() * 80}%`,
+                        top: `${10 + Math.random() * 80}%`,
+                        background: `hsl(${170 + Math.random() * 50}, 100%, 80%)`,
                         boxShadow: `0 0 ${8 + Math.random() * 12}px hsl(${170 + Math.random() * 50}, 100%, 60%)`,
                         animation: `planktonFloat ${3 + Math.random() * 4}s ease-in-out infinite`,
                         animationDelay: `${Math.random() * 3}s`,
                       }}
                     />
                   ))}
-                  <span className="text-7xl md:text-8xl" style={{ filter: "drop-shadow(0 0 30px rgba(0,255,200,0.3))" }}>
-                    🌊
-                  </span>
                 </div>
               </div>
             )}
