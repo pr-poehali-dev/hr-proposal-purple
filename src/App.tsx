@@ -8,6 +8,7 @@ import Roadmap from "./pages/Roadmap";
 import KazarmaProposal from "./pages/KazarmaProposal";
 import KazarmaRoadmap from "./pages/KazarmaRoadmap";
 import NotFound from "./pages/NotFound";
+import Valentine from "./pages/Valentine";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/kazarma" element={<KazarmaProposal />} />
             <Route path="/kazarma/roadmap" element={<KazarmaRoadmap />} />
+            <Route path="/valentine" element={<Valentine />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
