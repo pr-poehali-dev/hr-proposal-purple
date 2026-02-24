@@ -93,27 +93,59 @@ const Floaters = () => (
 const InstallPWA = () => {
   const [prompt, setPrompt] = useState<Event | null>(null);
   const [installed, setInstalled] = useState(false);
+  const [showIosHint, setShowIosHint] = useState(false);
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInApp = (window.navigator as Record<string, unknown>).standalone === true;
+
   useEffect(() => {
     const handler = (e: Event) => { e.preventDefault(); setPrompt(e); };
     window.addEventListener("beforeinstallprompt", handler);
     window.addEventListener("appinstalled", () => setInstalled(true));
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
-  if (installed) return <div className="text-xs text-center opacity-40 text-green-400 mb-2">✓ Приложение установлено!</div>;
-  if (!prompt) return null;
-  const install = async () => {
+
+  if (installed || isInApp) return <div className="text-xs text-center opacity-40 text-green-400 mb-2">✓ Приложение установлено!</div>;
+
+  const installAndroid = async () => {
+    if (!prompt) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const p = prompt as any;
     p.prompt();
     await p.userChoice;
     setPrompt(null);
   };
+
   return (
-    <div className="mb-4 flex justify-center">
-      <button onClick={install} className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold text-white animate-pulse"
-        style={{ background: "linear-gradient(135deg,rgba(236,72,153,0.3),rgba(167,139,250,0.3))", border: "1px solid rgba(236,72,153,0.4)", boxShadow: "0 0 20px rgba(236,72,153,0.2)" }}>
-        📱 Установить на телефон
-      </button>
+    <div className="flex justify-center mb-2">
+      {isIos ? (
+        <div className="relative">
+          <button onClick={() => setShowIosHint(!showIosHint)}
+            className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold text-white"
+            style={{ background: "linear-gradient(135deg,rgba(236,72,153,0.25),rgba(167,139,250,0.25))", border: "1px solid rgba(236,72,153,0.4)" }}>
+            📱 Установить на iPhone
+          </button>
+          {showIosHint && (
+            <div className="absolute top-12 left-1/2 -translate-x-1/2 z-50 w-64 p-3 rounded-2xl text-xs text-white text-center"
+              style={{ background: "rgba(15,5,21,0.97)", border: "1px solid rgba(236,72,153,0.4)", boxShadow: "0 8px 30px rgba(0,0,0,0.8)" }}>
+              <div className="mb-2 opacity-60">Чтобы установить на iPhone:</div>
+              <div className="space-y-1 text-left opacity-80">
+                <div>1. Нажми <span style={{color:"#60a5fa"}}>Поделиться</span> ↑ внизу Safari</div>
+                <div>2. Выбери <span style={{color:"#34d399"}}>"На экран Домой"</span></div>
+                <div>3. Нажми <span style={{color:"#ec4899"}}>Добавить</span></div>
+              </div>
+              <button onClick={() => setShowIosHint(false)} className="mt-2 opacity-40 text-xs">Понятно</button>
+            </div>
+          )}
+        </div>
+      ) : prompt ? (
+        <button onClick={installAndroid}
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold text-white"
+          style={{ background: "linear-gradient(135deg,rgba(236,72,153,0.25),rgba(167,139,250,0.25))", border: "1px solid rgba(236,72,153,0.4)" }}>
+          📱 Установить приложение
+        </button>
+      ) : (
+        <div className="text-xs opacity-30 text-white">📱 Добавь в закладки для быстрого доступа</div>
+      )}
     </div>
   );
 };
@@ -150,13 +182,14 @@ const TABS = [
   { id: "birthday", label: "🎂 День Рождения" },
 ];
 const TabBar = ({ active, onChange }: { active: string; onChange: (t: string) => void }) => (
-  <div className="relative z-10 flex justify-center px-4 mb-8">
-    <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+  <div className="relative z-10 px-2 mb-6">
+    <div className="flex gap-1 p-1 rounded-2xl overflow-x-auto"
+      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
       {TABS.map((t) => (
         <button key={t.id} onClick={() => onChange(t.id)}
-          className="px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap"
+          className="flex-shrink-0 px-3 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 whitespace-nowrap"
           style={active === t.id
-            ? { background: "linear-gradient(135deg,#ec4899,#a78bfa)", color: "#fff", boxShadow: "0 4px 20px rgba(236,72,153,0.4)", transform: "scale(1.05)" }
+            ? { background: "linear-gradient(135deg,#ec4899,#a78bfa)", color: "#fff", boxShadow: "0 4px 20px rgba(236,72,153,0.4)" }
             : { color: "rgba(255,255,255,0.45)" }}>
           {t.label}
         </button>
@@ -752,7 +785,7 @@ export default function Aksinia() {
       `}</style>
       <StarField />
       <Floaters />
-      <div className="relative z-10 max-w-2xl mx-auto px-4 pb-20">
+      <div className="relative z-10 max-w-2xl mx-auto px-3 md:px-4 pb-20 safe-bottom overflow-x-hidden">
         <Header />
         <TabBar active={tab} onChange={setTab} />
         {tab === "wishes" && <WishesTab />}
