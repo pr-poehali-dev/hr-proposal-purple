@@ -93,7 +93,7 @@ const Floaters = () => (
 const InstallPWA = () => {
   const [prompt, setPrompt] = useState<Event | null>(null);
   const [installed, setInstalled] = useState(false);
-  const [showIosHint, setShowIosHint] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isInApp = (window.navigator as Record<string, unknown>).standalone === true;
 
@@ -107,45 +107,54 @@ const InstallPWA = () => {
   if (installed || isInApp) return <div className="text-xs text-center opacity-40 text-green-400 mb-2">✓ Приложение установлено!</div>;
 
   const installAndroid = async () => {
-    if (!prompt) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const p = prompt as any;
-    p.prompt();
-    await p.userChoice;
-    setPrompt(null);
+    if (prompt) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const p = prompt as any;
+      p.prompt();
+      await p.userChoice;
+      setPrompt(null);
+    } else {
+      setShowHint(true);
+    }
   };
+
+  const btnStyle = { background: "linear-gradient(135deg,rgba(236,72,153,0.3),rgba(167,139,250,0.3))", border: "1px solid rgba(236,72,153,0.5)" };
 
   return (
     <div className="flex justify-center mb-2">
-      {isIos ? (
-        <div className="relative">
-          <button onClick={() => setShowIosHint(!showIosHint)}
-            className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold text-white"
-            style={{ background: "linear-gradient(135deg,rgba(236,72,153,0.25),rgba(167,139,250,0.25))", border: "1px solid rgba(236,72,153,0.4)" }}>
-            📱 Установить на iPhone
-          </button>
-          {showIosHint && (
-            <div className="absolute top-12 left-1/2 -translate-x-1/2 z-50 w-64 p-3 rounded-2xl text-xs text-white text-center"
-              style={{ background: "rgba(15,5,21,0.97)", border: "1px solid rgba(236,72,153,0.4)", boxShadow: "0 8px 30px rgba(0,0,0,0.8)" }}>
-              <div className="mb-2 opacity-60">Чтобы установить на iPhone:</div>
-              <div className="space-y-1 text-left opacity-80">
-                <div>1. Нажми <span style={{color:"#60a5fa"}}>Поделиться</span> ↑ внизу Safari</div>
-                <div>2. Выбери <span style={{color:"#34d399"}}>"На экран Домой"</span></div>
-                <div>3. Нажми <span style={{color:"#ec4899"}}>Добавить</span></div>
-              </div>
-              <button onClick={() => setShowIosHint(false)} className="mt-2 opacity-40 text-xs">Понятно</button>
-            </div>
-          )}
-        </div>
-      ) : prompt ? (
-        <button onClick={installAndroid}
+      <div className="relative">
+        <button
+          onClick={isIos ? () => setShowHint(!showHint) : installAndroid}
           className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold text-white"
-          style={{ background: "linear-gradient(135deg,rgba(236,72,153,0.25),rgba(167,139,250,0.25))", border: "1px solid rgba(236,72,153,0.4)" }}>
+          style={btnStyle}>
           📱 Установить приложение
         </button>
-      ) : (
-        <div className="text-xs opacity-30 text-white">📱 Добавь в закладки для быстрого доступа</div>
-      )}
+        {showHint && (
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 z-50 w-64 p-3 rounded-2xl text-xs text-white text-center"
+            style={{ background: "rgba(15,5,21,0.97)", border: "1px solid rgba(236,72,153,0.4)", boxShadow: "0 8px 30px rgba(0,0,0,0.8)" }}>
+            {isIos ? (
+              <>
+                <div className="mb-2 font-semibold opacity-70">Установить на iPhone:</div>
+                <div className="space-y-1.5 text-left opacity-80">
+                  <div>1. Нажми <span style={{color:"#60a5fa"}}>Поделиться</span> ↑ в Safari</div>
+                  <div>2. Выбери <span style={{color:"#34d399"}}>"На экран Домой"</span></div>
+                  <div>3. Нажми <span style={{color:"#ec4899"}}>Добавить</span></div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-2 font-semibold opacity-70">Установить на Android:</div>
+                <div className="space-y-1.5 text-left opacity-80">
+                  <div>1. Открой меню <span style={{color:"#60a5fa"}}>⋮</span> в Chrome</div>
+                  <div>2. Выбери <span style={{color:"#34d399"}}>"Добавить на гл. экран"</span></div>
+                  <div>3. Нажми <span style={{color:"#ec4899"}}>Добавить</span></div>
+                </div>
+              </>
+            )}
+            <button onClick={() => setShowHint(false)} className="mt-3 opacity-40 text-xs">Понятно</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
