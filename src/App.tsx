@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import KazarmaProposal from "./pages/KazarmaProposal";
 import KazarmaRoadmap from "./pages/KazarmaRoadmap";
 import NotFound from "./pages/NotFound";
@@ -19,6 +19,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to="/aksinia" replace />} />
             <Route path="/kazarma" element={<KazarmaProposal />} />
             <Route path="/kazarma/roadmap" element={<KazarmaRoadmap />} />
             <Route path="/valentine" element={<Valentine />} />
