@@ -1,11 +1,27 @@
 {
   "tests": [
     {
-      "name": "Root health check",
+      "name": "GET wishes",
       "method": "GET",
-      "path": "/",
-      "expectedStatus": 404,
-      "expectedBody": {"error": "Not found"},
+      "path": "/?action=wishes",
+      "expectedStatus": 200,
+      "expectedBody": {"wishes": []},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET notes",
+      "method": "GET",
+      "path": "/?action=notes",
+      "expectedStatus": 200,
+      "expectedBody": {"notes": []},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET messages",
+      "method": "GET",
+      "path": "/?action=messages",
+      "expectedStatus": 200,
+      "expectedBody": {"messages": []},
       "bodyMatcher": "partial"
     }
   ]

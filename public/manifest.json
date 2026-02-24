@@ -1,0 +1,23 @@
+{
+  "name": "Аксинья ✦ Личная вселенная",
+  "short_name": "Аксинья",
+  "description": "Карта желаний, заметки и чат",
+  "start_url": "/aksinia",
+  "display": "standalone",
+  "background_color": "#0f0515",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/files/b5b8f73f-f2a3-46ec-a483-3e80aa37dfc4.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn.poehali.dev/projects/6a20b3ba-2ddc-4572-8d85-e4c62f8d7e40/files/b5b8f73f-f2a3-46ec-a483-3e80aa37dfc4.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
