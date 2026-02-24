@@ -156,6 +156,22 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return ok({'id': new_id, 'success': True})
 
+    if action == 'note_update' and method == 'POST':
+        conn = get_conn()
+        cur = conn.cursor()
+        updates, vals = [], []
+        for field in ('title', 'content', 'link', 'color'):
+            if field in body:
+                updates.append(f'{field} = %s')
+                vals.append(body[field])
+        if updates:
+            updates.append('updated_at = NOW()')
+            vals.append(body.get('id'))
+            cur.execute(f"UPDATE aksinia_notes SET {', '.join(updates)} WHERE id = %s", vals)
+            conn.commit()
+        conn.close()
+        return ok({'success': True})
+
     if action == 'note_delete' and method == 'POST':
         conn = get_conn()
         cur = conn.cursor()

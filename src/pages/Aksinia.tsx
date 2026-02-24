@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Valentine from "./Valentine";
+import Birthday from "./Birthday";
 
 const API = "https://functions.poehali.dev/1fd6b3fb-20ce-4c8f-8499-f1579b94d1ce";
 const api = (action: string) => `${API}?action=${action}`;
@@ -145,7 +146,8 @@ const TABS = [
   { id: "wishes", label: "🌟 Мечты" },
   { id: "notes", label: "📝 Заметки" },
   { id: "chat", label: "💬 Чат" },
-  { id: "valentine", label: "💌 Сюрприз" },
+  { id: "valentine", label: "💌 Валентинка" },
+  { id: "birthday", label: "🎂 День Рождения" },
 ];
 const TabBar = ({ active, onChange }: { active: string; onChange: (t: string) => void }) => (
   <div className="relative z-10 flex justify-center px-4 mb-8">
@@ -179,15 +181,44 @@ const Ring = ({ pct, color }: { pct: number; color: string }) => {
 
 const WishCard = ({ wish, onUpdate, onDelete }: { wish: Wish; onUpdate: (id: number, d: Partial<Wish>) => void; onDelete: (id: number) => void }) => {
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [editProg, setEditProg] = useState(false);
   const [prog, setProg] = useState(wish.progress);
-  const m = CAT[wish.category] || CAT.dream;
+  const [editTitle, setEditTitle] = useState(wish.title);
+  const [editDesc, setEditDesc] = useState(wish.description);
+  const [editCat, setEditCat] = useState(wish.category);
+  const [localRoadmap, setLocalRoadmap] = useState(wish.roadmap || []);
+  const [newStep, setNewStep] = useState({ title: "", desc: "" });
+  const [addingStep, setAddingStep] = useState(false);
+  const m = CAT[editCat] || CAT.dream;
+
+  useEffect(() => { setProg(wish.progress); setEditTitle(wish.title); setEditDesc(wish.description); setEditCat(wish.category); setLocalRoadmap(wish.roadmap || []); }, [wish]);
+
   const saveProg = () => { onUpdate(wish.id, { progress: prog }); setEditProg(false); };
   const toggleStep = (i: number) => {
-    const rm = wish.roadmap.map((s, j) => j === i ? { ...s, done: !s.done } : s);
-    const pct = Math.round(rm.filter((s) => s.done).length / rm.length * 100);
+    const rm = localRoadmap.map((s, j) => j === i ? { ...s, done: !s.done } : s);
+    const pct = rm.length ? Math.round(rm.filter((s) => s.done).length / rm.length * 100) : prog;
+    setLocalRoadmap(rm);
     onUpdate(wish.id, { roadmap: rm, progress: pct });
   };
+  const deleteStep = (i: number) => {
+    const rm = localRoadmap.filter((_, j) => j !== i);
+    const pct = rm.length ? Math.round(rm.filter((s) => s.done).length / rm.length * 100) : 0;
+    setLocalRoadmap(rm);
+    onUpdate(wish.id, { roadmap: rm, progress: pct });
+  };
+  const addStep = () => {
+    if (!newStep.title.trim()) return;
+    const rm = [...localRoadmap, { step: localRoadmap.length + 1, title: newStep.title, desc: newStep.desc, done: false }];
+    setLocalRoadmap(rm);
+    onUpdate(wish.id, { roadmap: rm });
+    setNewStep({ title: "", desc: "" }); setAddingStep(false);
+  };
+  const saveEdit = () => {
+    onUpdate(wish.id, { title: editTitle, description: editDesc, category: editCat });
+    setEditing(false);
+  };
+
   return (
     <div className="rounded-2xl overflow-hidden transition-all duration-300"
       style={{ background: "rgba(255,255,255,0.04)", border: `1px solid ${m.color}33`, boxShadow: open ? `0 8px 40px ${m.color}22` : "none" }}>
@@ -203,8 +234,26 @@ const WishCard = ({ wish, onUpdate, onDelete }: { wish: Wish; onUpdate: (id: num
       </div>
       {open && (
         <div className="px-4 pb-4 space-y-4">
-          {wish.description && <p className="text-sm opacity-60 leading-relaxed">{wish.description}</p>}
-          <div className="flex items-center gap-3 flex-wrap">
+          {editing ? (
+            <div className="space-y-2 p-3 rounded-xl" style={{ background: "rgba(255,255,255,0.04)" }}>
+              <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full bg-transparent text-white text-sm outline-none border-b border-white/10 pb-1" placeholder="Название..." />
+              <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)}
+                className="w-full bg-transparent text-white text-sm outline-none resize-none" rows={2} placeholder="Описание..." />
+              <select value={editCat} onChange={(e) => setEditCat(e.target.value)}
+                className="w-full bg-black/40 text-white text-xs rounded-lg px-2 py-1.5 outline-none border border-white/10">
+                {Object.entries(CAT).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
+              </select>
+              <div className="flex gap-2">
+                <button onClick={saveEdit} className="flex-1 py-1.5 rounded-lg text-xs font-bold text-white" style={{ background: m.color }}>Сохранить</button>
+                <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs text-white/40">Отмена</button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm opacity-60 leading-relaxed">{wish.description}</p>
+          )}
+
+          <div className="flex items-center gap-2 flex-wrap">
             {editProg ? (
               <div className="flex items-center gap-2 flex-1">
                 <input type="range" min={0} max={100} value={prog} onChange={(e) => setProg(+e.target.value)} className="flex-1" style={{ accentColor: m.color }} />
@@ -212,32 +261,49 @@ const WishCard = ({ wish, onUpdate, onDelete }: { wish: Wish; onUpdate: (id: num
                 <button onClick={saveProg} className="px-3 py-1 rounded-lg text-xs font-semibold text-white" style={{ background: m.color }}>✓</button>
               </div>
             ) : (
-              <button onClick={() => setEditProg(true)} className="text-xs px-3 py-1 rounded-lg opacity-50 hover:opacity-100 transition-opacity"
-                style={{ border: `1px solid ${m.color}66`, color: m.color }}>Обновить прогресс</button>
+              <button onClick={() => setEditProg(true)} className="text-xs px-3 py-1 rounded-lg opacity-50 hover:opacity-100"
+                style={{ border: `1px solid ${m.color}66`, color: m.color }}>Прогресс</button>
             )}
-            {!wish.is_preset && (
-              <button onClick={() => onDelete(wish.id)} className="text-xs px-2 py-1 rounded-lg opacity-30 hover:opacity-70 text-red-400">✕ удалить</button>
-            )}
+            {!editing && <button onClick={() => setEditing(true)} className="text-xs px-3 py-1 rounded-lg opacity-50 hover:opacity-100"
+              style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.6)" }}>✏️ Редактировать</button>}
+            <button onClick={() => onDelete(wish.id)} className="text-xs px-2 py-1 rounded-lg opacity-30 hover:opacity-70 text-red-400">✕</button>
           </div>
-          {wish.roadmap?.length > 0 && (
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wider opacity-40 mb-2">Дорожная карта</div>
-              <div className="space-y-2">
-                {wish.roadmap.map((s, i) => (
-                  <div key={i} className="flex items-start gap-3 cursor-pointer" onClick={() => toggleStep(i)}>
-                    <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs mt-0.5 transition-all"
-                      style={s.done ? { background: m.color, boxShadow: `0 0 8px ${m.color}` } : { border: `2px solid ${m.color}66` }}>
-                      {s.done && "✓"}
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: s.done ? m.color : "rgba(255,255,255,0.7)" }}>{s.title}</div>
-                      <div className="text-xs opacity-40 mt-0.5">{s.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs font-semibold uppercase tracking-wider opacity-40">Дорожная карта</div>
+              <button onClick={() => setAddingStep(true)} className="text-xs px-2 py-1 rounded-lg opacity-50 hover:opacity-100"
+                style={{ border: `1px solid ${m.color}44`, color: m.color }}>+ этап</button>
             </div>
-          )}
+            <div className="space-y-2">
+              {localRoadmap.map((s, i) => (
+                <div key={i} className="flex items-start gap-3 group">
+                  <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs mt-0.5 cursor-pointer transition-all"
+                    style={s.done ? { background: m.color, boxShadow: `0 0 8px ${m.color}` } : { border: `2px solid ${m.color}66` }}
+                    onClick={() => toggleStep(i)}>
+                    {s.done && "✓"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium" style={{ color: s.done ? m.color : "rgba(255,255,255,0.7)" }}>{s.title}</div>
+                    <div className="text-xs opacity-40 mt-0.5">{s.desc}</div>
+                  </div>
+                  <button onClick={() => deleteStep(i)} className="text-xs opacity-0 group-hover:opacity-50 hover:opacity-100 text-red-400 transition-opacity flex-shrink-0">✕</button>
+                </div>
+              ))}
+              {addingStep && (
+                <div className="p-3 rounded-xl space-y-2" style={{ background: `${m.color}11`, border: `1px solid ${m.color}33` }}>
+                  <input value={newStep.title} onChange={(e) => setNewStep((s) => ({ ...s, title: e.target.value }))} autoFocus
+                    placeholder="Название этапа..." className="w-full bg-transparent text-white text-xs outline-none border-b border-white/10 pb-1" />
+                  <input value={newStep.desc} onChange={(e) => setNewStep((s) => ({ ...s, desc: e.target.value }))}
+                    placeholder="Описание..." className="w-full bg-transparent text-white text-xs outline-none" />
+                  <div className="flex gap-2">
+                    <button onClick={addStep} className="flex-1 py-1 rounded-lg text-xs font-bold text-white" style={{ background: m.color }}>Добавить</button>
+                    <button onClick={() => { setAddingStep(false); setNewStep({ title: "", desc: "" }); }} className="px-3 py-1 rounded-lg text-xs text-white/40">Отмена</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -249,6 +315,9 @@ const WishesTab = () => {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ title: "", desc: "", cat: "dream" });
+  const [newSteps, setNewSteps] = useState<{ title: string; desc: string }[]>([]);
+  const [addingStep, setAddingStep] = useState(false);
+  const [stepForm, setStepForm] = useState({ title: "", desc: "" });
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
@@ -262,11 +331,17 @@ const WishesTab = () => {
     setWishes((p) => p.map((w) => w.id === id ? { ...w, ...data } : w));
   };
   const del = async (id: number) => { await post("wish_delete", { id }); setWishes((p) => p.filter((w) => w.id !== id)); };
+  const addStepToNew = () => {
+    if (!stepForm.title.trim()) return;
+    setNewSteps((p) => [...p, stepForm]);
+    setStepForm({ title: "", desc: "" }); setAddingStep(false);
+  };
   const add = async () => {
     if (!form.title.trim()) return;
-    const d = await post("wishes", { title: form.title, description: form.desc, category: form.cat });
-    setWishes((p) => [{ id: d.id, title: form.title, description: form.desc, category: form.cat, progress: 0, status: "active", cover_url: null, links: [], roadmap: [], is_preset: false, created_at: new Date().toISOString() }, ...p]);
-    setForm({ title: "", desc: "", cat: "dream" }); setShowAdd(false);
+    const roadmap = newSteps.map((s, i) => ({ step: i + 1, title: s.title, desc: s.desc, done: false }));
+    const d = await post("wishes", { title: form.title, description: form.desc, category: form.cat, roadmap });
+    setWishes((p) => [{ id: d.id, title: form.title, description: form.desc, category: form.cat, progress: 0, status: "active", cover_url: null, links: [], roadmap, is_preset: false, created_at: new Date().toISOString() }, ...p]);
+    setForm({ title: "", desc: "", cat: "dream" }); setNewSteps([]); setShowAdd(false);
   };
 
   const total = wishes.length ? Math.round(wishes.reduce((s, w) => s + w.progress, 0) / wishes.length) : 0;
@@ -306,10 +381,42 @@ const WishesTab = () => {
             className="w-full bg-black/40 text-white text-sm rounded-lg px-3 py-2 outline-none border border-white/10">
             {Object.entries(CAT).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
           </select>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs opacity-40 text-white">Дорожная карта ({newSteps.length} этапов)</div>
+              <button onClick={() => setAddingStep(true)} className="text-xs px-2 py-1 rounded-lg"
+                style={{ border: "1px solid rgba(236,72,153,0.4)", color: "#ec4899" }}>+ этап</button>
+            </div>
+            {newSteps.length > 0 && (
+              <div className="space-y-1 mb-2">
+                {newSteps.map((s, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ background: "rgba(236,72,153,0.3)", border: "1px solid rgba(236,72,153,0.5)" }} />
+                    <div className="flex-1 text-xs text-white/70">{s.title}</div>
+                    <button onClick={() => setNewSteps((p) => p.filter((_, j) => j !== i))} className="text-xs text-red-400 opacity-50 hover:opacity-100">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {addingStep && (
+              <div className="p-3 rounded-xl space-y-2" style={{ background: "rgba(236,72,153,0.08)", border: "1px solid rgba(236,72,153,0.2)" }}>
+                <input value={stepForm.title} onChange={(e) => setStepForm((s) => ({ ...s, title: e.target.value }))} autoFocus
+                  placeholder="Название этапа..." className="w-full bg-transparent text-white text-xs outline-none border-b border-white/10 pb-1" />
+                <input value={stepForm.desc} onChange={(e) => setStepForm((s) => ({ ...s, desc: e.target.value }))}
+                  placeholder="Описание..." className="w-full bg-transparent text-white text-xs outline-none" />
+                <div className="flex gap-2">
+                  <button onClick={addStepToNew} className="flex-1 py-1 rounded-lg text-xs font-bold text-white" style={{ background: "#ec4899" }}>Добавить</button>
+                  <button onClick={() => { setAddingStep(false); setStepForm({ title: "", desc: "" }); }} className="px-3 text-xs text-white/40">Отмена</button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="flex gap-2">
             <button onClick={add} className="flex-1 py-2 rounded-xl text-sm font-bold text-white"
               style={{ background: "linear-gradient(135deg,#ec4899,#a78bfa)" }}>Добавить ✨</button>
-            <button onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-xl text-sm text-white/40">Отмена</button>
+            <button onClick={() => { setShowAdd(false); setNewSteps([]); }} className="px-4 py-2 rounded-xl text-sm text-white/40">Отмена</button>
           </div>
         </div>
       ) : (
@@ -343,28 +450,67 @@ const FileUploadBtn = ({ onUploaded, label = "📎 Прикрепить" }: { on
   );
 };
 
-const NoteCard = ({ note, onDelete }: { note: Note; onDelete: (id: number) => void }) => {
+const NoteCard = ({ note, onDelete, onUpdate }: { note: Note; onDelete: (id: number) => void; onUpdate: (id: number, d: Partial<Note>) => void }) => {
   const isImg = (url: string) => /\.(jpg|jpeg|png|gif|webp|heic)$/i.test(url);
   const isVid = (url: string) => /\.(mp4|mov|webm)$/i.test(url);
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(note.title);
+  const [editContent, setEditContent] = useState(note.content);
+  const [editLink, setEditLink] = useState(note.link || "");
+  const [editColor, setEditColor] = useState(note.color);
+
+  const saveEdit = () => {
+    onUpdate(note.id, { title: editTitle, content: editContent, link: editLink || null, color: editColor });
+    setEditing(false);
+  };
+
   return (
-    <div className="rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02]"
-      style={{ background: `${note.color}15`, border: `1px solid ${note.color}44`, position: "relative" }}>
-      <div className="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full" style={{ background: note.color, boxShadow: `0 0 8px ${note.color}` }} />
-      {note.title && <div className="font-bold text-sm text-white mb-1 pr-5">{note.title}</div>}
-      {note.content && <p className="text-sm leading-relaxed opacity-80 text-white">{note.content}</p>}
-      {note.link && <a href={note.link} target="_blank" rel="noopener noreferrer" className="text-xs mt-2 block truncate" style={{ color: note.color }}>🔗 {note.link}</a>}
-      {note.image_url && <img src={note.image_url} alt="" className="mt-2 w-full rounded-xl object-cover max-h-48" />}
-      {note.file_urls?.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
-          {note.file_urls.map((url, i) => (
-            isImg(url) ? <img key={i} src={url} alt="" className="rounded-lg object-cover h-24 w-24" /> :
-            isVid(url) ? <video key={i} src={url} controls className="rounded-lg max-h-36 w-full" /> :
-            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-lg" style={{ background: `${note.color}33`, color: note.color }}>📄 Файл</a>
-          ))}
+    <div className="rounded-2xl p-4 transition-all duration-300"
+      style={{ background: `${editColor}15`, border: `1px solid ${editColor}44`, position: "relative" }}>
+      <div className="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full" style={{ background: editColor, boxShadow: `0 0 8px ${editColor}` }} />
+      {editing ? (
+        <div className="space-y-2">
+          <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Заголовок..."
+            className="w-full bg-transparent text-white text-sm font-bold outline-none border-b border-white/10 pb-1" autoFocus />
+          <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)}
+            className="w-full bg-transparent text-white text-sm outline-none resize-none" rows={3} />
+          <input value={editLink} onChange={(e) => setEditLink(e.target.value)} placeholder="Ссылка..."
+            className="w-full bg-transparent text-white text-xs outline-none border-b border-white/10 pb-1" />
+          <div className="flex gap-1.5 flex-wrap">
+            {NOTE_COLORS.map((c) => (
+              <button key={c} onClick={() => setEditColor(c)} className="w-5 h-5 rounded-full transition-transform"
+                style={{ background: c, transform: editColor === c ? "scale(1.4)" : "scale(1)", boxShadow: editColor === c ? `0 0 8px ${c}` : "none" }} />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={saveEdit} className="flex-1 py-1.5 rounded-lg text-xs font-bold text-white" style={{ background: editColor }}>Сохранить</button>
+            <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs text-white/40">Отмена</button>
+          </div>
         </div>
+      ) : (
+        <>
+          {note.title && <div className="font-bold text-sm text-white mb-1 pr-5">{note.title}</div>}
+          {note.content && <p className="text-sm leading-relaxed opacity-80 text-white">{note.content}</p>}
+          {note.link && <a href={note.link} target="_blank" rel="noopener noreferrer" className="text-xs mt-2 block truncate" style={{ color: editColor }}>🔗 {note.link}</a>}
+          {note.image_url && <img src={note.image_url} alt="" className="mt-2 w-full rounded-xl object-cover max-h-48" />}
+          {note.file_urls?.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {note.file_urls.map((url, i) => (
+                isImg(url) ? <img key={i} src={url} alt="" className="rounded-lg object-cover h-24 w-24" /> :
+                isVid(url) ? <video key={i} src={url} controls className="rounded-lg max-h-36 w-full" /> :
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-lg" style={{ background: `${editColor}33`, color: editColor }}>📄 Файл</a>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center justify-between mt-2">
+            <div className="text-xs opacity-25">{new Date(note.created_at).toLocaleDateString("ru-RU")}</div>
+            <div className="flex gap-2">
+              <button onClick={() => setEditing(true)} className="text-xs opacity-30 hover:opacity-70 transition-opacity" style={{ color: editColor }}>✏️</button>
+              <button onClick={() => onDelete(note.id)} className="text-xs opacity-20 hover:opacity-60 text-red-400 transition-opacity">✕</button>
+            </div>
+          </div>
+        </>
       )}
-      <div className="text-xs opacity-25 mt-2">{new Date(note.created_at).toLocaleDateString("ru-RU")}</div>
-      <button onClick={() => onDelete(note.id)} className="absolute bottom-2 right-2 text-xs opacity-20 hover:opacity-60 text-red-400 transition-opacity">✕</button>
     </div>
   );
 };
@@ -391,6 +537,10 @@ const NotesTab = () => {
     setForm({ title: "", content: "", link: "", color: "#ff6b9d" }); setPendingFiles([]); setShowAdd(false);
   };
   const del = async (id: number) => { await post("note_delete", { id }); setNotes((p) => p.filter((n) => n.id !== id)); };
+  const updateNote = async (id: number, data: Partial<Note>) => {
+    await post("note_update", { id, ...data });
+    setNotes((p) => p.map((n) => n.id === id ? { ...n, ...data } : n));
+  };
 
   return (
     <div className="space-y-4">
@@ -441,7 +591,7 @@ const NotesTab = () => {
       {loading ? <div className="text-center py-12 opacity-40 text-white">Загружаю...</div> :
         notes.length === 0 ? <div className="text-center py-16 opacity-30 text-white"><div className="text-4xl mb-3">📝</div>Здесь будут твои мысли</div> :
         <div className="columns-1 md:columns-2 gap-3 space-y-3">
-          {notes.map((n) => <div key={n.id} className="break-inside-avoid"><NoteCard note={n} onDelete={del} /></div>)}
+          {notes.map((n) => <div key={n.id} className="break-inside-avoid"><NoteCard note={n} onDelete={del} onUpdate={updateNote} /></div>)}
         </div>
       }
     </div>
@@ -613,6 +763,7 @@ export default function Aksinia() {
             <Valentine />
           </div>
         )}
+        {tab === "birthday" && <Birthday />}
       </div>
     </div>
   );
