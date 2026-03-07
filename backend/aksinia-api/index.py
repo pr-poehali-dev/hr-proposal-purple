@@ -248,4 +248,13 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return ok({'success': True})
 
+    if action == 'delete_message' and method == 'POST':
+        msg_id = body.get('id')
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('DELETE FROM aksinia_messages WHERE id = %s', (msg_id,))
+        conn.commit()
+        conn.close()
+        return ok({'success': True})
+
     return err('Not found', 404)

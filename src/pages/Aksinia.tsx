@@ -537,11 +537,32 @@ const NoteCard = ({ note, onDelete, onUpdate }: { note: Note; onDelete: (id: num
           {note.image_url && <img src={note.image_url} alt="" className="mt-2 w-full rounded-xl object-cover max-h-48" />}
           {note.file_urls?.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
-              {note.file_urls.map((url, i) => (
-                isImg(url) ? <img key={i} src={url} alt="" className="rounded-lg object-cover h-24 w-24" /> :
-                isVid(url) ? <video key={i} src={url} controls className="rounded-lg max-h-36 w-full" /> :
-                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-lg" style={{ background: `${editColor}33`, color: editColor }}>📄 Файл</a>
-              ))}
+              {note.file_urls.map((url, i) => {
+                const fileName = url.split("/").pop() || "file";
+                const dlBtn = (
+                  <a key={`dl-${i}`} href={url} download={fileName} target="_blank" rel="noopener noreferrer"
+                    className="absolute bottom-1 right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: "rgba(0,0,0,0.55)" }}>⬇</a>
+                );
+                return isImg(url) ? (
+                  <div key={i} className="relative group">
+                    <img src={url} alt="" className="rounded-lg object-cover h-24 w-24" />
+                    {dlBtn}
+                  </div>
+                ) : isVid(url) ? (
+                  <div key={i} className="relative group w-full">
+                    <video src={url} controls className="rounded-lg max-h-36 w-full" />
+                    {dlBtn}
+                  </div>
+                ) : (
+                  <div key={i} className="flex items-center gap-1.5 px-2 py-1 rounded-lg" style={{ background: `${editColor}33` }}>
+                    <span style={{ color: editColor }}>📄</span>
+                    <span className="text-xs truncate max-w-[120px]" style={{ color: editColor }}>{fileName}</span>
+                    <a href={url} download={fileName} target="_blank" rel="noopener noreferrer"
+                      className="text-xs opacity-60 hover:opacity-100 transition-opacity" style={{ color: editColor }}>⬇</a>
+                  </div>
+                );
+              })}
             </div>
           )}
           <div className="flex items-center justify-between mt-2">
@@ -712,6 +733,22 @@ const ChatTab = () => {
   };
   const stopRec = () => { mediaRec?.stop(); setRecording(false); setMediaRec(null); };
 
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const deleteMsg = async (id: number) => {
+    setDeletingId(id);
+    await post("delete_message", { id });
+    setMsgs((p) => p.filter((m) => m.id !== id));
+    setDeletingId(null);
+  };
+
+  const downloadFile = (url: string, name: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name || "file";
+    a.target = "_blank";
+    a.click();
+  };
+
   const bStyle = (sender: string) => sender === WHO
     ? { background: "linear-gradient(135deg,#ec4899,#a78bfa)", borderRadius: "18px 18px 4px 18px" }
     : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "18px 18px 18px 4px" };
@@ -731,20 +768,52 @@ const ChatTab = () => {
           <div className="text-center py-12 opacity-30 text-white m-auto"><div className="text-3xl mb-2">💌</div>Напиши первое сообщение</div>
         )}
         {msgs.map((m) => (
-          <div key={m.id} className="flex" style={{ justifyContent: m.sender === WHO ? "flex-end" : "flex-start" }}>
+          <div key={m.id} className="flex group" style={{ justifyContent: m.sender === WHO ? "flex-end" : "flex-start" }}>
             <div className="flex flex-col max-w-[78%]">
-              <div className="px-4 py-2.5 text-sm text-white" style={bStyle(m.sender)}>
-                {m.type === "text" && m.content}
-                {m.type === "image" && m.file_url && <img src={m.file_url} alt="" className="rounded-xl max-h-48 max-w-full" />}
-                {m.type === "video" && m.file_url && <video src={m.file_url} controls className="rounded-xl max-h-48 max-w-full" />}
-                {m.type === "audio" && m.file_url && (
-                  <div className="flex items-center gap-2">
-                    <span>🎤</span>
-                    <audio src={m.file_url} controls className="h-8" style={{ maxWidth: "180px" }} />
-                  </div>
-                )}
-                {m.type === "file" && m.file_url && (
-                  <a href={m.file_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 underline opacity-90">📄 {m.file_name || "Файл"}</a>
+              <div className="relative">
+                <div className="px-4 py-2.5 text-sm text-white" style={bStyle(m.sender)}>
+                  {m.type === "text" && m.content}
+                  {m.type === "image" && m.file_url && (
+                    <div className="relative">
+                      <img src={m.file_url} alt="" className="rounded-xl max-h-48 max-w-full" />
+                      <button onClick={() => downloadFile(m.file_url!, m.file_name || "image")}
+                        className="absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ background: "rgba(0,0,0,0.5)" }}>⬇</button>
+                    </div>
+                  )}
+                  {m.type === "video" && m.file_url && (
+                    <div className="relative">
+                      <video src={m.file_url} controls className="rounded-xl max-h-48 max-w-full" />
+                      <button onClick={() => downloadFile(m.file_url!, m.file_name || "video")}
+                        className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ background: "rgba(0,0,0,0.5)" }}>⬇</button>
+                    </div>
+                  )}
+                  {m.type === "audio" && m.file_url && (
+                    <div className="flex items-center gap-2">
+                      <span>🎤</span>
+                      <audio src={m.file_url} controls className="h-8" style={{ maxWidth: "180px" }} />
+                      <button onClick={() => downloadFile(m.file_url!, m.file_name || "audio.webm")}
+                        className="text-white/50 hover:text-white transition-colors flex-shrink-0">⬇</button>
+                    </div>
+                  )}
+                  {m.type === "file" && m.file_url && (
+                    <div className="flex items-center gap-2">
+                      <span>📄</span>
+                      <span className="flex-1 opacity-90 truncate">{m.file_name || "Файл"}</span>
+                      <button onClick={() => downloadFile(m.file_url!, m.file_name || "file")}
+                        className="text-white/60 hover:text-white transition-colors flex-shrink-0">⬇</button>
+                    </div>
+                  )}
+                </div>
+                {m.sender === WHO && (
+                  <button
+                    onClick={() => deleteMsg(m.id)}
+                    disabled={deletingId === m.id}
+                    className="absolute -top-2 -left-2 w-5 h-5 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: "rgba(239,68,68,0.85)" }}>
+                    {deletingId === m.id ? "…" : "✕"}
+                  </button>
                 )}
               </div>
               <div className="text-xs opacity-25 mt-0.5 px-1" style={{ textAlign: m.sender === WHO ? "right" : "left" }}>
